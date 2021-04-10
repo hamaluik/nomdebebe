@@ -1,0 +1,64 @@
+name: namekit
+description: Let's pick a name
+publish_to: 'none'
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  font_awesome_flutter: ^9.0.0
+  sqlite3: ^1.0.0
+  sqlite3_flutter_libs: ^0.4.1
+  shared_preferences: ^2.0.5
+  bloc: ^7.0.0
+  flutter_bloc: ^7.0.0
+  #about: ^2.0.0
+  equatable: ^2.0.0
+  path: ^1.8.0
+  path_provider: ^2.0.1
+  csv: ^5.0.0
+  share: ^2.0.1
+  #flutter_slidable: ^0.5.7
+  #flutter_slidable:
+    #git:
+      #url: https://github.com/diegotori/flutter_slidable.git
+      #ref: null_safety
+dev_dependencies:
+  flutter_launcher_icons: "^0.8.0"
+  test:
+  flutter_test:
+    sdk: flutter
+
+flutter_icons:
+  ios: true
+  image_path: "assets/icon.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/fonts/LICENSE-PublicSans.md
+    - assets/namekit.db
+  fonts:
+    - family: PublicSans
+      fonts:
+        - asset: assets/fonts/PublicSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PublicSans-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/PublicSans-Bold.ttf
+          weight: 700
