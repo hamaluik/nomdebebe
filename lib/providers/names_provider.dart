@@ -88,7 +88,6 @@ class NamesProvider {
       String s = r['sex'];
       return Name(id, name, _sexFromString(s), null);
     }).toList();
-    print(names);
 
     if (names.length > 0) {
       return names.first;
@@ -98,6 +97,16 @@ class NamesProvider {
 
   int countTotalNames() {
     ResultSet results = _db.select("select count(*) from names");
+    return results.first.columnAt(0);
+  }
+
+  int countLikedNames() {
+    ResultSet results = _db.select("select count(*) from names where like = 1");
+    return results.first.columnAt(0);
+  }
+
+  int countDislikedNames() {
+    ResultSet results = _db.select("select count(*) from names where like = 0");
     return results.first.columnAt(0);
   }
 

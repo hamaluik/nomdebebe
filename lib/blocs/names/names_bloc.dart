@@ -13,42 +13,19 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
   Stream<NamesState> mapEventToState(NamesEvent event) async* {
     if (event is NamesLoad) {
       Name? undecided = namesRepository.getNextUndecidedName();
-      List<Name> likedNames =
-          namesRepository.getNames(true, skip: 0, count: 20);
-      List<Name> dislikedNames =
-          namesRepository.getNames(false, skip: 0, count: 20);
-
-      yield NamesState(undecided, likedNames, dislikedNames);
+      yield NamesState(undecided);
     } else if (event is NamesLike) {
       namesRepository.likeName(event.name);
-
       Name? undecided = namesRepository.getNextUndecidedName();
-      List<Name> likedNames =
-          namesRepository.getNames(true, skip: 0, count: 20);
-      List<Name> dislikedNames =
-          namesRepository.getNames(false, skip: 0, count: 20);
-
-      yield NamesState(undecided, likedNames, dislikedNames);
+      yield NamesState(undecided);
     } else if (event is NamesDislike) {
       namesRepository.dislikeName(event.name);
-
       Name? undecided = namesRepository.getNextUndecidedName();
-      List<Name> likedNames =
-          namesRepository.getNames(true, skip: 0, count: 20);
-      List<Name> dislikedNames =
-          namesRepository.getNames(false, skip: 0, count: 20);
-
-      yield NamesState(undecided, likedNames, dislikedNames);
+      yield NamesState(undecided);
     } else if (event is NamesUndecide) {
       namesRepository.undecideName(event.name);
-
       Name? undecided = namesRepository.getNextUndecidedName();
-      List<Name> likedNames =
-          namesRepository.getNames(true, skip: 0, count: 20);
-      List<Name> dislikedNames =
-          namesRepository.getNames(false, skip: 0, count: 20);
-
-      yield NamesState(undecided, likedNames, dislikedNames);
+      yield NamesState(undecided);
     }
   }
 }

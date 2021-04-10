@@ -47,4 +47,12 @@ class NamesRepository {
   int countUndecidedNames() {
     return _namesProvider.countUndecidedNames();
   }
+
+  int countLikedNames() {
+    return _namesProvider.countLikedNames();
+  }
+
+  int countDislikedNames() {
+    return _namesProvider.countDislikedNames();
+  }
 }

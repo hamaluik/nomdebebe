@@ -3,15 +3,10 @@ import 'package:namekit/models/name.dart';
 
 class NamesState extends Equatable {
   final Name? nextUndecidedName;
-  final List<Name> likedNames;
-  final List<Name> dislikedNames;
-  const NamesState(this.nextUndecidedName, this.likedNames, this.dislikedNames);
+  const NamesState(this.nextUndecidedName);
 
-  NamesState.initial()
-      : nextUndecidedName = null,
-        likedNames = [],
-        dislikedNames = [];
+  NamesState.initial() : nextUndecidedName = null;
 
   @override
-  List<Object?> get props => [nextUndecidedName, likedNames, dislikedNames];
+  List<Object?> get props => [nextUndecidedName];
 }

@@ -6,15 +6,6 @@ import 'package:namekit/blocs/names/names.dart';
 import 'package:namekit/models/sex.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-Color sexToColour(Sex sex) {
-  switch (sex) {
-    case Sex.male:
-      return Colors.lightBlue.shade600;
-    case Sex.female:
-      return Colors.pink.shade600;
-  }
-}
-
 class NameCard extends StatelessWidget {
   final Name name;
 

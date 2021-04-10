@@ -25,35 +25,22 @@ class UndecidedScreen extends StatelessWidget {
         undecided = undecided.substring(0, 1) + "," + undecided.substring(1);
       }
 
-      print("next undecided: " + state.nextUndecidedName.toString());
-
-      return Scaffold(
-        body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                  child: Center(
-                      child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: Text("$decided done\n$undecided to go",
-                              style: Theme.of(context).textTheme.headline2,
-                              textAlign: TextAlign.center)))),
-              Padding(
-                  padding: EdgeInsets.all(32),
-                  child: state.nextUndecidedName == null
-                      ? Container()
-                      : NameCard(state.nextUndecidedName!))
-            ]),
-        bottomNavigationBar:
-            BottomNavigationBar(items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.question), label: "Undecided"),
-          BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.heart), label: "Liked"),
-          BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.thumbsDown), label: "Disliked"),
-        ], currentIndex: 0),
-      );
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+                child: Center(
+                    child: Padding(
+                        padding: EdgeInsets.all(32),
+                        child: Text("$decided done\n$undecided to go",
+                            style: Theme.of(context).textTheme.headline2,
+                            textAlign: TextAlign.center)))),
+            Padding(
+                padding: EdgeInsets.all(32),
+                child: state.nextUndecidedName == null
+                    ? Container()
+                    : NameCard(state.nextUndecidedName!))
+          ]);
     });
   }
 }

@@ -16,7 +16,7 @@
    viewBox="0 0 512 512"
    version="1.1"
    id="svg881"
-   sodipodi:docname="logo.svg"
+   sodipodi:docname="icon.svg"
    width="512"
    height="512"
    inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
@@ -31,7 +31,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -46,17 +46,18 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1720"
+     inkscape:window-width="3440"
      inkscape:window-height="1419"
      id="namedview883"
      showgrid="true"
      inkscape:zoom="1.7056189"
      inkscape:cx="143.61829"
-     inkscape:cy="255.68565"
+     inkscape:cy="282.38473"
      inkscape:window-x="0"
      inkscape:window-y="21"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg881">
+     inkscape:current-layer="svg881"
+     inkscape:document-rotation="0">
     <inkscape:grid
        type="xygrid"
        id="grid891"
@@ -64,7 +65,7 @@
        spacingy="32" />
   </sodipodi:namedview>
   <rect
-     style="fill:#fdd835;stroke-width:1.01532;fill-opacity:1"
+     style="fill:#ffb300;stroke-width:1.01532;fill-opacity:1"
      id="rect889"
      width="512"
      height="512"
@@ -84,9 +85,4 @@
      height="448"
      x="256"
      y="32" />
-  <path
-     fill="currentColor"
-     d="M 400,0 H 112 C 85.5,0 64,21.5 64,48 v 416 c 0,26.5 21.5,48 48,48 h 288 c 26.5,0 48,-21.5 48,-48 V 48 C 448,21.5 426.5,0 400,0 Z m 0,464 H 112 V 48 H 400 Z M 208,112 h 96 c 8.8,0 16,-7.2 16,-16 0,-8.8 -7.2,-16 -16,-16 h -96 c -8.8,0 -16,7.2 -16,16 0,8.8 7.2,16 16,16 z m 48,176 c 35.3,0 64,-28.7 64,-64 0,-35.3 -28.7,-64 -64,-64 -35.3,0 -64,28.7 -64,64 0,35.3 28.7,64 64,64 z m -89.6,128 h 179.2 c 12.4,0 22.4,-8.6 22.4,-19.2 v -19.2 c 0,-31.8 -30.1,-57.6 -67.2,-57.6 -10.8,0 -18.7,8 -44.8,8 -26.9,0 -33.4,-8 -44.8,-8 -37.1,0 -67.2,25.8 -67.2,57.6 v 19.2 c 0,10.6 10,19.2 22.4,19.2 z"
-     id="path879"
-     style="fill:#fafafa;fill-opacity:1" />
 </svg>
