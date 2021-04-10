@@ -23,4 +23,7 @@ class Name extends Equatable {
   Name makeUndecided() {
     return Name(id, name, sex, null);
   }
+
+  @override
+  String toString() => "[$id] $name";
 }

@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:namekit/blocs/names/names.dart';
-import 'package:namekit/models/name.dart';
 import 'package:namekit/widgets/name_card.dart';
 
 class UndecidedScreen extends StatelessWidget {
@@ -11,16 +10,12 @@ class UndecidedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NamesBloc, NamesState>(
         builder: (BuildContext context, NamesState state) {
-      Name? nextName;
-      for (Name name in state.names) {
-        if (name.like == null) {
-          nextName = name;
-          break;
-        }
-      }
-
-      int decidedCount = state.names.where((n) => n.like != null).length;
-      int undecidedCount = state.names.length - decidedCount;
+      int totalNames =
+          BlocProvider.of<NamesBloc>(context).namesRepository.countTotalNames();
+      int undecidedCount = BlocProvider.of<NamesBloc>(context)
+          .namesRepository
+          .countUndecidedNames();
+      int decidedCount = totalNames - undecidedCount;
       String decided = decidedCount.toString();
       if (decided.length > 3) {
         decided = decided.substring(0, 1) + "," + decided.substring(1);
@@ -29,6 +24,8 @@ class UndecidedScreen extends StatelessWidget {
       if (undecided.length > 3) {
         undecided = undecided.substring(0, 1) + "," + undecided.substring(1);
       }
+
+      print("next undecided: " + state.nextUndecidedName.toString());
 
       return Scaffold(
         body: Column(
@@ -43,7 +40,9 @@ class UndecidedScreen extends StatelessWidget {
                               textAlign: TextAlign.center)))),
               Padding(
                   padding: EdgeInsets.all(32),
-                  child: nextName == null ? Container() : NameCard(nextName))
+                  child: state.nextUndecidedName == null
+                      ? Container()
+                      : NameCard(state.nextUndecidedName!))
             ]),
         bottomNavigationBar:
             BottomNavigationBar(items: const <BottomNavigationBarItem>[

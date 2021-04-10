@@ -54,9 +54,9 @@ class NamesProvider {
     _db.execute("PRAGMA foreign_keys = ON");
   }
 
-  List<Name> _getNames(String query) {
+  List<Name> _getNames(String query, int skip, int count) {
     PreparedStatement stmt = _db.prepare(query);
-    ResultSet results = stmt.select();
+    ResultSet results = stmt.select([count, skip]);
     List<Name> names = results.map((Row r) {
       int id = r['id'];
       String name = r['name'];
@@ -72,22 +72,58 @@ class NamesProvider {
     return names;
   }
 
-  List<Name> getUndecidedNames() {
+  List<Name> getUndecidedNames([int skip = 0, int count = 20]) {
     return _getNames(
-        "select id, name, sex, like from names where like is null");
+        "select id, name, sex, like from names where like is null limit ? offset ?",
+        skip,
+        count);
   }
 
-  List<Name> getLikedNames() {
-    return _getNames("select id, name, sex, like from names where like = true");
+  Name? getNextUndecidedName() {
+    ResultSet results = _db
+        .select("select id, name, sex from names where like is null limit 1");
+    List<Name> names = results.map((Row r) {
+      int id = r['id'];
+      String name = r['name'];
+      String s = r['sex'];
+      return Name(id, name, _sexFromString(s), null);
+    }).toList();
+    print(names);
+
+    if (names.length > 0) {
+      return names.first;
+    }
+    return null;
   }
 
-  List<Name> getDislikedNames() {
+  int countTotalNames() {
+    ResultSet results = _db.select("select count(*) from names");
+    return results.first.columnAt(0);
+  }
+
+  int countUndecidedNames() {
+    ResultSet results =
+        _db.select("select count(*) from names where like is null");
+    return results.first.columnAt(0);
+  }
+
+  List<Name> getLikedNames([int skip = 0, int count = 20]) {
     return _getNames(
-        "select id, name, sex, like from names where like = false");
+        "select id, name, sex, like from names where like = true limit ? offset ?",
+        skip,
+        count);
   }
 
-  List<Name> getAllNames() {
-    return _getNames("select id, name, sex, like from names");
+  List<Name> getDislikedNames([int skip = 0, int count = 20]) {
+    return _getNames(
+        "select id, name, sex, like from names where like = false limit ? offset ?",
+        skip,
+        count);
+  }
+
+  List<Name> getAllNames([int skip = 0, int count = 20]) {
+    return _getNames(
+        "select id, name, sex, like from names limit ? offset ?", skip, count);
   }
 
   void setNameLike(int id, bool? like) {
