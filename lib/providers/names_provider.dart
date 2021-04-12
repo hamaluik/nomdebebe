@@ -7,16 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:namekit/models/filter.dart';
 
-Sex _sexFromString(String s) {
-  if (s.toLowerCase() == 'm') return Sex.male;
-  return Sex.female;
-}
-
-//String _sexToString(Sex s) {
-//if (s == Sex.male) return 'M';
-//return 'F';
-//}
-
 class NamesProvider {
   final Database _db;
   static const int CURRENT_VERSION = 1;
@@ -83,7 +73,7 @@ class NamesProvider {
       if (l == 1)
         like = true;
       else if (l == 0) like = false;
-      return Name(id, name, _sexFromString(s), like);
+      return Name(id, name, sexFromString(s), like);
     }).toList();
     stmt.dispose();
     return names;

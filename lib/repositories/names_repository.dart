@@ -11,8 +11,9 @@ class NamesRepository {
     return _namesProvider.getNames(filters ?? List.empty(), skip, count);
   }
 
-  Name? getNextUndecidedName() {
-    List<Name> names = _namesProvider.getNames([LikeFilter.undecided], 0, 1);
+  Name? getNextUndecidedName({List<Filter>? filters}) {
+    List<Name> names = _namesProvider.getNames(
+        <Filter>[LikeFilter.undecided] + (filters ?? List.empty()), 0, 1);
     if (names.isEmpty) return null;
     return names[0];
   }

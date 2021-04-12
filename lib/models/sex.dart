@@ -10,3 +10,13 @@ Color sexToColour(Sex sex) {
       return Colors.pink.shade600;
   }
 }
+
+Sex sexFromString(String s) {
+  if (s.toUpperCase() == 'M') return Sex.male;
+  return Sex.female;
+}
+
+String sexToString(Sex s) {
+  if (s == Sex.male) return 'M';
+  return 'F';
+}
