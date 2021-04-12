@@ -1,3 +1,4 @@
+import 'package:namekit/models/filter.dart';
 import 'package:namekit/models/name.dart';
 import 'package:namekit/providers/names_provider.dart';
 
@@ -6,23 +7,14 @@ class NamesRepository {
 
   NamesRepository(this._namesProvider);
 
-  List<Name> getAllNames({int skip = 0, int count = 20}) {
-    return _namesProvider.getAllNames(skip, count);
+  List<Name> getNames({List<Filter>? filters, int skip = 0, int count = 20}) {
+    return _namesProvider.getNames(filters ?? List.empty(), skip, count);
   }
 
   Name? getNextUndecidedName() {
-    return _namesProvider.getNextUndecidedName();
-  }
-
-  List<Name> getNames(bool? liked, {int skip = 0, int count = 20}) {
-    // make it explicit we're testing for nulls on a boolean, etc
-    if (liked == null) {
-      return _namesProvider.getUndecidedNames(skip, count);
-    } else if (liked == true) {
-      return _namesProvider.getLikedNames(skip, count);
-    } else {
-      return _namesProvider.getDislikedNames(skip, count);
-    }
+    List<Name> names = _namesProvider.getNames([LikeFilter.undecided], 0, 1);
+    if (names.isEmpty) return null;
+    return names[0];
   }
 
   Name likeName(Name name) {
@@ -40,19 +32,22 @@ class NamesRepository {
     return name.makeUndecided();
   }
 
-  int countTotalNames() {
-    return _namesProvider.countTotalNames();
+  int countTotalNames({List<Filter>? filters}) {
+    return _namesProvider.countNames(filters ?? List.empty());
   }
 
-  int countUndecidedNames() {
-    return _namesProvider.countUndecidedNames();
+  int countUndecidedNames({List<Filter>? filters}) {
+    return _namesProvider
+        .countNames(<Filter>[LikeFilter.undecided] + (filters ?? List.empty()));
   }
 
-  int countLikedNames() {
-    return _namesProvider.countLikedNames();
+  int countLikedNames({List<Filter>? filters}) {
+    return _namesProvider
+        .countNames(<Filter>[LikeFilter.liked] + (filters ?? List.empty()));
   }
 
-  int countDislikedNames() {
-    return _namesProvider.countDislikedNames();
+  int countDislikedNames({List<Filter>? filters}) {
+    return _namesProvider
+        .countNames(<Filter>[LikeFilter.disliked] + (filters ?? List.empty()));
   }
 }

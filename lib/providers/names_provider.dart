@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
+import 'package:namekit/models/filter.dart';
 
 Sex _sexFromString(String s) {
   if (s.toLowerCase() == 'm') return Sex.male;
@@ -42,6 +43,8 @@ class NamesProvider {
         try {
           _db.execute('''
             alter table names add column like boolean default null''');
+          _db.execute('''
+            alter table names add column rank integer default null''');
           _db.userVersion = 1;
         } catch (e) {
           _db.execute("rollback transaction");
@@ -54,9 +57,23 @@ class NamesProvider {
     _db.execute("PRAGMA foreign_keys = ON");
   }
 
-  List<Name> _getNames(String query, int skip, int count) {
-    PreparedStatement stmt = _db.prepare(query);
-    ResultSet results = stmt.select([count, skip]);
+  String _formatFilterQuery(List<Filter> filters) {
+    if (filters.isEmpty) return "";
+    return "WHERE " + filters.map((f) => f.query).join(" AND ");
+  }
+
+  int countNames(List<Filter> filters) {
+    ResultSet results = _db.select(
+        "select count(*) from names ${_formatFilterQuery(filters)}",
+        filters.expand((f) => f.args).toList());
+    return results.first.columnAt(0);
+  }
+
+  List<Name> getNames(List<Filter> filters, int skip, int count) {
+    PreparedStatement stmt = _db.prepare(
+        "select id, name, sex, like from names ${_formatFilterQuery(filters)} limit ? offset ?");
+    ResultSet results =
+        stmt.select(filters.expand((f) => f.args).toList() + [count, skip]);
     List<Name> names = results.map((Row r) {
       int id = r['id'];
       String name = r['name'];
@@ -70,69 +87,6 @@ class NamesProvider {
     }).toList();
     stmt.dispose();
     return names;
-  }
-
-  List<Name> getUndecidedNames([int skip = 0, int count = 20]) {
-    return _getNames(
-        "select id, name, sex, like from names where like is null limit ? offset ?",
-        skip,
-        count);
-  }
-
-  Name? getNextUndecidedName() {
-    ResultSet results = _db
-        .select("select id, name, sex from names where like is null limit 1");
-    List<Name> names = results.map((Row r) {
-      int id = r['id'];
-      String name = r['name'];
-      String s = r['sex'];
-      return Name(id, name, _sexFromString(s), null);
-    }).toList();
-
-    if (names.length > 0) {
-      return names.first;
-    }
-    return null;
-  }
-
-  int countTotalNames() {
-    ResultSet results = _db.select("select count(*) from names");
-    return results.first.columnAt(0);
-  }
-
-  int countLikedNames() {
-    ResultSet results = _db.select("select count(*) from names where like = 1");
-    return results.first.columnAt(0);
-  }
-
-  int countDislikedNames() {
-    ResultSet results = _db.select("select count(*) from names where like = 0");
-    return results.first.columnAt(0);
-  }
-
-  int countUndecidedNames() {
-    ResultSet results =
-        _db.select("select count(*) from names where like is null");
-    return results.first.columnAt(0);
-  }
-
-  List<Name> getLikedNames([int skip = 0, int count = 20]) {
-    return _getNames(
-        "select id, name, sex, like from names where like = true limit ? offset ?",
-        skip,
-        count);
-  }
-
-  List<Name> getDislikedNames([int skip = 0, int count = 20]) {
-    return _getNames(
-        "select id, name, sex, like from names where like = false limit ? offset ?",
-        skip,
-        count);
-  }
-
-  List<Name> getAllNames([int skip = 0, int count = 20]) {
-    return _getNames(
-        "select id, name, sex, like from names limit ? offset ?", skip, count);
   }
 
   void setNameLike(int id, bool? like) {

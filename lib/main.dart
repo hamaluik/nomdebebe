@@ -90,11 +90,11 @@ class _ScreenContainerState extends State<ScreenContainer> {
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.question), label: "Undecided"),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.heart), label: "Liked"),
+              icon: Icon(FontAwesomeIcons.solidHeart), label: "Liked"),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.thumbsDown), label: "Disliked"),
+              icon: Icon(FontAwesomeIcons.solidThumbsDown), label: "Disliked"),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.cogs), label: "Settings"),
+              icon: Icon(FontAwesomeIcons.wrench), label: "Settings"),
         ],
         currentIndex: currentIndex,
         type: BottomNavigationBarType.shifting,
