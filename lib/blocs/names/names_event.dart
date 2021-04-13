@@ -36,3 +36,11 @@ class NamesUndecide extends NamesEvent {
   @override
   List<Object> get props => [name];
 }
+
+class NamesLikedRank extends NamesEvent {
+  final int oldRank;
+  final int newRank;
+  const NamesLikedRank(this.oldRank, this.newRank);
+  @override
+  List<Object> get props => [this.oldRank, this.newRank];
+}

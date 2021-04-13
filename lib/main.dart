@@ -92,6 +92,9 @@ class _ScreenContainerState extends State<ScreenContainer>
               case 'liked':
                 builder = (BuildContext _) => LikedScreen();
                 break;
+              case 'sharing':
+                builder = (BuildContext _) => Container();
+                break;
               case 'settings':
                 builder = (BuildContext _) => SettingsScreen();
                 break;
@@ -112,6 +115,9 @@ class _ScreenContainerState extends State<ScreenContainer>
               _navigatorKey.currentState?.pushNamed('liked');
               break;
             case 2:
+              _navigatorKey.currentState?.pushNamed('sharing');
+              break;
+            case 3:
               _navigatorKey.currentState?.pushNamed('settings');
               break;
           }
@@ -124,6 +130,8 @@ class _ScreenContainerState extends State<ScreenContainer>
               icon: Icon(FontAwesomeIcons.question), label: "Undecided"),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.solidHeart), label: "Liked"),
+          BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.child), label: "Sharing"),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.wrench), label: "Settings"),
         ],

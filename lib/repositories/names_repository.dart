@@ -51,4 +51,17 @@ class NamesRepository {
     return _namesProvider
         .countNames(<Filter>[LikeFilter.disliked] + (filters ?? List.empty()));
   }
+
+  List<Name> getRankedLikedNames({List<Filter>? filters}) {
+    return _namesProvider.getRankedLikedNames(
+        filters ?? List.empty(), 0, 1000000);
+  }
+
+  void swapLikedNamesRanks(int oldRank, int newRank, {List<Filter>? filters}) {
+    List<int> ids = _namesProvider.getRankedLikedNameIds(
+        filters ?? List.empty(), 0, 1000000);
+    int id = ids.removeAt(oldRank);
+    ids.insert(newRank, id);
+    _namesProvider.rankLikedNames(ids);
+  }
 }

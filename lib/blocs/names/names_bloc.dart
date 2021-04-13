@@ -37,78 +37,46 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
     return super.close();
   }
 
+  NamesState _updateAll() {
+    Name? undecided =
+        namesRepository.getNextUndecidedName(filters: settings.state.filters);
+    List<Name> likedNames =
+        namesRepository.getRankedLikedNames(filters: settings.state.filters);
+
+    int totalNames =
+        namesRepository.countTotalNames(filters: settings.state.filters);
+    int undecidedNames =
+        namesRepository.countUndecidedNames(filters: settings.state.filters);
+    int likedNamesCount =
+        namesRepository.countLikedNames(filters: settings.state.filters);
+
+    return state.copyWith(
+        nextUndecidedName: Nullable(undecided),
+        likedNames: likedNames,
+        namesCount: totalNames,
+        undecidedNamesCount: undecidedNames,
+        likedNamesCount: likedNamesCount);
+  }
+
   @override
   Stream<NamesState> mapEventToState(NamesEvent event) async* {
     if (event is NamesLoad) {
-      Name? undecided =
-          namesRepository.getNextUndecidedName(filters: settings.state.filters);
-
-      int totalNames =
-          namesRepository.countTotalNames(filters: settings.state.filters);
-      int undecidedNames =
-          namesRepository.countUndecidedNames(filters: settings.state.filters);
-      int likedNames =
-          namesRepository.countLikedNames(filters: settings.state.filters);
-
-      yield state.copyWith(
-          nextUndecidedName: Nullable(undecided),
-          namesCount: totalNames,
-          undecidedNamesCount: undecidedNames,
-          likedNamesCount: likedNames);
+      yield _updateAll();
     } else if (event is NamesLike) {
       namesRepository.likeName(event.name);
-
-      Name? undecided =
-          namesRepository.getNextUndecidedName(filters: settings.state.filters);
-
-      int totalNames =
-          namesRepository.countTotalNames(filters: settings.state.filters);
-      int undecidedNames =
-          namesRepository.countUndecidedNames(filters: settings.state.filters);
-      int likedNames =
-          namesRepository.countLikedNames(filters: settings.state.filters);
-
-      yield state.copyWith(
-          nextUndecidedName: Nullable(undecided),
-          namesCount: totalNames,
-          undecidedNamesCount: undecidedNames,
-          likedNamesCount: likedNames);
+      yield _updateAll();
     } else if (event is NamesDislike) {
       namesRepository.dislikeName(event.name);
-
-      Name? undecided =
-          namesRepository.getNextUndecidedName(filters: settings.state.filters);
-
-      int totalNames =
-          namesRepository.countTotalNames(filters: settings.state.filters);
-      int undecidedNames =
-          namesRepository.countUndecidedNames(filters: settings.state.filters);
-      int likedNames =
-          namesRepository.countLikedNames(filters: settings.state.filters);
-
-      yield state.copyWith(
-          nextUndecidedName: Nullable(undecided),
-          namesCount: totalNames,
-          undecidedNamesCount: undecidedNames,
-          likedNamesCount: likedNames);
+      yield _updateAll();
     } else if (event is NamesUndecide) {
       namesRepository.undecideName(event.name);
-
-      Name? undecided =
-          namesRepository.getNextUndecidedName(filters: settings.state.filters);
-
-      int totalNames =
-          namesRepository.countTotalNames(filters: settings.state.filters);
-      int undecidedNames =
-          namesRepository.countUndecidedNames(filters: settings.state.filters);
-      int likedNames =
-          namesRepository.countLikedNames(filters: settings.state.filters);
-
-      yield state.copyWith(
-          nextUndecidedName: Nullable(undecided),
-          namesCount: totalNames,
-          undecidedNamesCount: undecidedNames,
-          likedNamesCount: likedNames);
+      yield _updateAll();
+    } else if (event is NamesLikedRank) {
+      namesRepository.swapLikedNamesRanks(event.oldRank, event.newRank,
+          filters: settings.state.filters);
+      List<Name> newLikedNames =
+          namesRepository.getRankedLikedNames(filters: settings.state.filters);
+      yield state.copyWith(likedNames: newLikedNames);
     }
   }
 }

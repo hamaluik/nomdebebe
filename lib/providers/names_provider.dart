@@ -34,7 +34,11 @@ class NamesProvider {
           _db.execute('''
             alter table names add column like boolean default null''');
           _db.execute('''
-            alter table names add column rank integer default null''');
+            create table name_ranks(
+              id integer not null primary key,
+              rank integer default null,
+              foreign key(id) references names(id)
+            )''');
           _db.userVersion = 1;
         } catch (e) {
           _db.execute("rollback transaction");
@@ -83,13 +87,74 @@ class NamesProvider {
   }
 
   void setNameLike(int id, bool? like) {
-    PreparedStatement stmt =
-        _db.prepare("update names set like = ? where id = ?");
-    int? l;
-    if (like == true)
-      l = 1;
-    else if (like == false) l = 0;
-    stmt.execute([l, id]);
-    stmt.dispose();
+    _db.execute("begin transaction");
+    try {
+      PreparedStatement stmt =
+          _db.prepare("update names set like = ? where id = ?");
+      int? l;
+      if (like == true)
+        l = 1;
+      else if (like == false) l = 0;
+      stmt.execute([l, id]);
+      stmt.dispose();
+
+      if (like == true) {
+        PreparedStatement stmt2 = _db.prepare(
+            "insert or ignore into name_ranks(id, rank) values(?, null)");
+        stmt2.execute([id]);
+        stmt2.dispose();
+      } else {
+        PreparedStatement stmt2 =
+            _db.prepare("delete from name_ranks where id=?");
+        stmt2.execute([id]);
+        stmt2.dispose();
+      }
+    } catch (e) {
+      _db.execute("rollback transaction");
+      throw e;
+    }
+    _db.execute("commit transaction");
+  }
+
+  void rankLikedNames(List<int> sortedIds) {
+    _db.execute("begin transaction");
+    try {
+      PreparedStatement stmt = _db
+          .prepare("update name_ranks set rank=? where id=?", persistent: true);
+      for (int i = 0; i < sortedIds.length; i++) {
+        stmt.execute([i, sortedIds[i]]);
+      }
+      stmt.dispose();
+    } catch (e) {
+      _db.execute("rollback transaction");
+      throw e;
+    }
+    _db.execute("commit transaction");
+  }
+
+  List<int> getRankedLikedNameIds(List<Filter> filters, int skip, int count) {
+    List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
+    ResultSet results = _db.select(
+        "select names.id as id from names inner join name_ranks on name_ranks.id = names.id ${_formatFilterQuery(filters)} order by name_ranks.rank asc nulls last limit ? offset ?",
+        args);
+    return results.map((Row r) => r['id'] as int).toList();
+  }
+
+  List<Name> getRankedLikedNames(List<Filter> filters, int skip, int count) {
+    List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
+    ResultSet results = _db.select(
+        "select names.id as id, names.name as name, names.sex as sex, names.like as like from names inner join name_ranks on name_ranks.id = names.id ${_formatFilterQuery(filters)} order by name_ranks.rank asc nulls last limit ? offset ?",
+        args);
+    return results.map((Row r) {
+      int id = r['id'];
+      String name = r['name'];
+      String s = r['sex'];
+      int? l = r['like'];
+      bool? like;
+      if (l == 1)
+        like = true;
+      else if (l == 0) like = false;
+      return Name(id, name, sexFromString(s), like);
+    }).toList();
   }
 }
