@@ -60,10 +60,13 @@ class NamesProvider {
   }
 
   List<Name> getNames(List<Filter> filters, int skip, int count) {
-    PreparedStatement stmt = _db.prepare(
-        "select id, name, sex, like from names ${_formatFilterQuery(filters)} limit ? offset ?");
-    ResultSet results =
-        stmt.select(filters.expand((f) => f.args).toList() + [count, skip]);
+    String query =
+        "select id, name, sex, like from names ${_formatFilterQuery(filters)} limit ? offset ?";
+    PreparedStatement stmt = _db.prepare(query);
+    List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
+    //print(
+    //"getNames query: `$query`, args: [${args.map((a) => a.toString()).join(',')}]");
+    ResultSet results = stmt.select(args);
     List<Name> names = results.map((Row r) {
       int id = r['id'];
       String name = r['name'];

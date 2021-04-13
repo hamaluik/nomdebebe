@@ -38,10 +38,10 @@ class SearchFilter extends Filter {
   const SearchFilter(this._name);
 
   @override
-  String get query => "name like '%?%'";
+  String get query => "name like ?";
 
   @override
-  List<Object> get args => [this._name];
+  List<Object> get args => ["%" + this._name + "%"];
 }
 
 /// This class is a bit delicate at the moment. Don't feed it malformed letter lists please.
@@ -52,8 +52,9 @@ class FirstLettersFilter extends Filter {
   @override
   String get query => _letters.isEmpty
       ? ""
-      : ("(" + _letters.map((l) => "name like '?%'").join(" OR ") + ")");
+      : ("(" + _letters.map((l) => "name like ?").join(" OR ") + ")");
 
   @override
-  List<Object> get args => _letters.isEmpty ? List.empty() : _letters;
+  List<Object> get args =>
+      _letters.isEmpty ? List.empty() : _letters.map((l) => l + "%").toList();
 }

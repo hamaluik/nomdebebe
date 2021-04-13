@@ -1,16 +1,17 @@
 import 'dart:collection';
-
 import 'package:equatable/equatable.dart';
 import 'package:namekit/models/filter.dart';
 import 'package:namekit/models/sex.dart';
+import 'package:namekit/themes.dart';
 
 class SettingsState extends Equatable {
   final Sex? sexPreference;
   final HashSet<String> firstLetters;
   final List<Filter> filters;
+  final ThemeType? theme;
 
   static List<Filter> _buildFilters(Sex? sex, HashSet<String> letters) {
-    List<Filter> filters = List.empty();
+    List<Filter> filters = [];
 
     if (sex == Sex.male)
       filters.add(SexFilter.male);
@@ -23,14 +24,15 @@ class SettingsState extends Equatable {
     return filters;
   }
 
-  SettingsState(this.sexPreference, this.firstLetters)
+  SettingsState(this.sexPreference, this.firstLetters, this.theme)
       : filters = _buildFilters(sexPreference, firstLetters);
 
   SettingsState.initial()
       : sexPreference = null,
         firstLetters = HashSet(),
-        filters = List.empty();
+        filters = List.empty(),
+        theme = null;
 
   @override
-  List<Object?> get props => [sexPreference, firstLetters];
+  List<Object?> get props => [sexPreference, firstLetters, theme];
 }

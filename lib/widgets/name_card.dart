@@ -33,10 +33,11 @@ class NameCard extends StatelessWidget {
                   size: 128, color: Colors.white)),
           child: Card(
               color: Colors.transparent,
-              //elevation: 4.0,
+              elevation:
+                  Theme.of(context).brightness == Brightness.dark ? 0 : null,
               child: Container(
                   decoration: BoxDecoration(
-                      color: sexToColour(name.sex),
+                      color: sexToColour(context, name.sex),
                       borderRadius: BorderRadius.circular(8.0)),
                   child: Column(
                     children: <Widget>[

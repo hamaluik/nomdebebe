@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,10 +10,14 @@ import 'package:namekit/repositories/names_repository.dart';
 import 'package:namekit/repositories/settings_repository.dart';
 import 'package:namekit/screens/undecided_screen.dart';
 import 'package:namekit/screens/liked_screen.dart';
+import 'package:namekit/screens/settings_screen.dart';
+import 'package:namekit/blocs/debug_logger.dart';
 import 'themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Bloc.observer = DebugLogger();
   NamesRepository names = NamesRepository(await NamesProvider.load());
   SettingsRepository settings = await SettingsRepository.load();
   runApp(MultiBlocProvider(providers: [
@@ -20,19 +26,44 @@ void main() async {
             SettingsBloc(settings)..add(SettingsLoad())),
     BlocProvider<NamesBloc>(
         create: (BuildContext c) =>
-            NamesBloc(names, BlocProvider.of<SettingsBloc>(c))
+            NamesBloc.load(names, BlocProvider.of<SettingsBloc>(c))
               ..add(NamesLoad())),
   ], child: NamesApp()));
 }
 
-class NamesApp extends StatelessWidget {
+class NamesApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => NamesAppState();
+}
+
+class NamesAppState extends State<NamesApp> with WidgetsBindingObserver {
+  Brightness brightness = PlatformDispatcher.instance.platformBrightness;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    print("platform brightness changed: " +
+        (WidgetsBinding.instance?.window.platformBrightness.toString() ?? "?"));
+    setState(() => brightness =
+        WidgetsBinding.instance?.window.platformBrightness ?? this.brightness);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Namekit",
-      theme: lightTheme,
-      home: ScreenContainer(),
-    );
+    return BlocBuilder<SettingsBloc, SettingsState>(
+        builder: (BuildContext context, SettingsState settings) {
+      return MaterialApp(
+        title: "Namekit",
+        theme: themeForType(settings.theme) ??
+            (brightness == Brightness.dark ? darkTheme : lightTheme),
+        home: ScreenContainer(),
+      );
+    });
   }
 }
 
@@ -41,7 +72,8 @@ class ScreenContainer extends StatefulWidget {
   State<StatefulWidget> createState() => _ScreenContainerState();
 }
 
-class _ScreenContainerState extends State<ScreenContainer> {
+class _ScreenContainerState extends State<ScreenContainer>
+    with WidgetsBindingObserver {
   final _navigatorKey = GlobalKey<NavigatorState>();
   int currentIndex = 0;
 
@@ -60,11 +92,8 @@ class _ScreenContainerState extends State<ScreenContainer> {
               case 'liked':
                 builder = (BuildContext _) => LikedScreen();
                 break;
-              case 'disliked':
-                builder = (BuildContext _) => Container();
-                break;
               case 'settings':
-                builder = (BuildContext _) => Container();
+                builder = (BuildContext _) => SettingsScreen();
                 break;
               default:
                 throw Exception('Invalid route: ${settings.name}');
@@ -83,9 +112,6 @@ class _ScreenContainerState extends State<ScreenContainer> {
               _navigatorKey.currentState?.pushNamed('liked');
               break;
             case 2:
-              _navigatorKey.currentState?.pushNamed('disliked');
-              break;
-            case 3:
               _navigatorKey.currentState?.pushNamed('settings');
               break;
           }
@@ -98,8 +124,6 @@ class _ScreenContainerState extends State<ScreenContainer> {
               icon: Icon(FontAwesomeIcons.question), label: "Undecided"),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.solidHeart), label: "Liked"),
-          BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.solidThumbsDown), label: "Disliked"),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.wrench), label: "Settings"),
         ],

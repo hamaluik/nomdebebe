@@ -5,6 +5,7 @@ import 'package:namekit/blocs/settings/settings_event.dart';
 import 'package:namekit/blocs/settings/settings_state.dart';
 import 'package:namekit/models/sex.dart';
 import 'package:namekit/repositories/settings_repository.dart';
+import 'package:namekit/themes.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final SettingsRepository settingsRepository;
@@ -16,20 +17,25 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     if (event is SettingsLoad) {
       Sex? sex = settingsRepository.sex;
       List<String> firstLetters = settingsRepository.firstLetters;
-      yield SettingsState(sex, HashSet.of(firstLetters));
+      ThemeType? theme = settingsRepository.theme;
+      yield SettingsState(sex, HashSet.of(firstLetters), theme);
     } else if (event is SettingsSetSex) {
       settingsRepository.sex = event.sex;
-      yield SettingsState(event.sex, state.firstLetters);
-    } else if (event is SettingsAddFirstLetter) {
-      HashSet<String> letters = HashSet.from(state.firstLetters);
-      letters.add(event.firstLetter.toUpperCase());
-      settingsRepository.firstLetters = letters.toList();
-      yield SettingsState(state.sexPreference, letters);
-    } else if (event is SettingsRemoveFirstLetter) {
-      HashSet<String> letters = HashSet.from(state.firstLetters);
-      letters.remove(event.firstLetter);
-      settingsRepository.firstLetters = letters.toList();
-      yield SettingsState(state.sexPreference, letters);
+      yield SettingsState(event.sex, state.firstLetters, state.theme);
+    } else if (event is SettingsSetFirstLetters) {
+      settingsRepository.firstLetters = event.firstLetters.toList();
+      yield SettingsState(
+        state.sexPreference,
+        event.firstLetters,
+        state.theme,
+      );
+    } else if (event is SettingsSetTheme) {
+      settingsRepository.theme = event.theme;
+      yield SettingsState(
+        state.sexPreference,
+        state.firstLetters,
+        event.theme,
+      );
     }
   }
 }

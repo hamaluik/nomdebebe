@@ -18,7 +18,7 @@ class NameTile extends StatelessWidget {
       return Padding(
           padding: EdgeInsets.all(2),
           child: Card(
-              color: sexToColour(name.sex),
+              color: sexToColour(context, name.sex),
               elevation: 2,
               child: Padding(
                   padding: EdgeInsets.all(8),

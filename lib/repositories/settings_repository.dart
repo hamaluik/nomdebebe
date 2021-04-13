@@ -1,4 +1,5 @@
 import 'package:namekit/models/sex.dart';
+import 'package:namekit/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsRepository {
@@ -41,5 +42,33 @@ class SettingsRepository {
         .map((l) => l.substring(0, 1).toUpperCase())
         .toList();
     _prefs.setStringList("firstLetters", letters);
+  }
+
+  ThemeType? get theme {
+    if (!_prefs.containsKey("theme")) return null;
+    String? t = _prefs.getString("theme");
+    if (t == "light")
+      return ThemeType.light;
+    else if (t == "dark")
+      return ThemeType.dark;
+    else if (t == "black") return ThemeType.black;
+    return null;
+  }
+
+  set theme(ThemeType? theme) {
+    switch (theme) {
+      case null:
+        _prefs.remove("theme");
+        break;
+      case ThemeType.light:
+        _prefs.setString("theme", "light");
+        break;
+      case ThemeType.dark:
+        _prefs.setString("theme", "dark");
+        break;
+      case ThemeType.black:
+        _prefs.setString("theme", "black");
+        break;
+    }
   }
 }

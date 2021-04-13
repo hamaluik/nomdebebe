@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 
 enum Sex { male, female }
 
-Color sexToColour(Sex sex) {
+Color sexToColour(BuildContext context, Sex sex) {
+  Brightness b = Theme.of(context).brightness;
   switch (sex) {
     case Sex.male:
-      return Colors.blue.shade600;
+      return b == Brightness.light
+          ? Colors.blue.shade600
+          : Colors.blue.shade900;
     case Sex.female:
-      return Colors.pink.shade600;
+      return b == Brightness.light
+          ? Colors.pink.shade600
+          : Colors.pink.shade900;
   }
 }
 

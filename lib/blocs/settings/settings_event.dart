@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'package:equatable/equatable.dart';
 import 'package:namekit/models/sex.dart';
+import 'package:namekit/themes.dart';
 
 abstract class SettingsEvent extends Equatable {
   const SettingsEvent();
@@ -18,18 +20,16 @@ class SettingsSetSex extends SettingsEvent {
   List<Object?> get props => [sex];
 }
 
-class SettingsAddFirstLetter extends SettingsEvent {
-  final String firstLetter;
-  const SettingsAddFirstLetter(this.firstLetter);
-
+class SettingsSetFirstLetters extends SettingsEvent {
+  final HashSet<String> firstLetters;
+  const SettingsSetFirstLetters(this.firstLetters);
   @override
-  List<Object?> get props => [firstLetter];
+  List<Object?> get props => [firstLetters];
 }
 
-class SettingsRemoveFirstLetter extends SettingsEvent {
-  final String firstLetter;
-  const SettingsRemoveFirstLetter(this.firstLetter);
-
+class SettingsSetTheme extends SettingsEvent {
+  final ThemeType? theme;
+  const SettingsSetTheme(this.theme);
   @override
-  List<Object?> get props => [firstLetter];
+  List<Object?> get props => [theme];
 }
