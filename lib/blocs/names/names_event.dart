@@ -44,3 +44,5 @@ class NamesLikedRank extends NamesEvent {
   @override
   List<Object> get props => [this.oldRank, this.newRank];
 }
+
+class NamesFactoryReset extends NamesEvent {}

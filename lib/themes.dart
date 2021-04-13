@@ -29,9 +29,9 @@ final ThemeData lightTheme = ThemeData(
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   primarySwatch: Colors.amber,
-  primaryColor: Colors.amber[900],
+  primaryColor: Colors.amber[400],
   primaryColorBrightness: Brightness.dark,
-  accentColor: Colors.amber[600],
+  accentColor: Colors.amber[400],
   accentColorBrightness: Brightness.dark,
   fontFamily: 'PublicSans',
   scaffoldBackgroundColor: Colors.grey[800],
@@ -43,9 +43,9 @@ final ThemeData darkTheme = ThemeData(
 final ThemeData blackTheme = ThemeData(
   brightness: Brightness.dark,
   primarySwatch: Colors.amber,
-  primaryColor: Colors.amber[900],
+  primaryColor: Colors.amber[400],
   primaryColorBrightness: Brightness.dark,
-  accentColor: Colors.amber[600],
+  accentColor: Colors.amber[400],
   accentColorBrightness: Brightness.dark,
   fontFamily: 'PublicSans',
   scaffoldBackgroundColor: Colors.black,

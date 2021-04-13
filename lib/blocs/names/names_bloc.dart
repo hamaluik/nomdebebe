@@ -25,7 +25,6 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
     NamesBloc bloc = NamesBloc._(namesRepository, settings);
     bloc.settingsSubscription =
         bloc.settings.stream.listen((SettingsState settings) {
-      print("settings stream updated in namesbloc");
       bloc.add(NamesLoad());
     });
     return bloc;
@@ -77,6 +76,9 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
       List<Name> newLikedNames =
           namesRepository.getRankedLikedNames(filters: settings.state.filters);
       yield state.copyWith(likedNames: newLikedNames);
+    } else if (event is NamesFactoryReset) {
+      namesRepository.factoryReset();
+      yield _updateAll();
     }
   }
 }

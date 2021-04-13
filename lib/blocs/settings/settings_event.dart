@@ -33,3 +33,5 @@ class SettingsSetTheme extends SettingsEvent {
   @override
   List<Object?> get props => [theme];
 }
+
+class SettingsFactoryReset extends SettingsEvent {}

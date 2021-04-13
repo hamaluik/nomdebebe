@@ -36,6 +36,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         state.firstLetters,
         event.theme,
       );
+    } else if (event is SettingsFactoryReset) {
+      settingsRepository.factoryReset();
+      yield state;
+      this.add(SettingsLoad());
     }
   }
 }

@@ -64,4 +64,8 @@ class NamesRepository {
     ids.insert(newRank, id);
     _namesProvider.rankLikedNames(ids);
   }
+
+  void factoryReset() {
+    _namesProvider.factoryReset();
+  }
 }

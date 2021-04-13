@@ -51,6 +51,18 @@ class NamesProvider {
     _db.execute("PRAGMA foreign_keys = ON");
   }
 
+  void factoryReset() {
+    _db.execute("begin transaction");
+    try {
+      _db.execute("delete from name_ranks");
+      _db.execute("update names set like = null");
+    } catch (e) {
+      _db.execute("rollback transaction");
+      throw e;
+    }
+    _db.execute("commit transaction");
+  }
+
   String _formatFilterQuery(List<Filter> filters) {
     if (filters.isEmpty) return "";
     return "WHERE " + filters.map((f) => f.query).join(" AND ");

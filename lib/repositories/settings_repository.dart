@@ -12,6 +12,12 @@ class SettingsRepository {
     return SettingsRepository._(prefs);
   }
 
+  void factoryReset() {
+    _prefs.remove("sex");
+    _prefs.remove("firstLetters");
+    _prefs.remove("theme");
+  }
+
   Sex? get sex {
     if (!_prefs.containsKey("sex")) return null;
     String? s = _prefs.getString("sex");

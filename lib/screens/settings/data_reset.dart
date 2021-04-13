@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:namekit/blocs/settings/settings.dart';
 import 'package:namekit/keys.dart';
+import 'package:namekit/blocs/names/names.dart';
 
 class DataReset extends StatelessWidget {
   @override
@@ -14,7 +15,29 @@ class DataReset extends StatelessWidget {
           title: Text("Reset"),
           trailing: Icon(FontAwesomeIcons.chevronRight),
           leading: Icon(FontAwesomeIcons.undoAlt),
-          onTap: () async {});
+          onTap: () async {
+            bool? doit = await showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                        title: Text('Reset all data?'),
+                        content: const Text(
+                            'This will reset all your names and settings to as if you\'d never used the app.'),
+                        actions: [
+                          TextButton(
+                            child: const Text('CANCEL'),
+                            onPressed: () => Navigator.of(context).pop(false),
+                          ),
+                          TextButton(
+                            child: const Text('RESET'),
+                            onPressed: () => Navigator.of(context).pop(true),
+                          ),
+                        ]));
+            if (doit == true) {
+              BlocProvider.of<SettingsBloc>(context)
+                  .add(SettingsFactoryReset());
+              BlocProvider.of<NamesBloc>(context).add(NamesFactoryReset());
+            }
+          });
     });
   }
 }
