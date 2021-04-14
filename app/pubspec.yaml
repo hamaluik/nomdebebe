@@ -33,6 +33,7 @@ dependencies:
   share: ^2.0.1
   reorderables: ^0.4.1
   flutter_svg: ^0.21.0+1
+  http: ^0.13.1
 dev_dependencies:
   #flutter_launcher_icons: "^0.8.0"
   test:
