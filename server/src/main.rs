@@ -99,10 +99,39 @@ async fn set_names_for_id(
     Ok(HttpResponse::Ok().finish())
 }
 
+fn set_up_logging() {
+    use fern::colors::{Color, ColoredLevelConfig};
+
+    let colors_line = ColoredLevelConfig::new()
+        .error(Color::Red)
+        .warn(Color::Yellow)
+        .info(Color::White)
+        .debug(Color::White)
+        .trace(Color::BrightBlack);
+
+    let colors_level = colors_line.clone().info(Color::Green);
+    fern::Dispatch::new()
+        .format(move |out, message, record| {
+            out.finish(format_args!(
+                "{color_line}[{date}][{target}][{level}{color_line}] {message}\x1B[0m",
+                color_line = format_args!(
+                    "\x1B[{}m",
+                    colors_line.get_color(&record.level()).to_fg_str()
+                ),
+                date = chrono::Local::now().to_rfc3339(),
+                target = record.target(),
+                level = colors_level.color(record.level()),
+                message = message,
+            ));
+        })
+        .level(log::LevelFilter::Info)
+        .chain(std::io::stdout())
+        .apply()
+        .unwrap();
+}
 #[actix_web::main]
 async fn main() -> Result<()> {
-    std::env::set_var("RUST_LOG", "actix_web=info");
-    env_logger::init();
+    set_up_logging();
     dotenv::dotenv().ok();
 
     // collect the address we want to bind to, falling back to port 8080 on localhost
@@ -122,13 +151,17 @@ async fn main() -> Result<()> {
         )
     })?;
 
+    // get the database path from env
+    let db_path = std::env::var("DBPATH").unwrap_or_else(|_| "nomdebebe.db".to_owned());
+
     // initialize the database
-    let pool = db::initialize()?;
+    let pool = db::initialize(&db_path)?;
 
     log::info!("Launching server with config:");
     log::info!("ADDR = {}", addr);
     log::info!("SALT = {}", salt);
     log::info!("PADDING = {}", padding);
+    log::info!("DBPATH = {}", db_path);
 
     // stick this in a global singleton as it doesn't change and actix
     // needs to access it from every responder thread

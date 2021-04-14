@@ -1,11 +1,12 @@
 use anyhow::{anyhow, Result};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rusqlite::params;
+use std::path::Path;
 
 pub type Pool = r2d2::Pool<r2d2_sqlite::SqliteConnectionManager>;
 
-pub fn initialize() -> Result<Pool> {
-    let manager = r2d2_sqlite::SqliteConnectionManager::file("nomdebebe.db");
+pub fn initialize<P: AsRef<Path>>(path: P) -> Result<Pool> {
+    let manager = r2d2_sqlite::SqliteConnectionManager::file(path);
     let pool = Pool::new(manager).map_err(|e| anyhow!("Failed to open database pool: {:?}", e))?;
 
     pool.get()?.execute(
