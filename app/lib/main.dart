@@ -5,11 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/blocs/sharing/sharing.dart';
 import 'package:nomdebebe/providers/names_provider.dart';
 import 'package:nomdebebe/repositories/names_repository.dart';
 import 'package:nomdebebe/repositories/settings_repository.dart';
+import 'package:nomdebebe/repositories/shared_repository.dart';
 import 'package:nomdebebe/screens/undecided_screen.dart';
 import 'package:nomdebebe/screens/liked_screen.dart';
+import 'package:nomdebebe/screens/sharing_screen.dart';
 import 'package:nomdebebe/screens/settings_screen.dart';
 import 'package:nomdebebe/blocs/debug_logger.dart';
 import 'themes.dart';
@@ -20,6 +23,8 @@ void main() async {
   Bloc.observer = DebugLogger();
   NamesRepository names = NamesRepository(await NamesProvider.load());
   SettingsRepository settings = await SettingsRepository.load();
+  SharedRepository shared = await SharedRepository.load();
+
   runApp(MultiBlocProvider(providers: [
     BlocProvider<SettingsBloc>(
         create: (BuildContext _) =>
@@ -28,6 +33,9 @@ void main() async {
         create: (BuildContext c) =>
             NamesBloc.load(names, BlocProvider.of<SettingsBloc>(c))
               ..add(NamesLoad())),
+    BlocProvider<SharingBloc>(
+        create: (BuildContext c) =>
+            SharingBloc(shared)..add(SharingEventRefresh())),
   ], child: NamesApp()));
 }
 
@@ -93,7 +101,7 @@ class _ScreenContainerState extends State<ScreenContainer>
                 builder = (BuildContext _) => LikedScreen();
                 break;
               case 'sharing':
-                builder = (BuildContext _) => Container();
+                builder = (BuildContext _) => SharingScreen();
                 break;
               case 'settings':
                 builder = (BuildContext _) => SettingsScreen();

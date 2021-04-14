@@ -3,39 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
-import 'package:nomdebebe/models/filter.dart';
-import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/widgets/name_tile.dart';
-import 'package:nomdebebe/repositories/names_repository.dart';
 import 'package:reorderables/reorderables.dart';
-
-//class LikedScreen extends StatelessWidget {
-//@override
-//Widget build(BuildContext context) {
-//return BlocBuilder<SettingsBloc, SettingsState>(
-//builder: (BuildContext context, SettingsState settingsState) {
-//return BlocBuilder<NamesBloc, NamesState>(
-//builder: (BuildContext context, NamesState namesState) {
-//NamesRepository namesRepository =
-//BlocProvider.of<NamesBloc>(context).namesRepository;
-//return Column(children: <Widget>[
-//Expanded(
-//child: ListView.builder(
-//itemCount: namesState.likedNamesCount,
-//itemBuilder: (BuildContext context, int i) {
-//List<Name> names = namesRepository.getNames(
-//filters: settingsState.filters + [LikeFilter.liked],
-//skip: i,
-//count: 1);
-//if (names.length < 1) return Container();
-//return NameTile(names.first);
-//},
-//)),
-//]);
-//});
-//});
-//}
-//}
 
 class LikedScreen extends StatefulWidget {
   @override
