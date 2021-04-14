@@ -17,5 +17,6 @@ class Keys {
   static final Key settingsThemeLight = const Key("__settings_theme_light");
   static final Key settingsThemeDark = const Key("__settings_theme_dark");
   static final Key settingsThemeBlack = const Key("__settings_theme_black");
+  static final Key settingsPinkAndBlue = const Key("__settings_pink_and_blue");
   static final Key settingsAbout = const Key("__settings_about");
 }

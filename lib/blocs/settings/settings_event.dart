@@ -35,3 +35,10 @@ class SettingsSetTheme extends SettingsEvent {
 }
 
 class SettingsFactoryReset extends SettingsEvent {}
+
+class SettingsSetPinkAndBlue extends SettingsEvent {
+  final bool pinkAndBlue;
+  const SettingsSetPinkAndBlue(this.pinkAndBlue);
+  @override
+  List<Object?> get props => [pinkAndBlue];
+}

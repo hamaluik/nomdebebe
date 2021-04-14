@@ -77,4 +77,14 @@ class SettingsRepository {
         break;
     }
   }
+
+  bool get pinkAndBlue {
+    if (!_prefs.containsKey("pinkAndBlue")) return true;
+    bool? pAB = _prefs.getBool("pinkAndBlue");
+    return pAB ?? true;
+  }
+
+  set pinkAndBlue(bool pinkAndBlue) {
+    _prefs.setBool("pinkAndBlue", pinkAndBlue);
+  }
 }

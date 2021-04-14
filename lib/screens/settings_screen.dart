@@ -8,6 +8,7 @@ import 'package:namekit/screens/settings/disliked_names.dart';
 import 'package:namekit/screens/settings/data_export.dart';
 import 'package:namekit/screens/settings/data_reset.dart';
 import 'package:namekit/screens/settings/theme_options.dart';
+import 'package:namekit/screens/settings/pink_and_blue.dart';
 import 'package:namekit/screens/settings/about.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -41,6 +42,7 @@ class SettingsScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Divider(height: 0, thickness: 1)),
         ThemeOptions(),
+        PinkAndBlue(),
         About(),
       ]);
     });

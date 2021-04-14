@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:namekit/models/name.dart';
 import 'package:namekit/blocs/names/names.dart';
+import 'package:namekit/blocs/settings/settings.dart';
 import 'package:namekit/models/sex.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,23 +36,27 @@ class NameCard extends StatelessWidget {
               color: Colors.transparent,
               elevation:
                   Theme.of(context).brightness == Brightness.dark ? 0 : null,
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: sexToColour(context, name.sex),
-                      borderRadius: BorderRadius.circular(8.0)),
-                  child: Column(
-                    children: <Widget>[
-                      AspectRatio(
-                          aspectRatio: 1,
-                          child: Container(
-                              child: Center(
-                                  child: Text(name.name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline3!
-                                          .copyWith(color: Colors.white)))))
-                    ],
-                  ))));
+              child: BlocBuilder<SettingsBloc, SettingsState>(
+                  builder: (BuildContext context, SettingsState state) =>
+                      Container(
+                          decoration: BoxDecoration(
+                              color: sexToColour(
+                                  context, name.sex, state.pinkAndBlue),
+                              borderRadius: BorderRadius.circular(8.0)),
+                          child: Column(
+                            children: <Widget>[
+                              AspectRatio(
+                                  aspectRatio: 1,
+                                  child: Container(
+                                      child: Center(
+                                          child: Text(name.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline3!
+                                                  .copyWith(
+                                                      color: Colors.white)))))
+                            ],
+                          )))));
     });
   }
 }

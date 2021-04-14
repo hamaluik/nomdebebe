@@ -30,15 +30,9 @@ dependencies:
   equatable: ^2.0.0
   path: ^1.8.0
   path_provider: ^2.0.1
-  csv: ^5.0.0
   share: ^2.0.1
   reorderables: ^0.4.1
   flutter_svg: ^0.21.0+1
-  #flutter_slidable: ^0.5.7
-  #flutter_slidable:
-    #git:
-      #url: https://github.com/diegotori/flutter_slidable.git
-      #ref: null_safety
 dev_dependencies:
   #flutter_launcher_icons: "^0.8.0"
   test:

@@ -9,6 +9,7 @@ class SettingsState extends Equatable {
   final HashSet<String> firstLetters;
   final List<Filter> filters;
   final ThemeType? theme;
+  final bool pinkAndBlue;
 
   static List<Filter> _buildFilters(Sex? sex, HashSet<String> letters) {
     List<Filter> filters = [];
@@ -24,15 +25,17 @@ class SettingsState extends Equatable {
     return filters;
   }
 
-  SettingsState(this.sexPreference, this.firstLetters, this.theme)
+  SettingsState(
+      this.sexPreference, this.firstLetters, this.theme, this.pinkAndBlue)
       : filters = _buildFilters(sexPreference, firstLetters);
 
   SettingsState.initial()
       : sexPreference = null,
         firstLetters = HashSet(),
         filters = List.empty(),
-        theme = null;
+        theme = null,
+        pinkAndBlue = true;
 
   @override
-  List<Object?> get props => [sexPreference, firstLetters, theme];
+  List<Object?> get props => [sexPreference, firstLetters, theme, pinkAndBlue];
 }
