@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'package:equatable/equatable.dart';
-import 'package:namekit/models/sex.dart';
-import 'package:namekit/themes.dart';
+import 'package:nomdebebe/models/sex.dart';
+import 'package:nomdebebe/themes.dart';
 
 abstract class SettingsEvent extends Equatable {
   const SettingsEvent();

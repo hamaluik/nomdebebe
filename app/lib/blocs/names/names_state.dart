@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:namekit/models/name.dart';
-import 'package:namekit/models/nullable.dart';
+import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/models/nullable.dart';
 
 class NamesState extends Equatable {
   final Name? nextUndecidedName;

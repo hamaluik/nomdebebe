@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:namekit/blocs/settings/settings.dart';
-import 'package:namekit/keys.dart';
-import 'package:namekit/blocs/names/names.dart';
+import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/keys.dart';
+import 'package:nomdebebe/blocs/names/names.dart';
 
 class DataReset extends StatelessWidget {
   @override

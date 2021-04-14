@@ -1,11 +1,11 @@
 import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
-import 'package:namekit/blocs/settings/settings_event.dart';
-import 'package:namekit/blocs/settings/settings_state.dart';
-import 'package:namekit/models/sex.dart';
-import 'package:namekit/repositories/settings_repository.dart';
-import 'package:namekit/themes.dart';
+import 'package:nomdebebe/blocs/settings/settings_event.dart';
+import 'package:nomdebebe/blocs/settings/settings_state.dart';
+import 'package:nomdebebe/models/sex.dart';
+import 'package:nomdebebe/repositories/settings_repository.dart';
+import 'package:nomdebebe/themes.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final SettingsRepository settingsRepository;

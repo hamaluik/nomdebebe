@@ -1,5 +1,5 @@
-name: namekit
-description: Let's pick a name
+name: nomdebebe
+description: A simple, private tool to help pick a baby name.
 publish_to: 'none'
 
 # The following defines the version and build number for your application.
@@ -50,7 +50,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/fonts/LICENSE-PublicSans.md
-    - assets/namekit.db
+    - assets/nomdebebe.db
     - README.md
     - assets/icon.svg
   fonts:

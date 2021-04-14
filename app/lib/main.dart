@@ -3,15 +3,15 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:namekit/blocs/names/names.dart';
-import 'package:namekit/blocs/settings/settings.dart';
-import 'package:namekit/providers/names_provider.dart';
-import 'package:namekit/repositories/names_repository.dart';
-import 'package:namekit/repositories/settings_repository.dart';
-import 'package:namekit/screens/undecided_screen.dart';
-import 'package:namekit/screens/liked_screen.dart';
-import 'package:namekit/screens/settings_screen.dart';
-import 'package:namekit/blocs/debug_logger.dart';
+import 'package:nomdebebe/blocs/names/names.dart';
+import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/providers/names_provider.dart';
+import 'package:nomdebebe/repositories/names_repository.dart';
+import 'package:nomdebebe/repositories/settings_repository.dart';
+import 'package:nomdebebe/screens/undecided_screen.dart';
+import 'package:nomdebebe/screens/liked_screen.dart';
+import 'package:nomdebebe/screens/settings_screen.dart';
+import 'package:nomdebebe/blocs/debug_logger.dart';
 import 'themes.dart';
 
 void main() async {
@@ -58,7 +58,7 @@ class NamesAppState extends State<NamesApp> with WidgetsBindingObserver {
     return BlocBuilder<SettingsBloc, SettingsState>(
         builder: (BuildContext context, SettingsState settings) {
       return MaterialApp(
-        title: "Namekit",
+        title: "Nom de Bébé",
         theme: themeForType(settings.theme) ??
             (brightness == Brightness.dark ? darkTheme : lightTheme),
         home: ScreenContainer(),

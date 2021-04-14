@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'package:namekit/models/name.dart';
-import 'package:namekit/models/sex.dart';
+import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/models/sex.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
-import 'package:namekit/models/filter.dart';
+import 'package:nomdebebe/models/filter.dart';
 
 class NamesProvider {
   final Database _db;
@@ -13,9 +13,9 @@ class NamesProvider {
 
   static Future<NamesProvider> load({bool? isTest}) async {
     Directory documents = await getApplicationDocumentsDirectory();
-    String path = p.join(documents.path, "namekit.db");
+    String path = p.join(documents.path, "nomdebebe.db");
     if (await FileSystemEntity.type(path) == FileSystemEntityType.notFound) {
-      ByteData data = await rootBundle.load(p.join("assets", "namekit.db"));
+      ByteData data = await rootBundle.load(p.join("assets", "nomdebebe.db"));
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await new File(path).writeAsBytes(bytes);

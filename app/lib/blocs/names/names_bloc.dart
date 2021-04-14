@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:namekit/models/nullable.dart';
+import 'package:nomdebebe/models/nullable.dart';
 import 'package:bloc/bloc.dart';
-import 'package:namekit/blocs/names/names_event.dart';
-import 'package:namekit/blocs/names/names_state.dart';
-import 'package:namekit/blocs/settings/settings_bloc.dart';
-import 'package:namekit/blocs/settings/settings_state.dart';
-import 'package:namekit/models/name.dart';
-import 'package:namekit/repositories/names_repository.dart';
+import 'package:nomdebebe/blocs/names/names_event.dart';
+import 'package:nomdebebe/blocs/names/names_state.dart';
+import 'package:nomdebebe/blocs/settings/settings_bloc.dart';
+import 'package:nomdebebe/blocs/settings/settings_state.dart';
+import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/repositories/names_repository.dart';
 
 class NamesBloc extends Bloc<NamesEvent, NamesState> {
   final NamesRepository namesRepository;

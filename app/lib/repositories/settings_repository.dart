@@ -1,5 +1,5 @@
-import 'package:namekit/models/sex.dart';
-import 'package:namekit/themes.dart';
+import 'package:nomdebebe/models/sex.dart';
+import 'package:nomdebebe/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsRepository {

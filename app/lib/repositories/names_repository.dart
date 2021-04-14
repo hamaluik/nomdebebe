@@ -1,6 +1,6 @@
-import 'package:namekit/models/filter.dart';
-import 'package:namekit/models/name.dart';
-import 'package:namekit/providers/names_provider.dart';
+import 'package:nomdebebe/models/filter.dart';
+import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/providers/names_provider.dart';
 
 class NamesRepository {
   final NamesProvider _namesProvider;

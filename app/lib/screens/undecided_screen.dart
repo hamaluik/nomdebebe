@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:namekit/blocs/names/names.dart';
-import 'package:namekit/widgets/name_card.dart';
+import 'package:nomdebebe/blocs/names/names.dart';
+import 'package:nomdebebe/widgets/name_card.dart';
 
 class UndecidedScreen extends StatelessWidget {
   @override

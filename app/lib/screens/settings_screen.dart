@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:namekit/blocs/settings/settings.dart';
-import 'package:namekit/screens/settings/sex_options.dart';
-import 'package:namekit/screens/settings/first_letters.dart';
-import 'package:namekit/screens/settings/disliked_names.dart';
-import 'package:namekit/screens/settings/data_export.dart';
-import 'package:namekit/screens/settings/data_reset.dart';
-import 'package:namekit/screens/settings/theme_options.dart';
-import 'package:namekit/screens/settings/pink_and_blue.dart';
-import 'package:namekit/screens/settings/about.dart';
+import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/screens/settings/sex_options.dart';
+import 'package:nomdebebe/screens/settings/first_letters.dart';
+import 'package:nomdebebe/screens/settings/disliked_names.dart';
+import 'package:nomdebebe/screens/settings/data_export.dart';
+import 'package:nomdebebe/screens/settings/data_reset.dart';
+import 'package:nomdebebe/screens/settings/theme_options.dart';
+import 'package:nomdebebe/screens/settings/pink_and_blue.dart';
+import 'package:nomdebebe/screens/settings/about.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override

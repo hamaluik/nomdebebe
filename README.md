@@ -1,14 +1,14 @@
 <h1 align="center">
-  Namekit
+  Nom de Bébé
   <br>
-  <a href="https://namekit.app"><img alt="icon" width="128" height="128" src="icon.svg"></a>
+  <a href="https://nomdebebe.app"><img alt="icon" width="128" height="128" src="icon.svg"></a>
 </h1>
 <div align="center">
   A simple, <b>private</b> tool to help pick a baby name.
 </div>
 <br />
 <div align="center">
-  <img alt="GitHub" src="https://img.shields.io/github/license/hamaluik/namekit?style=flat-square">
+  <img alt="GitHub" src="https://img.shields.io/github/license/hamaluik/nomdebebe?style=flat-square">
 </div>
 
 ## Motivation

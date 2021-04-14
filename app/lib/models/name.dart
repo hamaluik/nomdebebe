@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:namekit/models/sex.dart';
+import 'package:nomdebebe/models/sex.dart';
 
 class Name extends Equatable {
   final int id;

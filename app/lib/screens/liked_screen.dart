@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:namekit/blocs/names/names.dart';
-import 'package:namekit/blocs/settings/settings.dart';
-import 'package:namekit/models/filter.dart';
-import 'package:namekit/models/name.dart';
-import 'package:namekit/widgets/name_tile.dart';
-import 'package:namekit/repositories/names_repository.dart';
+import 'package:nomdebebe/blocs/names/names.dart';
+import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/models/filter.dart';
+import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/widgets/name_tile.dart';
+import 'package:nomdebebe/repositories/names_repository.dart';
 import 'package:reorderables/reorderables.dart';
 
 //class LikedScreen extends StatelessWidget {

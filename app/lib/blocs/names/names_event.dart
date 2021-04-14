@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:namekit/models/name.dart';
+import 'package:nomdebebe/models/name.dart';
 
 abstract class NamesEvent extends Equatable {
   const NamesEvent();

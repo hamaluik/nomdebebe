@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:namekit/models/name.dart';
-import 'package:namekit/blocs/names/names.dart';
-import 'package:namekit/blocs/settings/settings.dart';
-import 'package:namekit/models/sex.dart';
+import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/blocs/names/names.dart';
+import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/models/sex.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NameCard extends StatelessWidget {
