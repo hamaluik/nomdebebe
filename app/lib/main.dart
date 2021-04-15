@@ -123,6 +123,15 @@ class _ScreenContainerState extends State<ScreenContainer>
               _navigatorKey.currentState?.pushNamed('liked');
               break;
             case 2:
+              // upload our liked names whenever we navigate to that screen
+              SharingBloc bloc = BlocProvider.of<SharingBloc>(context);
+              bloc.add(SharingEventUpdateLikedNames(
+                  BlocProvider.of<NamesBloc>(context)
+                      .state
+                      .likedNames
+                      .map((n) => n.name)
+                      .toList()));
+
               _navigatorKey.currentState?.pushNamed('sharing');
               break;
             case 3:

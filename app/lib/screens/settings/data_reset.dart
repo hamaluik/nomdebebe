@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/blocs/sharing/sharing.dart';
 import 'package:nomdebebe/keys.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 
@@ -36,6 +37,8 @@ class DataReset extends StatelessWidget {
               BlocProvider.of<SettingsBloc>(context)
                   .add(SettingsFactoryReset());
               BlocProvider.of<NamesBloc>(context).add(NamesFactoryReset());
+              BlocProvider.of<SharingBloc>(context)
+                  .add(SharingEventUpdateLikedNames(List.empty()));
             }
           });
     });

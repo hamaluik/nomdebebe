@@ -31,9 +31,10 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.0.1
   share: ^2.0.1
-  reorderables: ^0.4.1
   flutter_svg: ^0.21.0+1
   http: ^0.13.1
+  auto_size_text_field:
+    git: https://github.com/lzhuor/auto_size_text_field.git
 dev_dependencies:
   #flutter_launcher_icons: "^0.8.0"
   test:
