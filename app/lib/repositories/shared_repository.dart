@@ -1,3 +1,5 @@
+import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/models/sex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -68,12 +70,19 @@ class SharedRepository {
     }
   }
 
-  Future<void> setLikedNames(List<String> names) async {
+  Future<void> setLikedNames(List<Name> names) async {
     String? id = await myID;
     if (id == null) throw "Failed to obtain my ID!";
     String secret = _prefs.getString("mySecret")!;
 
-    String body = jsonEncode(names);
+    // encode the sex by prepending ! or @ based on sex, instead of building maps for each name.
+    // this is mostly because I'm being lazy right now, but I could also argue it simplifies the
+    // server AND saves bandwidth, for barely any work on the client side.
+    List<String> encodedNames = names
+        .map((Name n) => (n.sex == Sex.male ? "!" : "@") + n.name)
+        .toList();
+
+    String body = jsonEncode(encodedNames);
     Uri uri = Uri.parse(rootURI +
         "/names/" +
         Uri.encodeComponent(id) +
@@ -88,7 +97,7 @@ class SharedRepository {
     }
   }
 
-  Future<List<String>?> getParterNames(String partnerID) async {
+  Future<List<Name>?> getParterNames(String partnerID) async {
     Uri uri = Uri.parse(rootURI + "/names/" + Uri.encodeComponent(partnerID));
     http.Response resp = await http.get(uri);
 
@@ -104,6 +113,13 @@ class SharedRepository {
     }
 
     List<String> names = body.cast<String>();
-    return names;
+    List<Name> decodedNames = names.map((String n) {
+      if (n.startsWith("!"))
+        return Name(0, n.substring(1), Sex.male, null);
+      else if (n.startsWith("@"))
+        return Name(0, n.substring(1), Sex.female, null);
+      return Name(0, n, Sex.female, null);
+    }).toList();
+    return decodedNames;
   }
 }

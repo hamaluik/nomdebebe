@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:nomdebebe/blocs/sharing/sharing_events.dart';
 import 'package:nomdebebe/blocs/sharing/sharing_state.dart';
+import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/repositories/shared_repository.dart';
 import 'package:nomdebebe/models/nullable.dart';
 
@@ -14,7 +15,7 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
     if (event is SharingEventRefresh) {
       String? id = await sharedRepository.myID;
       String? partnerID = sharedRepository.partnerID;
-      List<String>? partnerNames = partnerID == null
+      List<Name>? partnerNames = partnerID == null
           ? List.empty()
           : await sharedRepository.getParterNames(partnerID);
       String? error = id == null || partnerNames == null
@@ -28,11 +29,12 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
       yield SharingState(id, partnerID, partnerNames ?? List.empty(), error);
     } else if (event is SharingEventSetPartnerID) {
       sharedRepository.partnerID = event.partnerID;
-      List<String>? partnerNames = sharedRepository.partnerID == null
+      List<Name>? partnerNames = sharedRepository.partnerID == null
           ? List.empty()
           : await sharedRepository.getParterNames(sharedRepository.partnerID!);
       String? error =
           partnerNames == null ? "Failed to contact sharing server" : null;
+      add(SharingEventRefresh());
       yield state.copyWith(
           partnerID: Nullable(event.partnerID),
           partnerNames: partnerNames,

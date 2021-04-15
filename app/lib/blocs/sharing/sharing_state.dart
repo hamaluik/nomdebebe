@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/models/nullable.dart';
 
 class SharingState extends Equatable {
   final String? myID;
   final String? partnerID;
-  final List<String> partnerNames;
+  final List<Name> partnerNames;
   final String? error;
 
   const SharingState(this.myID, this.partnerID, this.partnerNames, this.error)
@@ -19,7 +20,7 @@ class SharingState extends Equatable {
   SharingState copyWith(
           {Nullable<String?>? myID,
           Nullable<String?>? partnerID,
-          List<String>? partnerNames,
+          List<Name>? partnerNames,
           Nullable<String?>? error}) =>
       SharingState(
           myID == null ? this.myID : myID.value,

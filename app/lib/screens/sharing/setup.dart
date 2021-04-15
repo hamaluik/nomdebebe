@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/sharing/sharing.dart';
 import 'package:share/share.dart';
 import 'package:auto_size_text_field/auto_size_text_field.dart';

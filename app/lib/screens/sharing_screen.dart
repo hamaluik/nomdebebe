@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
 import 'package:nomdebebe/blocs/sharing/sharing.dart';
-import 'package:nomdebebe/models/sex.dart';
 import 'package:nomdebebe/screens/sharing/setup.dart';
 import 'package:nomdebebe/widgets/name_tile.dart';
 import 'package:nomdebebe/models/name.dart';
@@ -31,18 +30,38 @@ class SharingScreen extends StatelessWidget {
             return SetupScreen();
           }
 
+          List<Widget> matched = _matchedNames(namesState, sharingState);
+
           return DefaultTabController(
             length: 3,
             child: Column(children: <Widget>[
               Expanded(
                   child: TabBarView(
                 children: [
-                  ListView(children: _matchedNames(namesState, sharingState)),
-                  ListView.builder(
-                      itemCount: sharingState.partnerNames.length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          NameTile(Name(0, sharingState.partnerNames[index],
-                              Sex.male, null))),
+                  matched.isEmpty
+                      ? Center(
+                          child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Text(
+                                  "You don't have any matches with your partner yet!",
+                                  style: Theme.of(context).textTheme.headline4,
+                                  textAlign: TextAlign.center)))
+                      : RefreshIndicator(
+                          onRefresh: () async =>
+                              BlocProvider.of<SharingBloc>(context)
+                                  .add(SharingEventRefresh()),
+                          child: ListView(
+                              children: _matchedNames(namesState, sharingState),
+                              physics: const AlwaysScrollableScrollPhysics())),
+                  RefreshIndicator(
+                      onRefresh: () async =>
+                          BlocProvider.of<SharingBloc>(context)
+                              .add(SharingEventRefresh()),
+                      child: ListView.builder(
+                          itemCount: sharingState.partnerNames.length,
+                          itemBuilder: (BuildContext context, int index) =>
+                              NameTile(sharingState.partnerNames[index]),
+                          physics: const AlwaysScrollableScrollPhysics())),
                   SetupScreen(),
                 ],
               )),
@@ -65,12 +84,14 @@ class SharingScreen extends StatelessWidget {
     List<MatchedName> matches = [];
     for (int i = 0; i < namesState.likedNames.length; i++) {
       for (int j = 0; j < sharingState.partnerNames.length; j++) {
-        if (namesState.likedNames[i].name == sharingState.partnerNames[j]) {
+        if (namesState.likedNames[i].name ==
+            sharingState.partnerNames[j].name) {
           matches.add(MatchedName(namesState.likedNames[i], i, j));
           break;
         }
       }
     }
+
     matches.sort((MatchedName a, MatchedName b) => a.order.compareTo(b.order));
     return matches
         .map((m) =>

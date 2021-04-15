@@ -124,13 +124,10 @@ class _ScreenContainerState extends State<ScreenContainer>
               break;
             case 2:
               // upload our liked names whenever we navigate to that screen
+              // TODO: when else to upload without wasting bandwidth?
               SharingBloc bloc = BlocProvider.of<SharingBloc>(context);
               bloc.add(SharingEventUpdateLikedNames(
-                  BlocProvider.of<NamesBloc>(context)
-                      .state
-                      .likedNames
-                      .map((n) => n.name)
-                      .toList()));
+                  BlocProvider.of<NamesBloc>(context).state.likedNames));
 
               _navigatorKey.currentState?.pushNamed('sharing');
               break;

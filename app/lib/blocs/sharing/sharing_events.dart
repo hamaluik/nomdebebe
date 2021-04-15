@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:nomdebebe/models/name.dart';
 
 abstract class SharingEvent extends Equatable {
   const SharingEvent();
@@ -17,7 +18,7 @@ class SharingEventSetPartnerID extends SharingEvent {
 }
 
 class SharingEventUpdateLikedNames extends SharingEvent {
-  final List<String> names;
+  final List<Name> names;
   const SharingEventUpdateLikedNames(this.names);
   @override
   List<Object?> get props => [names];
