@@ -12,7 +12,7 @@ publish_to: 'none'
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+3
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -33,8 +33,8 @@ dependencies:
   share: ^2.0.1
   flutter_svg: ^0.21.0+1
   http: ^0.13.1
-  auto_size_text_field:
-    git: https://github.com/lzhuor/auto_size_text_field.git
+  #auto_size_text_field:
+    #git: https://github.com/lzhuor/auto_size_text_field.git
 dev_dependencies:
   #flutter_launcher_icons: "^0.8.0"
   test:
@@ -45,8 +45,8 @@ flutter_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icon.png"
-  adaptive_icon_background: "#FFB300"
-  adaptive_icon_foreground: "assets/foreground.png"
+  adaptive_icon_background: "#FFCA28"
+  adaptive_icon_foreground: "assets/icon.png"
 
 flutter:
   uses-material-design: true
