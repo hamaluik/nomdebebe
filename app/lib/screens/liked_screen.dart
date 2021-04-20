@@ -33,43 +33,17 @@ class _LikeScreenState extends State<LikedScreen> {
                   .padding
                   .top), // TODO: something more natural?
           Expanded(
-              child: ReorderableListView.builder(
-                  itemBuilder: (BuildContext context, int index) => NameTile(
+            child: ReorderableListView.builder(
+                itemBuilder: (BuildContext context, int index) => NameTile(
                       namesState.likedNames[index],
                       key: Key("__liked_name_tile_" +
                           namesState.likedNames[index].id.toString()),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            TextButton.icon(
-                                onPressed: () =>
-                                    BlocProvider.of<NamesBloc>(context).add(
-                                        NamesDislike(
-                                            namesState.likedNames[index])),
-                                icon: Icon(FontAwesomeIcons.solidThumbsDown,
-                                    color: Colors.white),
-                                label: Text("Dislike",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .button
-                                        ?.copyWith(color: Colors.white))),
-                            TextButton.icon(
-                                onPressed: () =>
-                                    BlocProvider.of<NamesBloc>(context).add(
-                                        NamesUndecide(
-                                            namesState.likedNames[index])),
-                                icon: Icon(FontAwesomeIcons.question,
-                                    color: Colors.white),
-                                label: Text("Un-decide",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .button
-                                        ?.copyWith(color: Colors.white))),
-                          ])),
-                  itemCount: namesState.likedNames.length,
-                  onReorder: (int oldIndex, int newIndex) =>
-                      BlocProvider.of<NamesBloc>(context)
-                          .add(NamesLikedRank(oldIndex, newIndex))))
+                    ),
+                itemCount: namesState.likedNames.length,
+                onReorder: (int oldIndex, int newIndex) =>
+                    BlocProvider.of<NamesBloc>(context)
+                        .add(NamesLikedRank(oldIndex, newIndex))),
+          )
         ]);
       });
     });
