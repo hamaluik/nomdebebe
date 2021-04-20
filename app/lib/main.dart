@@ -14,13 +14,13 @@ import 'package:nomdebebe/screens/undecided_screen.dart';
 import 'package:nomdebebe/screens/liked_screen.dart';
 import 'package:nomdebebe/screens/sharing_screen.dart';
 import 'package:nomdebebe/screens/settings_screen.dart';
-import 'package:nomdebebe/blocs/debug_logger.dart';
+//import 'package:nomdebebe/blocs/debug_logger.dart';
 import 'themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Bloc.observer = DebugLogger();
+  //Bloc.observer = DebugLogger();
   NamesRepository names = NamesRepository(await NamesProvider.load());
   SettingsRepository settings = await SettingsRepository.load();
   SharedRepository shared = await SharedRepository.load();

@@ -36,7 +36,8 @@ class _LikeScreenState extends State<LikedScreen> {
               child: ReorderableListView.builder(
                   itemBuilder: (BuildContext context, int index) => NameTile(
                       namesState.likedNames[index],
-                      key: Key(namesState.likedNames[index].id.toString()),
+                      key: Key("__liked_name_tile_" +
+                          namesState.likedNames[index].id.toString()),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [

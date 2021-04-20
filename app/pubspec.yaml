@@ -36,17 +36,11 @@ dependencies:
   #auto_size_text_field:
     #git: https://github.com/lzhuor/auto_size_text_field.git
 dev_dependencies:
+  flutter_native_splash: ^1.1.7+1
   #flutter_launcher_icons: "^0.8.0"
   test:
   flutter_test:
     sdk: flutter
-
-flutter_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/icon.png"
-  adaptive_icon_background: "#FFCA28"
-  adaptive_icon_foreground: "assets/icon.png"
 
 flutter:
   uses-material-design: true
@@ -65,3 +59,15 @@ flutter:
           style: italic
         - asset: assets/fonts/PublicSans-Bold.ttf
           weight: 700
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon.png"
+  adaptive_icon_background: "#FFCA28"
+  adaptive_icon_foreground: "assets/icon.png"
+
+flutter_native_splash:
+  color: "#FFCA28"
+  image: assets/splash.png
+  color_dark: "#000000"

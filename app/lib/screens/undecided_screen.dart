@@ -29,7 +29,9 @@ class UndecidedScreen extends StatelessWidget {
                 padding: EdgeInsets.all(32),
                 child: state.nextUndecidedName == null
                     ? Container()
-                    : NameCard(state.nextUndecidedName!))
+                    : NameCard(state.nextUndecidedName!,
+                        key: Key("__undecided_card_" +
+                            state.nextUndecidedName!.id.toString())))
           ]);
     });
   }
