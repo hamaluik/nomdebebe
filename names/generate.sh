@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# this isn't the fastest script, and there's probably better ways of doing this.
+# BUT, it works, and that's good enough for a one-time script
+
 # start by unpacking the entire names database
 # these are from the US Social Security Administration
 if [ ! -f "names.zip" ]; then
@@ -39,9 +42,9 @@ create table names(id integer not null primary key autoincrement, name text not 
 insert into names(name, sex) select distinct name, sex from names_raw;
 
 -- a table to hold how popular each name was in any given decade
-create table name_decades(name_id integer not null, count integer, decade integer, unique(name_id, decade), foreign key(name_id) references names(id));
+create table name_decades(name_id integer not null, count integer, decade integer, decade_rank integer, unique(name_id, decade), foreign key(name_id) references names(id));
 -- populate it with the raw data
-insert into name_decades(name_id, count, decade) select names.id as name_id, sum(names_raw.year_count) as count, names_raw.year/10 as decade from names left join names_raw on names.name=names_raw.name and names.sex=names_raw.sex group by names_raw.name, names_raw.sex, names_raw.year/10 order by count desc;
+insert into name_decades(name_id, count, decade, decade_rank) select names.id as name_id, sum(names_raw.year_count) as count, names_raw.year/10 as decade, rank() over(partition by names_raw.year/10 order by sum(names_raw.year_count) desc) decade_rank from names left join names_raw on names.name=names_raw.name and names.sex=names_raw.sex group by names_raw.name, names_raw.sex, names_raw.year/10 order by count desc;
 
 -- clean up what we no longer need
 drop table names_raw;
