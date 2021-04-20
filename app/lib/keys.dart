@@ -9,6 +9,7 @@ class Keys {
   static final Key settingsSexOptionsFemale =
       const Key("__settings_sex_options_female");
   static final Key settingsFirstLetters = const Key("__settings_first_letters");
+  static final Key settingsDecades = const Key("__settings_decades");
   static final Key settingsDisliked = const Key("__settings_disliked");
   static final Key settingsExport = const Key("__settings_export");
   static final Key settingsReset = const Key("__settings_reset");

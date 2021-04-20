@@ -58,3 +58,22 @@ class FirstLettersFilter extends Filter {
   List<Object> get args =>
       _letters.isEmpty ? List.empty() : _letters.map((l) => l + "%").toList();
 }
+
+/// This class is a bit delicate at the moment. Don't feed it malformed decade lists please.
+class DecadesFilter extends Filter {
+  final List<int> _decades;
+  final int? _maxRank;
+  const DecadesFilter(this._decades, this._maxRank);
+
+  @override
+  String get query => _decades.isEmpty
+      ? ""
+      : ("(" +
+          _decades.map((d) => "name_decades.decade=?").join(" OR ") +
+          ") AND decade_rank <= ?");
+
+  @override
+  List<Object> get args => _decades.isEmpty
+      ? List.empty()
+      : (_decades.cast<Object>() + <Object>[_maxRank ?? 1000000]);
+}

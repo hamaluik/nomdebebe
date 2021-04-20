@@ -19,11 +19,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       List<String> firstLetters = settingsRepository.firstLetters;
       ThemeType? theme = settingsRepository.theme;
       bool pinkAndBlue = settingsRepository.pinkAndBlue;
-      yield SettingsState(sex, HashSet.of(firstLetters), theme, pinkAndBlue);
+      List<int> decades = settingsRepository.decades;
+      int? maxRank = settingsRepository.maxRank;
+      yield SettingsState(sex, HashSet.of(firstLetters), theme, pinkAndBlue,
+          HashSet.of(decades), maxRank);
     } else if (event is SettingsSetSex) {
       settingsRepository.sex = event.sex;
-      yield SettingsState(
-          event.sex, state.firstLetters, state.theme, state.pinkAndBlue);
+      yield SettingsState(event.sex, state.firstLetters, state.theme,
+          state.pinkAndBlue, state.decades, state.maxRank);
     } else if (event is SettingsSetFirstLetters) {
       settingsRepository.firstLetters = event.firstLetters.toList();
       yield SettingsState(
@@ -31,11 +34,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         event.firstLetters,
         state.theme,
         state.pinkAndBlue,
+        state.decades,
+        state.maxRank,
       );
     } else if (event is SettingsSetTheme) {
       settingsRepository.theme = event.theme;
       yield SettingsState(state.sexPreference, state.firstLetters, event.theme,
-          state.pinkAndBlue);
+          state.pinkAndBlue, state.decades, state.maxRank);
     } else if (event is SettingsFactoryReset) {
       settingsRepository.factoryReset();
       yield state;
@@ -43,7 +48,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     } else if (event is SettingsSetPinkAndBlue) {
       settingsRepository.pinkAndBlue = event.pinkAndBlue;
       yield SettingsState(state.sexPreference, state.firstLetters, state.theme,
-          event.pinkAndBlue);
+          event.pinkAndBlue, state.decades, state.maxRank);
+    } else if (event is SettingsSetDecades) {
+      settingsRepository.decades = event.decades.toList();
+      yield SettingsState(state.sexPreference, state.firstLetters, state.theme,
+          state.pinkAndBlue, event.decades, event.maxRank);
     }
   }
 }

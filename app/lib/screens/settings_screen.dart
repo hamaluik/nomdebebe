@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
 import 'package:nomdebebe/screens/settings/sex_options.dart';
 import 'package:nomdebebe/screens/settings/first_letters.dart';
+import 'package:nomdebebe/screens/settings/decades.dart';
 import 'package:nomdebebe/screens/settings/disliked_names.dart';
 import 'package:nomdebebe/screens/settings/data_export.dart';
 import 'package:nomdebebe/screens/settings/data_reset.dart';
@@ -26,6 +27,7 @@ class SettingsScreen extends StatelessWidget {
             child: Divider(height: 0, thickness: 1)),
         SexOptions(),
         FirstLetterOptions(),
+        DecadeOptions(),
         Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
             child: Text("Data", style: Theme.of(context).textTheme.headline5)),

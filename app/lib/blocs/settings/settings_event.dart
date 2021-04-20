@@ -42,3 +42,11 @@ class SettingsSetPinkAndBlue extends SettingsEvent {
   @override
   List<Object?> get props => [pinkAndBlue];
 }
+
+class SettingsSetDecades extends SettingsEvent {
+  final HashSet<int> decades;
+  final int? maxRank;
+  const SettingsSetDecades(this.decades, this.maxRank);
+  @override
+  List<Object?> get props => [decades, maxRank];
+}

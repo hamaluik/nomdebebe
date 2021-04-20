@@ -7,11 +7,14 @@ import 'package:nomdebebe/themes.dart';
 class SettingsState extends Equatable {
   final Sex? sexPreference;
   final HashSet<String> firstLetters;
+  final HashSet<int> decades;
+  final int? maxRank;
   final List<Filter> filters;
   final ThemeType? theme;
   final bool pinkAndBlue;
 
-  static List<Filter> _buildFilters(Sex? sex, HashSet<String> letters) {
+  static List<Filter> _buildFilters(
+      Sex? sex, HashSet<String> letters, HashSet<int> decades, int? maxRank) {
     List<Filter> filters = [];
 
     if (sex == Sex.male)
@@ -22,20 +25,27 @@ class SettingsState extends Equatable {
       filters.add(FirstLettersFilter(letters.toList()));
     }
 
+    if (decades.isNotEmpty) {
+      filters.add(DecadesFilter(decades.toList(), maxRank));
+    }
+
     return filters;
   }
 
-  SettingsState(
-      this.sexPreference, this.firstLetters, this.theme, this.pinkAndBlue)
-      : filters = _buildFilters(sexPreference, firstLetters);
+  SettingsState(this.sexPreference, this.firstLetters, this.theme,
+      this.pinkAndBlue, this.decades, this.maxRank)
+      : filters = _buildFilters(sexPreference, firstLetters, decades, maxRank);
 
   SettingsState.initial()
       : sexPreference = null,
         firstLetters = HashSet(),
         filters = List.empty(),
         theme = null,
-        pinkAndBlue = true;
+        pinkAndBlue = true,
+        decades = HashSet(),
+        maxRank = 1000;
 
   @override
-  List<Object?> get props => [sexPreference, firstLetters, theme, pinkAndBlue];
+  List<Object?> get props =>
+      [sexPreference, firstLetters, theme, pinkAndBlue, decades, maxRank];
 }

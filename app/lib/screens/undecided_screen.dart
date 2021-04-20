@@ -10,14 +10,10 @@ class UndecidedScreen extends StatelessWidget {
     return BlocBuilder<NamesBloc, NamesState>(
         builder: (BuildContext context, NamesState state) {
       int decidedCount = state.namesCount - state.undecidedNamesCount;
-      String decided = decidedCount.toString();
-      if (decided.length > 3) {
-        decided = decided.substring(0, 1) + "," + decided.substring(1);
-      }
-      String undecided = state.undecidedNamesCount.toString();
-      if (undecided.length > 3) {
-        undecided = undecided.substring(0, 1) + "," + undecided.substring(1);
-      }
+      String decided =
+          MaterialLocalizations.of(context).formatDecimal(decidedCount);
+      String undecided = MaterialLocalizations.of(context)
+          .formatDecimal(state.undecidedNamesCount);
 
       return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

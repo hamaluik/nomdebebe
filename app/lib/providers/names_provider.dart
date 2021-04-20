@@ -69,17 +69,23 @@ class NamesProvider {
   }
 
   int countNames(List<Filter> filters) {
-    ResultSet results = _db.select(
-        "select count(*) from names ${_formatFilterQuery(filters)}",
-        filters.expand((f) => f.args).toList());
-    return results.first.columnAt(0);
+    String query =
+        "select count(*) from names inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)}";
+    List<Object> args = filters.expand((f) => f.args).toList();
+
+    ResultSet results = _db.select(query, args);
+    int count = results.first.columnAt(0);
+
+    //print("countNames: `$query` / `$args` => $count");
+    return count;
   }
 
   List<Name> getNames(List<Filter> filters, int skip, int count) {
     String query =
-        "select id, name, sex, like from names ${_formatFilterQuery(filters)} limit ? offset ?";
-    PreparedStatement stmt = _db.prepare(query);
+        "select names.id as id, names.name as name, names.sex as sex, names.like as like, sum(name_decades.count) as count from names inner join name_decades on name_decades.name_id=names.id ${_formatFilterQuery(filters)} group by names.id order by count desc limit ? offset ?";
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
+
+    PreparedStatement stmt = _db.prepare(query);
     //print(
     //"getNames query: `$query`, args: [${args.map((a) => a.toString()).join(',')}]");
     ResultSet results = stmt.select(args);
@@ -95,6 +101,8 @@ class NamesProvider {
       return Name(id, name, sexFromString(s), like);
     }).toList();
     stmt.dispose();
+
+    //print("getNames: `$query` / `$args` => $names");
     return names;
   }
 
@@ -146,16 +154,18 @@ class NamesProvider {
 
   List<int> getRankedLikedNameIds(List<Filter> filters, int skip, int count) {
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
+    // TODO: don't include decade filters here?
     ResultSet results = _db.select(
-        "select names.id as id from names inner join name_ranks on name_ranks.id = names.id ${_formatFilterQuery(filters)} order by name_ranks.rank asc nulls last limit ? offset ?",
+        "select names.id as id from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} order by name_ranks.rank asc nulls last limit ? offset ?",
         args);
     return results.map((Row r) => r['id'] as int).toList();
   }
 
   List<Name> getRankedLikedNames(List<Filter> filters, int skip, int count) {
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
+    // TODO: don't include decade filters here?
     ResultSet results = _db.select(
-        "select names.id as id, names.name as name, names.sex as sex, names.like as like from names inner join name_ranks on name_ranks.id = names.id ${_formatFilterQuery(filters)} order by name_ranks.rank asc nulls last limit ? offset ?",
+        "select names.id as id, names.name as name, names.sex as sex, names.like as like from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} order by name_ranks.rank asc nulls last limit ? offset ?",
         args);
     return results.map((Row r) {
       int id = r['id'];

@@ -50,6 +50,29 @@ class SettingsRepository {
     _prefs.setStringList("firstLetters", letters);
   }
 
+  List<int> get decades {
+    if (!_prefs.containsKey("decades")) return List.empty();
+    List<String> decades = _prefs.getStringList("decades") ?? List.empty();
+    return decades.map((d) => int.tryParse(d) ?? 201).toList();
+  }
+
+  set decades(List<int> decades) {
+    _prefs.setStringList("decades", decades.map((d) => d.toString()).toList());
+  }
+
+  int? get maxRank {
+    if (!_prefs.containsKey("maxRank")) return null;
+    return _prefs.getInt("maxRank");
+  }
+
+  set maxRank(int? maxRank) {
+    if (maxRank == null) {
+      _prefs.remove("maxRank");
+    } else {
+      _prefs.setInt("maxRank", maxRank);
+    }
+  }
+
   ThemeType? get theme {
     if (!_prefs.containsKey("theme")) return null;
     String? t = _prefs.getString("theme");
