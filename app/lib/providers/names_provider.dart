@@ -70,13 +70,13 @@ class NamesProvider {
 
   int countNames(List<Filter> filters) {
     String query =
-        "select count(*) from names inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id";
+        "select distinct count(names.id) from names inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by name_decades.decade";
     List<Object> args = filters.expand((f) => f.args).toList();
 
     ResultSet results = _db.select(query, args);
     int count = results.first.columnAt(0);
 
-    print("countNames: `$query` / `$args` => $count");
+    //print("countNames: `$query` / `$args` => $count");
     return count;
   }
 
@@ -100,7 +100,7 @@ class NamesProvider {
     }).toList();
     stmt.dispose();
 
-    print("getNames: `$query` / `$args` => $names");
+    //print("getNames: `$query` / `$args` => $names");
     return names;
   }
 
