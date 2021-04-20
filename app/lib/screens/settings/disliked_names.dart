@@ -52,27 +52,31 @@ class DislikedNames extends StatelessWidget {
                               return NameTileQuick(
                                 disliked.first,
                                 trailing: TextButton.icon(
-                                    onPressed: () =>
-                                        BlocProvider.of<NamesBloc>(context)
-                                            .add(NamesLike(disliked.first)),
-                                    icon: Icon(FontAwesomeIcons.solidHeart,
-                                        color: Colors.white),
-                                    label: Text("Like",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .button
-                                            ?.copyWith(color: Colors.white))),
+                                  onPressed: () =>
+                                      BlocProvider.of<NamesBloc>(context)
+                                          .add(NamesLike(disliked.first)),
+                                  icon: Icon(FontAwesomeIcons.solidHeart,
+                                      color: Colors.white),
+                                  label: Container(),
+                                  //Text("Like",
+                                  //style: Theme.of(context)
+                                  //.textTheme
+                                  //.button
+                                  //?.copyWith(color: Colors.white)),
+                                ),
                                 leading: TextButton.icon(
-                                    onPressed: () =>
-                                        BlocProvider.of<NamesBloc>(context)
-                                            .add(NamesUndecide(disliked.first)),
-                                    icon: Icon(FontAwesomeIcons.question,
-                                        color: Colors.white),
-                                    label: Text("Un-decide",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .button
-                                            ?.copyWith(color: Colors.white))),
+                                  onPressed: () =>
+                                      BlocProvider.of<NamesBloc>(context)
+                                          .add(NamesUndecide(disliked.first)),
+                                  icon: Icon(FontAwesomeIcons.question,
+                                      color: Colors.white),
+                                  label: Container(),
+                                  //Text("Un-decide",
+                                  //style: Theme.of(context)
+                                  //.textTheme
+                                  //.button
+                                  //?.copyWith(color: Colors.white)),
+                                ),
                               );
                             }))
                   ]);

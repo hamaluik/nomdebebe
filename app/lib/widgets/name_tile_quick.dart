@@ -28,14 +28,15 @@ class NameTileQuick extends StatelessWidget {
                 elevation: 2,
                 child: Row(children: [
                   leading ?? Container(),
-                  Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text(name.name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(color: Colors.white),
-                          textAlign: TextAlign.center)),
+                  Expanded(
+                      child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text(name.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Colors.white),
+                              textAlign: TextAlign.center))),
                   trailing ?? Container(),
                 ])));
       });
