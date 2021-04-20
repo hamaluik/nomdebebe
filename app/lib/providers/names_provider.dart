@@ -11,7 +11,7 @@ class NamesProvider {
   final Database _db;
   static const int CURRENT_VERSION = 1;
 
-  static Future<NamesProvider> load({bool? isTest}) async {
+  static Future<NamesProvider> load() async {
     Directory documents = await getApplicationDocumentsDirectory();
     String path = p.join(documents.path, "nomdebebe.db");
     if (await FileSystemEntity.type(path) == FileSystemEntityType.notFound) {
@@ -23,10 +23,10 @@ class NamesProvider {
 
     Database db;
     db = sqlite3.open(path, mutex: true);
-    return NamesProvider._(db);
+    return NamesProvider(db);
   }
 
-  NamesProvider._(this._db) {
+  NamesProvider(this._db) {
     while (_db.userVersion < CURRENT_VERSION) {
       if (_db.userVersion == 0) {
         _db.execute("begin transaction");
@@ -70,13 +70,13 @@ class NamesProvider {
 
   int countNames(List<Filter> filters) {
     String query =
-        "select count(*) from names inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)}";
+        "select count(*) from names inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id";
     List<Object> args = filters.expand((f) => f.args).toList();
 
     ResultSet results = _db.select(query, args);
     int count = results.first.columnAt(0);
 
-    //print("countNames: `$query` / `$args` => $count");
+    print("countNames: `$query` / `$args` => $count");
     return count;
   }
 
@@ -100,7 +100,7 @@ class NamesProvider {
     }).toList();
     stmt.dispose();
 
-    //print("getNames: `$query` / `$args` => $names");
+    print("getNames: `$query` / `$args` => $names");
     return names;
   }
 

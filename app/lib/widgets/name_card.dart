@@ -43,20 +43,54 @@ class NameCard extends StatelessWidget {
                               color: sexToColour(
                                   context, name.sex, state.pinkAndBlue),
                               borderRadius: BorderRadius.circular(8.0)),
-                          child: Column(
-                            children: <Widget>[
-                              AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Container(
-                                      child: Center(
-                                          child: Text(name.name,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline3!
-                                                  .copyWith(
-                                                      color: Colors.white)))))
-                            ],
-                          )))));
+                          child: Stack(
+                              alignment: Alignment.center,
+                              fit: StackFit.loose,
+                              children: [
+                                Column(
+                                  children: <Widget>[
+                                    AspectRatio(
+                                        aspectRatio: 1,
+                                        child: Container(
+                                            child: Center(
+                                                child: Text(name.name,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline3!
+                                                        .copyWith(
+                                                            color: Colors
+                                                                .white)))))
+                                  ],
+                                ),
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: IconButton(
+                                      icon: Icon(FontAwesomeIcons.chartLine),
+                                      onPressed: () {
+                                        // TODO: make a name detail page
+                                      }),
+                                ),
+                                Positioned(
+                                  bottom: 8,
+                                  left: 8,
+                                  child: IconButton(
+                                      icon: Icon(
+                                          FontAwesomeIcons.solidThumbsDown),
+                                      onPressed: () =>
+                                          BlocProvider.of<NamesBloc>(context)
+                                              .add(NamesDislike(name))),
+                                ),
+                                Positioned(
+                                  bottom: 8,
+                                  right: 8,
+                                  child: IconButton(
+                                      icon: Icon(FontAwesomeIcons.solidHeart),
+                                      onPressed: () =>
+                                          BlocProvider.of<NamesBloc>(context)
+                                              .add(NamesLike(name))),
+                                ),
+                              ])))));
     });
   }
 }
