@@ -74,20 +74,22 @@ class SettingsRepository {
   }
 
   ThemeType? get theme {
-    if (!_prefs.containsKey("theme")) return null;
+    if (!_prefs.containsKey("theme")) return ThemeType.light;
     String? t = _prefs.getString("theme");
     if (t == "light")
       return ThemeType.light;
     else if (t == "dark")
       return ThemeType.dark;
-    else if (t == "black") return ThemeType.black;
+    else if (t == "black")
+      return ThemeType.black;
+    else if (t == "auto") return null;
     return null;
   }
 
   set theme(ThemeType? theme) {
     switch (theme) {
       case null:
-        _prefs.remove("theme");
+        _prefs.setString("theme", "auto");
         break;
       case ThemeType.light:
         _prefs.setString("theme", "light");
