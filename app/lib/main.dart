@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
@@ -14,6 +15,7 @@ import 'package:nomdebebe/screens/undecided_screen.dart';
 import 'package:nomdebebe/screens/liked_screen.dart';
 import 'package:nomdebebe/screens/sharing_screen.dart';
 import 'package:nomdebebe/screens/settings_screen.dart';
+import 'package:nomdebebe/screens/disliked_screen.dart';
 //import 'package:nomdebebe/blocs/debug_logger.dart';
 import 'themes.dart';
 
@@ -77,19 +79,19 @@ class NamesAppState extends State<NamesApp> with WidgetsBindingObserver {
 
 class ScreenContainer extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _ScreenContainerState();
+  State<StatefulWidget> createState() => ScreenContainerState();
 }
 
-class _ScreenContainerState extends State<ScreenContainer>
+class ScreenContainerState extends State<ScreenContainer>
     with WidgetsBindingObserver {
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  final navigatorKey = GlobalKey<NavigatorState>();
   int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Navigator(
-          key: _navigatorKey,
+          key: navigatorKey,
           initialRoute: 'undecided',
           onGenerateRoute: (RouteSettings settings) {
             WidgetBuilder builder;
@@ -106,10 +108,30 @@ class _ScreenContainerState extends State<ScreenContainer>
               case 'settings':
                 builder = (BuildContext _) => SettingsScreen();
                 break;
+              case 'disliked':
+                builder = (BuildContext _) => DislikedScreen();
+                break;
               default:
                 throw Exception('Invalid route: ${settings.name}');
             }
-            return MaterialPageRoute(builder: builder, settings: settings);
+            return PageRouteBuilder(
+                pageBuilder: (BuildContext context, Animation<double> primary,
+                        Animation<double> secondary) =>
+                    builder(context),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(
+                            opacity: Tween(begin: 0.0, end: 1.0).animate(
+                                CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeInOut)),
+                            child: FadeTransition(
+                                opacity: Tween(begin: 1.0, end: 0.0).animate(
+                                    CurvedAnimation(
+                                        parent: secondaryAnimation,
+                                        curve: Curves.easeInOut)),
+                                child: child)),
+                settings: settings);
           }),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).primaryColor,
@@ -117,10 +139,10 @@ class _ScreenContainerState extends State<ScreenContainer>
         onTap: (idx) {
           switch (idx) {
             case 0:
-              _navigatorKey.currentState?.pushNamed('undecided');
+              navigatorKey.currentState?.pushNamed('undecided');
               break;
             case 1:
-              _navigatorKey.currentState?.pushNamed('liked');
+              navigatorKey.currentState?.pushNamed('liked');
               break;
             case 2:
               // upload our liked names whenever we navigate to that screen
@@ -129,10 +151,10 @@ class _ScreenContainerState extends State<ScreenContainer>
               bloc.add(SharingEventUpdateLikedNames(
                   BlocProvider.of<NamesBloc>(context).state.likedNames));
 
-              _navigatorKey.currentState?.pushNamed('sharing');
+              navigatorKey.currentState?.pushNamed('sharing');
               break;
             case 3:
-              _navigatorKey.currentState?.pushNamed('settings');
+              navigatorKey.currentState?.pushNamed('settings');
               break;
           }
           setState(() {
