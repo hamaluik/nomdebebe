@@ -71,7 +71,7 @@ class NamesProvider {
 
   int countNames(List<Filter> filters) {
     String query =
-        "select distinct count(names.id) from names inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by name_decades.decade";
+        "select count(distinct names.id) from names left join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)}";
     List<Object> args = filters.expand((f) => f.args).toList();
 
     ResultSet results = _db.select(query, args);
