@@ -26,11 +26,6 @@ class About extends StatelessWidget {
                 applicationDescription: const Text(
                     'A simple, private tool to help pick a baby name.'),
                 children: <Widget>[
-                  MarkdownPageListTile(
-                    icon: Icon(FontAwesomeIcons.readme),
-                    title: const Text('Readme'),
-                    filename: 'README.md',
-                  ),
                   LicensesPageListTile(
                     icon: Icon(FontAwesomeIcons.scroll),
                   ),

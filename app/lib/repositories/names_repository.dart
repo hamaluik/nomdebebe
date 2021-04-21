@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:nomdebebe/models/filter.dart';
 import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/providers/names_provider.dart';
@@ -67,5 +69,9 @@ class NamesRepository {
 
   void factoryReset() {
     _namesProvider.factoryReset();
+  }
+
+  LinkedHashMap<int, int> getNameDecadeCounts(int id) {
+    return _namesProvider.getNameDecadeCounts(id);
   }
 }

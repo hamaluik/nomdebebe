@@ -47,7 +47,7 @@ flutter:
   assets:
     - assets/fonts/LICENSE-PublicSans.md
     - assets/nomdebebe.db
-    - README.md
+    #- README.md
     - assets/icon.svg
   fonts:
     - family: PublicSans

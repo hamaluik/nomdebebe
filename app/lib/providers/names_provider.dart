@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/models/sex.dart';
@@ -176,5 +177,19 @@ class NamesProvider {
       else if (l == 0) like = false;
       return Name(id, name, sexFromString(s), like);
     }).toList();
+  }
+
+  LinkedHashMap<int, int> getNameDecadeCounts(int id) {
+    PreparedStatement stmt = _db.prepare(
+        "select decade, count from name_decades where id=? order by decade asc");
+    ResultSet results = stmt.select([id]);
+    LinkedHashMap<int, int> decades = LinkedHashMap();
+    for (Row row in results) {
+      int decade = row['decade'] as int;
+      int count = row['count'] as int;
+      decades[decade] = count;
+    }
+    stmt.dispose();
+    return decades;
   }
 }

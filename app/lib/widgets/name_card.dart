@@ -62,16 +62,16 @@ class NameCard extends StatelessWidget {
                                                                 .white)))))
                                   ],
                                 ),
-                                Positioned(
-                                  top: 8,
-                                  right: 8,
-                                  child: IconButton(
-                                      icon: Icon(FontAwesomeIcons.chartLine,
-                                          color: Colors.white),
-                                      onPressed: () {
-                                        // TODO: make a name detail page
-                                      }),
-                                ),
+                                //Positioned(
+                                //top: 8,
+                                //right: 8,
+                                //child: IconButton(
+                                //icon: Icon(FontAwesomeIcons.chartLine,
+                                //color: Colors.white),
+                                //onPressed: () {
+                                //// TODO: make a name detail page
+                                //}),
+                                //),
                                 Positioned(
                                   bottom: 8,
                                   left: 8,
