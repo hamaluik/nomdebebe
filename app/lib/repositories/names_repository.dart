@@ -61,7 +61,7 @@ class NamesRepository {
     List<int> ids = _namesProvider.getRankedLikedNameIds(
         filters ?? List.empty(), 0, 1000000);
     int id = ids.removeAt(oldRank);
-    ids.insert(newRank, id);
+    ids.insert(newRank > oldRank ? newRank - 1 : newRank, id);
     _namesProvider.rankLikedNames(ids);
   }
 

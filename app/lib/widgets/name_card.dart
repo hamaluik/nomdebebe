@@ -66,7 +66,8 @@ class NameCard extends StatelessWidget {
                                   top: 8,
                                   right: 8,
                                   child: IconButton(
-                                      icon: Icon(FontAwesomeIcons.chartLine),
+                                      icon: Icon(FontAwesomeIcons.chartLine,
+                                          color: Colors.white),
                                       onPressed: () {
                                         // TODO: make a name detail page
                                       }),
@@ -76,7 +77,8 @@ class NameCard extends StatelessWidget {
                                   left: 8,
                                   child: IconButton(
                                       icon: Icon(
-                                          FontAwesomeIcons.solidThumbsDown),
+                                          FontAwesomeIcons.solidThumbsDown,
+                                          color: Colors.white),
                                       onPressed: () =>
                                           BlocProvider.of<NamesBloc>(context)
                                               .add(NamesDislike(name))),
@@ -85,7 +87,8 @@ class NameCard extends StatelessWidget {
                                   bottom: 8,
                                   right: 8,
                                   child: IconButton(
-                                      icon: Icon(FontAwesomeIcons.solidHeart),
+                                      icon: Icon(FontAwesomeIcons.solidHeart,
+                                          color: Colors.white),
                                       onPressed: () =>
                                           BlocProvider.of<NamesBloc>(context)
                                               .add(NamesLike(name))),

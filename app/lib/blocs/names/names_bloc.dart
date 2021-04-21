@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:nomdebebe/models/filter.dart';
 import 'package:nomdebebe/models/nullable.dart';
 import 'package:bloc/bloc.dart';
 import 'package:nomdebebe/blocs/names/names_event.dart';
@@ -6,6 +7,7 @@ import 'package:nomdebebe/blocs/names/names_state.dart';
 import 'package:nomdebebe/blocs/settings/settings_bloc.dart';
 import 'package:nomdebebe/blocs/settings/settings_state.dart';
 import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/models/sex.dart';
 import 'package:nomdebebe/repositories/names_repository.dart';
 
 class NamesBloc extends Bloc<NamesEvent, NamesState> {
@@ -71,8 +73,13 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
       namesRepository.undecideName(event.name);
       yield _updateAll();
     } else if (event is NamesLikedRank) {
+      List<Filter> sexFilter = [];
+      if (event.sex == Sex.male)
+        sexFilter = [SexFilter.male];
+      else if (event.sex == Sex.female) sexFilter = [SexFilter.female];
+
       namesRepository.swapLikedNamesRanks(event.oldRank, event.newRank,
-          filters: settings.state.filters);
+          filters: settings.state.filters + sexFilter);
       List<Name> newLikedNames =
           namesRepository.getRankedLikedNames(filters: settings.state.filters);
       yield state.copyWith(likedNames: newLikedNames);
