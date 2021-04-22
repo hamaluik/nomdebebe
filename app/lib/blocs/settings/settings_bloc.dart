@@ -51,6 +51,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           event.pinkAndBlue, state.decades, state.maxRank);
     } else if (event is SettingsSetDecades) {
       settingsRepository.decades = event.decades.toList();
+      settingsRepository.maxRank = event.maxRank;
       yield SettingsState(state.sexPreference, state.firstLetters, state.theme,
           state.pinkAndBlue, event.decades, event.maxRank);
     }

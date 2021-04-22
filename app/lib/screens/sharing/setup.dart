@@ -102,7 +102,7 @@ class _CodeTextFieldState extends State<_CodeTextField> {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: TextField(
-            controller: _controller,
+            //controller: _controller,
             style: Theme.of(context).textTheme.headline4,
             textAlign: TextAlign.center,
             autocorrect: false,

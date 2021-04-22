@@ -13,7 +13,7 @@ String _decadesDisplay(HashSet<int> decades) {
   List<String> decadesSorted =
       decades.map((d) => (d * 10).toString() + "s").toList();
   decadesSorted.sort();
-  return decadesSorted.join(",");
+  return decadesSorted.join(", ");
 }
 
 class DecadeOptions extends StatelessWidget {
