@@ -46,23 +46,6 @@ class _SetupScreenState extends State<SetupScreen> {
                         style: Theme.of(context).textTheme.headline4,
                         textAlign: TextAlign.center,
                       ))),
-              //TextButton(
-              //onPressed: () async => Share.share(sharingState.myID!,
-              //subject: "My sharing code on Nom de Bébé"),
-              //child: Container(
-              //margin: const EdgeInsets.all(8),
-              //padding: const EdgeInsets.all(4),
-              //decoration: BoxDecoration(
-              //border: Border.all(
-              //width: 2.0,
-              //color:
-              //Theme.of(context).textTheme.headline4?.color ??
-              //Colors.black),
-              //),
-              //child: Text(
-              //sharingState.myID!,
-              //style: Theme.of(context).textTheme.headline4,
-              //))),
               Text("And enter their code here:",
                   style: Theme.of(context).textTheme.headline6),
               Container(
@@ -96,10 +79,23 @@ class _CodeTextField extends StatefulWidget {
 }
 
 class _CodeTextFieldState extends State<_CodeTextField> {
-  final TextEditingController _controller;
+  final String? initialCode;
+  TextEditingController? _controller;
 
-  _CodeTextFieldState(String? initialCode)
-      : _controller = TextEditingController(text: initialCode);
+  _CodeTextFieldState(this.initialCode);
+
+  @override
+  void initState() {
+    super.initState();
+    if (_controller != null) _controller?.dispose();
+    _controller = TextEditingController(text: initialCode);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
