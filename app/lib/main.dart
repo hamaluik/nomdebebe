@@ -16,6 +16,7 @@ import 'package:nomdebebe/screens/liked_screen.dart';
 import 'package:nomdebebe/screens/sharing_screen.dart';
 import 'package:nomdebebe/screens/settings_screen.dart';
 import 'package:nomdebebe/screens/disliked_screen.dart';
+import 'package:nomdebebe/screens/explore_screen.dart';
 //import 'package:nomdebebe/blocs/debug_logger.dart';
 import 'themes.dart';
 
@@ -102,6 +103,9 @@ class ScreenContainerState extends State<ScreenContainer>
               case 'liked':
                 builder = (BuildContext _) => LikedScreen();
                 break;
+              case 'explore':
+                builder = (BuildContext _) => ExploreScreen();
+                break;
               case 'sharing':
                 builder = (BuildContext _) => SharingScreen();
                 break;
@@ -145,6 +149,9 @@ class ScreenContainerState extends State<ScreenContainer>
               navigatorKey.currentState?.pushNamed('liked');
               break;
             case 2:
+              navigatorKey.currentState?.pushNamed('explore');
+              break;
+            case 3:
               // upload our liked names whenever we navigate to that screen
               // TODO: when else to upload without wasting bandwidth?
               SharingBloc bloc = BlocProvider.of<SharingBloc>(context);
@@ -153,7 +160,7 @@ class ScreenContainerState extends State<ScreenContainer>
 
               navigatorKey.currentState?.pushNamed('sharing');
               break;
-            case 3:
+            case 4:
               navigatorKey.currentState?.pushNamed('settings');
               break;
           }
@@ -166,6 +173,8 @@ class ScreenContainerState extends State<ScreenContainer>
               icon: Icon(FontAwesomeIcons.question), label: "Undecided"),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.solidHeart), label: "Liked"),
+          BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.solidCompass), label: "Compass"),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.child), label: "Sharing"),
           BottomNavigationBarItem(

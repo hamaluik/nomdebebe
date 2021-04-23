@@ -69,21 +69,30 @@ class NamesProvider {
     return "WHERE " + filters.map((f) => f.query).join(" AND ");
   }
 
+  bool _hasDecadesFilter(List<Filter> filters) {
+    for (Filter filter in filters) {
+      if (filter is DecadesFilter) return true;
+    }
+    return false;
+  }
+
   int countNames(List<Filter> filters) {
-    String query =
-        "select count(distinct names.id) from names left join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)}";
+    String query = _hasDecadesFilter(filters)
+        ? "select count(distinct names.id) from names left join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)}"
+        : "select count(distinct names.id) from names ${_formatFilterQuery(filters)}";
     List<Object> args = filters.expand((f) => f.args).toList();
 
     ResultSet results = _db.select(query, args);
     int count = results.first.columnAt(0);
 
-    //print("countNames: `$query` / `$args` => $count");
+    print("countNames: `$query` / `$args` => $count");
     return count;
   }
 
   List<Name> getNames(List<Filter> filters, int skip, int count) {
-    String query =
-        "select names.id as id, names.name as name, names.sex as sex, names.like as like, sum(name_decades.count) as count from names inner join name_decades on name_decades.name_id=names.id ${_formatFilterQuery(filters)} group by names.id order by count desc limit ? offset ?";
+    String query = _hasDecadesFilter(filters)
+        ? "select names.id as id, names.name as name, names.sex as sex, names.like as like, sum(name_decades.count) as count from names inner join name_decades on name_decades.name_id=names.id ${_formatFilterQuery(filters)} group by names.id order by count desc limit ? offset ?"
+        : "select names.id as id, names.name as name, names.sex as sex, names.like as like from names ${_formatFilterQuery(filters)} limit ? offset ?";
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
 
     PreparedStatement stmt = _db.prepare(query);
@@ -101,7 +110,7 @@ class NamesProvider {
     }).toList();
     stmt.dispose();
 
-    //print("getNames: `$query` / `$args` => $names");
+    print("getNames: `$query` / `$args` => $names");
     return names;
   }
 
