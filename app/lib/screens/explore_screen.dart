@@ -8,7 +8,8 @@ import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/models/filter.dart';
 import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/repositories/names_repository.dart';
-import 'package:nomdebebe/widgets/name_tile_quick.dart';
+import 'package:nomdebebe/widgets/name_tile_link.dart';
+import 'package:nomdebebe/screens/name_details_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   @override
@@ -77,11 +78,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         Name? name = getName(repo, index);
                         return name == null
                             ? Container()
-                            : NameTileQuick(
-                                name,
-                                key: Key(
-                                    "__name_explorer_" + name.id.toString()),
-                              );
+                            : Hero(
+                                tag: "nameDetailsHero",
+                                child: NameTileLink(
+                                  name,
+                                  onTap: (Name name) => Navigator.of(context)
+                                      .push(MaterialPageRoute<void>(
+                                          builder: (BuildContext context) =>
+                                              NameDetailsScreen(name))),
+                                  key: Key(
+                                      "__name_explorer_" + name.id.toString()),
+                                ));
                       })),
               Padding(
                   padding: EdgeInsets.all(16),
