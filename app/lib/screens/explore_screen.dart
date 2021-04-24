@@ -79,7 +79,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         return name == null
                             ? Container()
                             : Hero(
-                                tag: "nameDetailsHero",
+                                tag: "nameDetailsHero_" + name.id.toString(),
                                 child: NameTileLink(
                                   name,
                                   onTap: (Name name) => Navigator.of(context)

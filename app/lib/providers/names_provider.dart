@@ -188,9 +188,23 @@ class NamesProvider {
     }).toList();
   }
 
+  LinkedHashMap<int, int> getDecadeCounts() {
+    PreparedStatement stmt = _db.prepare(
+        "select decade, sum(count) as decade_sum from name_decades group by decade");
+    ResultSet results = stmt.select();
+    LinkedHashMap<int, int> decades = LinkedHashMap();
+    for (Row row in results) {
+      int decade = row['decade'] as int;
+      int sum = row['decade_sum'] as int;
+      decades[decade] = sum;
+    }
+    stmt.dispose();
+    return decades;
+  }
+
   LinkedHashMap<int, int> getNameDecadeCounts(int id) {
     PreparedStatement stmt = _db.prepare(
-        "select decade, count from name_decades where id=? order by decade asc");
+        "select decade, count from name_decades where name_id=? order by decade asc");
     ResultSet results = stmt.select([id]);
     LinkedHashMap<int, int> decades = LinkedHashMap();
     for (Row row in results) {

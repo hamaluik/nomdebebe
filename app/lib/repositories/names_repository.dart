@@ -71,6 +71,10 @@ class NamesRepository {
     _namesProvider.factoryReset();
   }
 
+  LinkedHashMap<int, int> getDecadeCounts() {
+    return _namesProvider.getDecadeCounts();
+  }
+
   LinkedHashMap<int, int> getNameDecadeCounts(int id) {
     return _namesProvider.getNameDecadeCounts(id);
   }

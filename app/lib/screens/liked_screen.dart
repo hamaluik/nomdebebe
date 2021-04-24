@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/models/sex.dart';
-import 'package:nomdebebe/widgets/name_tile.dart';
+import 'package:nomdebebe/widgets/name_tile_link.dart';
+import 'package:nomdebebe/screens/name_details_screen.dart';
 
 class LikedScreen extends StatefulWidget {
   @override
@@ -39,18 +41,22 @@ class _LikeScreenState extends State<LikedScreen> {
                 Expanded(
                   child: TabBarView(children: [
                     ReorderableListView.builder(
-                        itemBuilder: (BuildContext context, int index) =>
-                            NameTile(
-                              namesState.likedNames
-                                  .where((n) => n.sex == Sex.female)
-                                  .elementAt(index),
-                              key: Key("__liked_name_tile_" +
-                                  namesState.likedNames
-                                      .where((n) => n.sex == Sex.female)
-                                      .elementAt(index)
-                                      .id
-                                      .toString()),
-                            ),
+                        itemBuilder: (BuildContext context, int index) {
+                          Name name = namesState.likedNames
+                              .where((n) => n.sex == Sex.female)
+                              .elementAt(index);
+
+                          return Hero(
+                              key: Key("__name_explorer_" + name.id.toString()),
+                              tag: "nameDetailsHero_" + name.id.toString(),
+                              child: NameTileLink(
+                                name,
+                                onTap: (Name name) => Navigator.of(context)
+                                    .push(MaterialPageRoute<void>(
+                                        builder: (BuildContext context) =>
+                                            NameDetailsScreen(name))),
+                              ));
+                        },
                         itemCount: namesState.likedNames
                             .where((n) => n.sex == Sex.female)
                             .length,
@@ -59,18 +65,22 @@ class _LikeScreenState extends State<LikedScreen> {
                                 NamesLikedRank(
                                     Sex.female, oldIndex, newIndex))),
                     ReorderableListView.builder(
-                        itemBuilder: (BuildContext context, int index) =>
-                            NameTile(
-                              namesState.likedNames
-                                  .where((n) => n.sex == Sex.male)
-                                  .elementAt(index),
-                              key: Key("__liked_name_tile_" +
-                                  namesState.likedNames
-                                      .where((n) => n.sex == Sex.male)
-                                      .elementAt(index)
-                                      .id
-                                      .toString()),
-                            ),
+                        itemBuilder: (BuildContext context, int index) {
+                          Name name = namesState.likedNames
+                              .where((n) => n.sex == Sex.male)
+                              .elementAt(index);
+
+                          return Hero(
+                              key: Key("__name_explorer_" + name.id.toString()),
+                              tag: "nameDetailsHero_" + name.id.toString(),
+                              child: NameTileLink(
+                                name,
+                                onTap: (Name name) => Navigator.of(context)
+                                    .push(MaterialPageRoute<void>(
+                                        builder: (BuildContext context) =>
+                                            NameDetailsScreen(name))),
+                              ));
+                        },
                         itemCount: namesState.likedNames
                             .where((n) => n.sex == Sex.male)
                             .length,
@@ -92,11 +102,20 @@ class _LikeScreenState extends State<LikedScreen> {
                     .top), // TODO: something more natural?
             Expanded(
                 child: ReorderableListView.builder(
-                    itemBuilder: (BuildContext context, int index) => NameTile(
-                          namesState.likedNames[index],
-                          key: Key("__liked_name_tile_" +
-                              namesState.likedNames[index].id.toString()),
-                        ),
+                    itemBuilder: (BuildContext context, int index) {
+                      Name name = namesState.likedNames.elementAt(index);
+
+                      return Hero(
+                          key: Key("__name_explorer_" + name.id.toString()),
+                          tag: "nameDetailsHero_" + name.id.toString(),
+                          child: NameTileLink(
+                            name,
+                            onTap: (Name name) => Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                    builder: (BuildContext context) =>
+                                        NameDetailsScreen(name))),
+                          ));
+                    },
                     itemCount: namesState.likedNames.length,
                     onReorder: (int oldIndex, int newIndex) =>
                         BlocProvider.of<NamesBloc>(context)

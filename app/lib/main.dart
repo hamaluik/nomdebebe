@@ -174,7 +174,7 @@ class ScreenContainerState extends State<ScreenContainer>
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.solidHeart), label: "Liked"),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.solidCompass), label: "Compass"),
+              icon: Icon(FontAwesomeIcons.solidCompass), label: "Explore"),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.child), label: "Sharing"),
           BottomNavigationBarItem(
