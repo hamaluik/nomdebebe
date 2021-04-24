@@ -107,7 +107,7 @@ class _CodeTextFieldState extends State<_CodeTextField> {
             textAlign: TextAlign.center,
             autocorrect: false,
             maxLines: 1,
-            maxLength: widget.initialCode?.length ?? 12,
+            //maxLength: widget.initialCode?.length ?? 12,
             decoration: InputDecoration(
               border: InputBorder.none,
               counterText: "",

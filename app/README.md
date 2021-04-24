@@ -1,4 +1,4 @@
-# nomdebebe
+# Nom de Bébé
 
 A simple, **private** tool to help pick a baby name.
 
