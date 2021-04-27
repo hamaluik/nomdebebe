@@ -5,11 +5,35 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
 import 'package:nomdebebe/blocs/sharing/sharing.dart';
+import 'package:nomdebebe/models/sex.dart';
 import 'package:nomdebebe/screens/sharing/setup.dart';
 import 'package:nomdebebe/widgets/name_tile.dart';
 import 'package:nomdebebe/models/name.dart';
 
-class SharingScreen extends StatelessWidget {
+class SharingScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _SharingScreenState();
+}
+
+class _SharingScreenState extends State<SharingScreen>
+    with TickerProviderStateMixin {
+  late TabController mainTabController;
+  late TabController sexTabController;
+
+  @override
+  void initState() {
+    super.initState();
+    mainTabController = TabController(length: 3, vsync: this);
+    sexTabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    mainTabController.dispose();
+    sexTabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(
@@ -32,61 +56,125 @@ class SharingScreen extends StatelessWidget {
 
           List<Widget> matched = _matchedNames(namesState, sharingState);
 
-          return DefaultTabController(
-            length: 3,
-            child: Column(children: <Widget>[
-              Expanded(
-                  child: TabBarView(
-                children: [
-                  matched.isEmpty
-                      ? Center(
-                          child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Text(
-                                  "You don't have any matches with your partner yet!",
-                                  style: Theme.of(context).textTheme.headline4,
-                                  textAlign: TextAlign.center)))
-                      : RefreshIndicator(
-                          onRefresh: () async =>
-                              BlocProvider.of<SharingBloc>(context)
-                                  .add(SharingEventRefresh()),
-                          child: ListView(
-                              children: _matchedNames(namesState, sharingState),
-                              physics: const AlwaysScrollableScrollPhysics())),
-                  RefreshIndicator(
-                      onRefresh: () async =>
-                          BlocProvider.of<SharingBloc>(context)
-                              .add(SharingEventRefresh()),
-                      child: ListView.builder(
-                          itemCount: sharingState.partnerNames.length,
-                          itemBuilder: (BuildContext context, int index) =>
-                              NameTile(sharingState.partnerNames[index]),
-                          physics: const AlwaysScrollableScrollPhysics())),
-                  SetupScreen(),
-                ],
-              )),
-              TabBar(tabs: [
-                Tab(icon: Icon(FontAwesomeIcons.equals), text: "Matches"),
-                Tab(
-                    icon: Icon(FontAwesomeIcons.userFriends),
-                    text: "Partner's List"),
-                Tab(icon: Icon(FontAwesomeIcons.qrcode), text: "Sharing Code"),
-              ])
-            ]),
-          );
+          return Column(children: <Widget>[
+            Expanded(
+                child: TabBarView(
+              controller: mainTabController,
+              children: [
+                matched.isEmpty
+                    ? Center(
+                        child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Text(
+                                "You don't have any matches with your partner yet!",
+                                style: Theme.of(context).textTheme.headline4,
+                                textAlign: TextAlign.center)))
+                    : RefreshIndicator(
+                        onRefresh: () async =>
+                            BlocProvider.of<SharingBloc>(context)
+                                .add(SharingEventRefresh()),
+                        child: settingsState.pinkAndBlue
+                            ? Column(children: [
+                                Expanded(
+                                    child: TabBarView(
+                                  controller: sexTabController,
+                                  children: [
+                                    ListView(
+                                        children: _matchedNames(
+                                            namesState, sharingState,
+                                            sex: Sex.female)),
+                                    ListView(
+                                        children: _matchedNames(
+                                            namesState, sharingState,
+                                            sex: Sex.male)),
+                                  ],
+                                )),
+                                TabBar(controller: sexTabController, tabs: [
+                                  Tab(icon: Icon(FontAwesomeIcons.venus)),
+                                  Tab(icon: Icon(FontAwesomeIcons.mars)),
+                                ])
+                              ])
+                            : ListView(
+                                children:
+                                    _matchedNames(namesState, sharingState),
+                                physics:
+                                    const AlwaysScrollableScrollPhysics())),
+                RefreshIndicator(
+                    onRefresh: () async => BlocProvider.of<SharingBloc>(context)
+                        .add(SharingEventRefresh()),
+                    child: settingsState.pinkAndBlue
+                        ? Column(children: [
+                            Expanded(
+                                child: TabBarView(
+                              controller: sexTabController,
+                              children: [
+                                ListView.builder(
+                                    itemCount: sharingState.partnerNames
+                                        .where((Name n) => n.sex == Sex.female)
+                                        .length,
+                                    itemBuilder: (BuildContext context,
+                                            int index) =>
+                                        NameTile(sharingState.partnerNames
+                                            .where(
+                                                (Name n) => n.sex == Sex.female)
+                                            .elementAt(index)),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics()),
+                                ListView.builder(
+                                    itemCount: sharingState.partnerNames
+                                        .where((Name n) => n.sex == Sex.male)
+                                        .length,
+                                    itemBuilder: (BuildContext context,
+                                            int index) =>
+                                        NameTile(sharingState.partnerNames
+                                            .where(
+                                                (Name n) => n.sex == Sex.male)
+                                            .elementAt(index)),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics()),
+                              ],
+                            )),
+                            TabBar(controller: sexTabController, tabs: [
+                              Tab(icon: Icon(FontAwesomeIcons.venus)),
+                              Tab(icon: Icon(FontAwesomeIcons.mars)),
+                            ])
+                          ])
+                        : ListView.builder(
+                            itemCount: sharingState.partnerNames.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                NameTile(sharingState.partnerNames[index]),
+                            physics: const AlwaysScrollableScrollPhysics())),
+                SetupScreen(),
+              ],
+            )),
+            TabBar(controller: mainTabController, tabs: [
+              Tab(icon: Icon(FontAwesomeIcons.equals), text: "Matches"),
+              Tab(
+                  icon: Icon(FontAwesomeIcons.userFriends),
+                  text: "Partner's List"),
+              Tab(icon: Icon(FontAwesomeIcons.qrcode), text: "Sharing Code"),
+            ])
+          ]);
         });
       });
     });
   }
 
-  List<Widget> _matchedNames(NamesState namesState, SharingState sharingState) {
+  List<Widget> _matchedNames(NamesState namesState, SharingState sharingState,
+      {Sex? sex}) {
     // do this the verbose way so we can collect the ranks of the two names
     List<MatchedName> matches = [];
     for (int i = 0; i < namesState.likedNames.length; i++) {
       for (int j = 0; j < sharingState.partnerNames.length; j++) {
         if (namesState.likedNames[i].name ==
             sharingState.partnerNames[j].name) {
-          matches.add(MatchedName(namesState.likedNames[i], i, j));
+          if (sex != null) {
+            if (namesState.likedNames[i].sex == sex) {
+              matches.add(MatchedName(namesState.likedNames[i], i, j));
+            }
+          } else {
+            matches.add(MatchedName(namesState.likedNames[i], i, j));
+          }
           break;
         }
       }

@@ -15,11 +15,11 @@ class DataExport extends StatelessWidget {
           builder: (BuildContext context, NamesState namesState) {
         return ListTile(
             key: Keys.settingsExport,
-            title: Text("Export"),
+            title: Text("Share favourite names"),
             trailing: namesState.likedNames.isEmpty
                 ? null
                 : Icon(FontAwesomeIcons.chevronRight),
-            leading: Icon(FontAwesomeIcons.table),
+            leading: Icon(FontAwesomeIcons.userFriends),
             subtitle: namesState.likedNames.isEmpty
                 ? Text("(not until you like some names first!)")
                 : null,

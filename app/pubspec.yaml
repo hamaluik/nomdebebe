@@ -36,8 +36,8 @@ dependencies:
   http: ^0.13.1
   fl_chart: ^0.35.0
   flutter_spinkit: ^5.0.0
-  #auto_size_text_field:
-    #git: https://github.com/lzhuor/auto_size_text_field.git
+  package_info: ^2.0.0
+  url_launcher: ^6.0.3
 dev_dependencies:
   flutter_native_splash: ^1.1.7+1
   #flutter_launcher_icons: "^0.8.0"
