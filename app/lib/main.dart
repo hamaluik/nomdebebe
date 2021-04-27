@@ -35,7 +35,10 @@ void main() async {
     BlocProvider<NamesBloc>(
         create: (BuildContext c) =>
             NamesBloc.load(names, BlocProvider.of<SettingsBloc>(c))
-              ..add(NamesLoad())),
+        //..add(NamesLoad()) // load the names only after we've loaded the settings
+        // otherwise our initial screen will swap names if the settings change
+        // the available names
+        ),
     BlocProvider<SharingBloc>(
         create: (BuildContext c) =>
             SharingBloc(shared)..add(SharingEventRefresh())),

@@ -1,15 +1,13 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
-import 'package:nomdebebe/models/filter.dart';
 import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/repositories/names_repository.dart';
 import 'package:nomdebebe/widgets/name_tile_link.dart';
 import 'package:nomdebebe/screens/name_details_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ExploreScreen extends StatefulWidget {
   @override
@@ -18,40 +16,18 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final TextEditingController controller = TextEditingController();
-  SearchFilter? filter;
-  final HashMap<int, Name> cachedNames = HashMap();
+  List<Name> names = [];
+  String filter = "";
+  List<Name> filteredNames = [];
 
-  static int _min(int a, int b) {
-    return a < b ? a : b;
-  }
-
-  //static int _max(int a, int b) {
-  //return a > b ? a : b;
-  //}
-
-  Name? getName(NamesRepository namesRepository, int index) {
-    if (cachedNames.containsKey(index)) return cachedNames[index]!;
-
-    int minIndex = cachedNames.keys.fold(0, _min);
-    //int maxIndex = cachedNames.keys.fold(0, _max);
-
-    if (index < minIndex) {
-      // scrolling back
-      List<Name> nameBatch = namesRepository.getNames(
-          filters: filter == null ? [] : [filter!],
-          skip: _min(index - 100, 0),
-          count: 100);
-      for (int i = 0; i < nameBatch.length; i++)
-        cachedNames[_min(index - 100, 0) + i] = nameBatch[i];
-    } else {
-      // scrolling forward
-      List<Name> nameBatch = namesRepository.getNames(
-          filters: filter == null ? [] : [filter!], skip: index, count: 100);
-      for (int i = 0; i < nameBatch.length; i++)
-        cachedNames[index + i] = nameBatch[i];
-    }
-    // TODO: remove old names if the cache grows too large?
-    return cachedNames[index];
+  @override
+  void initState() {
+    super.initState();
+    NamesRepository repo = BlocProvider.of<NamesBloc>(context).namesRepository;
+    repo.getNames(count: 200000).then((List<Name> _names) => setState(() {
+          names = _names;
+          filteredNames = names;
+        }));
   }
 
   @override
@@ -60,11 +36,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
         builder: (BuildContext context, SettingsState settingsState) {
       return BlocBuilder<NamesBloc, NamesState>(
           builder: (BuildContext context, NamesState namesState) {
-        NamesRepository repo =
-            BlocProvider.of<NamesBloc>(context).namesRepository;
-
-        int nameCount =
-            repo.countTotalNames(filters: filter == null ? [] : [filter!]);
+        if (names.length == 0) {
+          return Center(child: SpinKitPumpingHeart(color: Colors.white));
+        }
 
         return Column(
             mainAxisSize: MainAxisSize.max,
@@ -72,13 +46,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Expanded(
-                  child: ListView.builder(
-                      itemCount: nameCount,
-                      itemBuilder: (BuildContext context, int index) {
-                        Name? name = getName(repo, index);
-                        return name == null
-                            ? Container()
-                            : Hero(
+                  child: filteredNames.isEmpty
+                      ? Center(
+                          child: Icon(FontAwesomeIcons.baby,
+                              color: Colors.white, size: 64))
+                      : ListView.builder(
+                          itemCount: filteredNames.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Name name = filteredNames[index];
+
+                            return Hero(
                                 tag: "nameDetailsHero_" + name.id.toString(),
                                 child: NameTileLink(
                                   name,
@@ -89,7 +66,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   key: Key(
                                       "__name_explorer_" + name.id.toString()),
                                 ));
-                      })),
+                          })),
               Padding(
                   padding: EdgeInsets.all(16),
                   child: TextField(
@@ -97,13 +74,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     onChanged: (String search) {
                       if (search.trim().length < 2) {
                         setState(() {
-                          filter = null;
-                          cachedNames.clear();
+                          filter = "";
+                          filteredNames = names;
                         });
                       } else {
                         setState(() {
-                          filter = SearchFilter(search.trim());
-                          cachedNames.clear();
+                          filter = search.trim();
+                          filteredNames = names
+                              .where((n) => n.name
+                                  .toUpperCase()
+                                  .contains(filter.toUpperCase()))
+                              .toList();
                         });
                       }
                     },

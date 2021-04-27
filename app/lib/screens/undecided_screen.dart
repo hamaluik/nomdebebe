@@ -9,11 +9,20 @@ class UndecidedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NamesBloc, NamesState>(
         builder: (BuildContext context, NamesState state) {
+      if (state.undecidedNamesCount == 0) {
+        return Center(
+            child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text("I'm all out of names!",
+                    style: Theme.of(context).textTheme.headline2,
+                    textAlign: TextAlign.center)));
+      }
+
+      String undecided = MaterialLocalizations.of(context)
+          .formatDecimal(state.undecidedNamesCount);
       int decidedCount = state.namesCount - state.undecidedNamesCount;
       String decided =
           MaterialLocalizations.of(context).formatDecimal(decidedCount);
-      String undecided = MaterialLocalizations.of(context)
-          .formatDecimal(state.undecidedNamesCount);
 
       return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,11 +36,11 @@ class UndecidedScreen extends StatelessWidget {
                             textAlign: TextAlign.center)))),
             Padding(
                 padding: EdgeInsets.all(32),
-                child: state.nextUndecidedName == null
+                child: state.undecidedNameBuffer.isEmpty
                     ? Container()
-                    : NameCard(state.nextUndecidedName!,
+                    : NameCard(state.undecidedNameBuffer.first,
                         key: Key("__undecided_card_" +
-                            state.nextUndecidedName!.id.toString())))
+                            state.undecidedNameBuffer.first.id.toString())))
           ]);
     });
   }

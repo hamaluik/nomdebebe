@@ -16,6 +16,8 @@ class SettingsRepository {
     _prefs.remove("sex");
     _prefs.remove("firstLetters");
     _prefs.remove("theme");
+    _prefs.remove("decades");
+    _prefs.remove("maxRank");
   }
 
   Sex? get sex {

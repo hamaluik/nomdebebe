@@ -5,8 +5,8 @@ import 'package:nomdebebe/models/sex.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqlite3/sqlite3.dart';
 import 'package:nomdebebe/models/filter.dart';
+import 'package:sqflite/sqflite.dart';
 
 class NamesProvider {
   final Database _db;
@@ -22,46 +22,45 @@ class NamesProvider {
       await new File(path).writeAsBytes(bytes);
     }
 
-    Database db;
-    db = sqlite3.open(path, mutex: true);
-    return NamesProvider(db);
+    return NamesProvider(await _initDatabase(path));
   }
 
-  NamesProvider(this._db) {
-    while (_db.userVersion < CURRENT_VERSION) {
-      if (_db.userVersion == 0) {
-        _db.execute("begin transaction");
+  static Future<Database> _initDatabase(String path) async {
+    Database db = await openDatabase(path);
+    while (await db.getVersion() < CURRENT_VERSION) {
+      if (await db.getVersion() == 0) {
+        db.execute("begin transaction");
         try {
-          _db.execute('''
+          db.execute('''
             alter table names add column like boolean default null''');
-          _db.execute('''
+          db.execute('''
             create table name_ranks(
               id integer not null primary key,
               rank integer default null,
               foreign key(id) references names(id)
             )''');
-          _db.userVersion = 1;
+          db.setVersion(1);
         } catch (e) {
-          _db.execute("rollback transaction");
+          db.execute("rollback transaction");
           throw e;
         }
-        _db.execute("commit transaction");
+        db.execute("commit transaction");
       }
     }
 
-    _db.execute("PRAGMA foreign_keys = ON");
+    db.execute("PRAGMA foreign_keys = ON");
+
+    return db;
   }
 
-  void factoryReset() {
-    _db.execute("begin transaction");
-    try {
-      _db.execute("delete from name_ranks");
-      _db.execute("update names set like = null");
-    } catch (e) {
-      _db.execute("rollback transaction");
-      throw e;
-    }
-    _db.execute("commit transaction");
+  NamesProvider(this._db);
+
+  Future<void> factoryReset() async {
+    await _db.transaction((Transaction t) async {
+      await t.execute("delete from name_ranks");
+      await t.execute("update names set like = null");
+      return null;
+    }, exclusive: true);
   }
 
   String _formatFilterQuery(List<Filter> filters) {
@@ -76,110 +75,89 @@ class NamesProvider {
     return false;
   }
 
-  int countNames(List<Filter> filters) {
+  Future<int> countNames(List<Filter> filters) async {
     String query = _hasDecadesFilter(filters)
-        ? "select count(distinct names.id) from names left join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)}"
-        : "select count(distinct names.id) from names ${_formatFilterQuery(filters)}";
+        ? "select count(distinct names.id) as count from names left join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)}"
+        : "select count(distinct names.id) as count from names ${_formatFilterQuery(filters)}";
     List<Object> args = filters.expand((f) => f.args).toList();
 
-    ResultSet results = _db.select(query, args);
-    int count = results.first.columnAt(0);
+    var results = await _db.rawQuery(query, args);
+    int count = results.first['count'] as int;
 
-    print("countNames: `$query` / `$args` => $count");
+    //print("countNames: `$query` / `$args` => $count");
     return count;
   }
 
-  List<Name> getNames(List<Filter> filters, int skip, int count) {
+  Future<List<Name>> getNames(List<Filter> filters, int skip, int count) async {
     String query = _hasDecadesFilter(filters)
         ? "select names.id as id, names.name as name, names.sex as sex, names.like as like, sum(name_decades.count) as count from names inner join name_decades on name_decades.name_id=names.id ${_formatFilterQuery(filters)} group by names.id order by count desc limit ? offset ?"
         : "select names.id as id, names.name as name, names.sex as sex, names.like as like from names ${_formatFilterQuery(filters)} limit ? offset ?";
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
 
-    PreparedStatement stmt = _db.prepare(query);
-    ResultSet results = stmt.select(args);
-    List<Name> names = results.map((Row r) {
-      int id = r['id'];
-      String name = r['name'];
-      String s = r['sex'];
-      int? l = r['like'];
+    List<Map<String, Object?>> results = await _db.rawQuery(query, args);
+    List<Name> names = results.map((Map<String, Object?> row) {
+      int id = row['id'] as int;
+      String name = row['name'] as String;
+      String s = row['sex'] as String;
+      int? l = row['like'] as int?;
       bool? like;
       if (l == 1)
         like = true;
       else if (l == 0) like = false;
       return Name(id, name, sexFromString(s), like);
     }).toList();
-    stmt.dispose();
 
-    print("getNames: `$query` / `$args` => $names");
+    //print("getNames: `$query` / `$args` => $names");
     return names;
   }
 
-  void setNameLike(int id, bool? like) {
-    _db.execute("begin transaction");
-    try {
-      PreparedStatement stmt =
-          _db.prepare("update names set like = ? where id = ?");
+  Future<void> setNameLike(int id, bool? like) async {
+    await _db.transaction((Transaction t) async {
       int? l;
       if (like == true)
         l = 1;
       else if (like == false) l = 0;
-      stmt.execute([l, id]);
-      stmt.dispose();
+      await t.execute("update names set like = ? where id = ?", [l, id]);
 
-      if (like == true) {
-        PreparedStatement stmt2 = _db.prepare(
-            "insert or ignore into name_ranks(id, rank) values(?, null)");
-        stmt2.execute([id]);
-        stmt2.dispose();
-      } else {
-        PreparedStatement stmt2 =
-            _db.prepare("delete from name_ranks where id=?");
-        stmt2.execute([id]);
-        stmt2.dispose();
-      }
-    } catch (e) {
-      _db.execute("rollback transaction");
-      throw e;
-    }
-    _db.execute("commit transaction");
+      if (like == true)
+        await t.execute(
+            "insert or ignore into name_ranks(id, rank) values(?, null)", [id]);
+      else
+        await t.execute("delete from name_ranks where id=?", [id]);
+    });
   }
 
-  void rankLikedNames(List<int> sortedIds) {
-    _db.execute("begin transaction");
-    try {
-      PreparedStatement stmt = _db
-          .prepare("update name_ranks set rank=? where id=?", persistent: true);
+  Future<void> rankLikedNames(List<int> sortedIds) async {
+    await _db.transaction((Transaction t) async {
       for (int i = 0; i < sortedIds.length; i++) {
-        stmt.execute([i, sortedIds[i]]);
+        await t.execute(
+            "update name_ranks set rank=? where id=?", [i, sortedIds[i]]);
       }
-      stmt.dispose();
-    } catch (e) {
-      _db.execute("rollback transaction");
-      throw e;
-    }
-    _db.execute("commit transaction");
+    });
   }
 
-  List<int> getRankedLikedNameIds(List<Filter> filters, int skip, int count) {
+  Future<List<int>> getRankedLikedNameIds(
+      List<Filter> filters, int skip, int count) async {
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
     // TODO: don't include decade filters here?
-    ResultSet results = _db.select(
-        "select names.id as id from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id order by name_ranks.rank asc nulls last limit ? offset ?",
+    List<Map<String, Object?>> results = await _db.rawQuery(
+        "select names.id as id from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id order by name_ranks.rank asc limit ? offset ?",
         args);
-    return results.map((Row r) => r['id'] as int).toList();
+    return results.map((Map<String, Object?> r) => r['id'] as int).toList();
   }
 
-  List<Name> getRankedLikedNames(List<Filter> filters, int skip, int count) {
+  Future<List<Name>> getRankedLikedNames(
+      List<Filter> filters, int skip, int count) async {
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
     // TODO: don't include decade filters here?
-    ResultSet results = _db.select(
-        "select names.id as id, names.name as name, names.sex as sex, names.like as like from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id order by name_ranks.rank asc nulls last limit ? offset ?",
+    List<Map<String, Object?>> results = await _db.rawQuery(
+        "select names.id as id, names.name as name, names.sex as sex, names.like as like from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id order by name_ranks.rank asc limit ? offset ?",
         args);
-    return results.map((Row r) {
-      int id = r['id'];
-      String name = r['name'];
-      String s = r['sex'];
-      int? l = r['like'];
+    return results.map((Map<String, Object?> r) {
+      int id = r['id'] as int;
+      String name = r['name'] as String;
+      String s = r['sex'] as String;
+      int? l = r['like'] as int?;
       bool? like;
       if (l == 1)
         like = true;
@@ -188,31 +166,28 @@ class NamesProvider {
     }).toList();
   }
 
-  LinkedHashMap<int, int> getDecadeCounts() {
-    PreparedStatement stmt = _db.prepare(
+  Future<LinkedHashMap<int, int>> getDecadeCounts() async {
+    List<Map<String, Object?>> results = await _db.rawQuery(
         "select decade, sum(count) as decade_sum from name_decades group by decade");
-    ResultSet results = stmt.select();
     LinkedHashMap<int, int> decades = LinkedHashMap();
-    for (Row row in results) {
+    for (Map<String, Object?> row in results) {
       int decade = row['decade'] as int;
       int sum = row['decade_sum'] as int;
       decades[decade] = sum;
     }
-    stmt.dispose();
     return decades;
   }
 
-  LinkedHashMap<int, int> getNameDecadeCounts(int id) {
-    PreparedStatement stmt = _db.prepare(
-        "select decade, count from name_decades where name_id=? order by decade asc");
-    ResultSet results = stmt.select([id]);
+  Future<LinkedHashMap<int, int>> getNameDecadeCounts(int id) async {
+    List<Map<String, Object?>> results = await _db.rawQuery(
+        "select decade, count from name_decades where name_id=? order by decade asc",
+        [id]);
     LinkedHashMap<int, int> decades = LinkedHashMap();
-    for (Row row in results) {
+    for (Map<String, Object?> row in results) {
       int decade = row['decade'] as int;
       int count = row['count'] as int;
       decades[decade] = count;
     }
-    stmt.dispose();
     return decades;
   }
 }

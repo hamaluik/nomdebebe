@@ -1,19 +1,18 @@
 import 'package:equatable/equatable.dart';
 import 'package:nomdebebe/models/name.dart';
-import 'package:nomdebebe/models/nullable.dart';
 
 class NamesState extends Equatable {
-  final Name? nextUndecidedName;
+  final List<Name> undecidedNameBuffer;
   final List<Name> likedNames;
   final int namesCount;
   final int undecidedNamesCount;
   final int likedNamesCount;
 
-  const NamesState(this.nextUndecidedName, this.likedNames, this.namesCount,
+  const NamesState(this.undecidedNameBuffer, this.likedNames, this.namesCount,
       this.undecidedNamesCount, this.likedNamesCount);
 
   NamesState.initial()
-      : nextUndecidedName = null,
+      : undecidedNameBuffer = [],
         likedNames = [],
         namesCount = 0,
         undecidedNamesCount = 0,
@@ -21,7 +20,7 @@ class NamesState extends Equatable {
 
   @override
   List<Object?> get props => [
-        nextUndecidedName,
+        undecidedNameBuffer,
         likedNames,
         namesCount,
         undecidedNamesCount,
@@ -29,16 +28,14 @@ class NamesState extends Equatable {
       ];
 
   NamesState copyWith({
-    Nullable<Name?>? nextUndecidedName,
+    List<Name>? undecidedNameBuffer,
     List<Name>? likedNames,
     int? namesCount,
     int? undecidedNamesCount,
     int? likedNamesCount,
   }) =>
       NamesState(
-        nextUndecidedName == null
-            ? this.nextUndecidedName
-            : nextUndecidedName.value,
+        undecidedNameBuffer ?? this.undecidedNameBuffer,
         likedNames ?? this.likedNames,
         namesCount ?? this.namesCount,
         undecidedNamesCount ?? this.undecidedNamesCount,

@@ -6,7 +6,9 @@ import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/models/filter.dart';
 import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/repositories/names_repository.dart';
-import 'package:nomdebebe/widgets/name_tile_quick.dart';
+import 'package:nomdebebe/widgets/name_tile_link.dart';
+import 'package:nomdebebe/screens/name_details_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class DislikedScreen extends StatefulWidget {
   @override
@@ -14,67 +16,87 @@ class DislikedScreen extends StatefulWidget {
 }
 
 class _DislikedScreenState extends State<DislikedScreen> {
+  final TextEditingController controller = TextEditingController();
+  List<Name> names = [];
+  String filter = "";
+  List<Name> filteredNames = [];
+
+  @override
+  void initState() {
+    super.initState();
+    NamesRepository repo = BlocProvider.of<NamesBloc>(context).namesRepository;
+    repo.getNames(filters: [LikeFilter.disliked], count: 200000).then(
+        (List<Name> _names) => setState(() {
+              names = _names;
+              filteredNames = names;
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(
         builder: (BuildContext context, SettingsState settingsState) {
       return BlocBuilder<NamesBloc, NamesState>(
           builder: (BuildContext context, NamesState namesState) {
-        NamesRepository repo =
-            BlocProvider.of<NamesBloc>(context).namesRepository;
-
-        int dislikedCount = namesState.namesCount -
-            namesState.likedNamesCount -
-            namesState.undecidedNamesCount;
-
-        if (dislikedCount == 0) {
-          return Center(
-              child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text("You haven't disliked any names yet!",
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.center)));
+        if (names.length == 0) {
+          return Center(child: SpinKitPumpingHeart(color: Colors.white));
         }
 
-        return Column(children: [
-          Expanded(
-              child: ListView.builder(
-                  itemCount: dislikedCount,
-                  itemBuilder: (BuildContext context, int index) {
-                    List<Name> disliked = repo.getNames(
-                        filters: <Filter>[LikeFilter.disliked] +
-                            settingsState.filters,
-                        skip: index,
-                        count: 1);
-                    return NameTileQuick(
-                      disliked.first,
-                      trailing: TextButton.icon(
-                        onPressed: () => BlocProvider.of<NamesBloc>(context)
-                            .add(NamesLike(disliked.first)),
-                        icon: Icon(FontAwesomeIcons.solidHeart,
-                            color: Colors.white),
-                        label: Container(),
-                        //Text("Like",
-                        //style: Theme.of(context)
-                        //.textTheme
-                        //.button
-                        //?.copyWith(color: Colors.white)),
-                      ),
-                      leading: TextButton.icon(
-                        onPressed: () => BlocProvider.of<NamesBloc>(context)
-                            .add(NamesUndecide(disliked.first)),
-                        icon: Icon(FontAwesomeIcons.question,
-                            color: Colors.white),
-                        label: Container(),
-                        //Text("Un-decide",
-                        //style: Theme.of(context)
-                        //.textTheme
-                        //.button
-                        //?.copyWith(color: Colors.white)),
-                      ),
-                    );
-                  }))
-        ]);
+        return Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Expanded(
+                  child: filteredNames.isEmpty
+                      ? Center(
+                          child: Icon(FontAwesomeIcons.baby,
+                              color: Colors.white, size: 64))
+                      : ListView.builder(
+                          itemCount: filteredNames.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Name name = filteredNames[index];
+
+                            return Hero(
+                                tag: "nameDetailsHero_" + name.id.toString(),
+                                child: NameTileLink(
+                                  name,
+                                  onTap: (Name name) => Navigator.of(context)
+                                      .push(MaterialPageRoute<void>(
+                                          builder: (BuildContext context) =>
+                                              NameDetailsScreen(name))),
+                                  key: Key(
+                                      "__name_explorer_" + name.id.toString()),
+                                ));
+                          })),
+              Padding(
+                  padding: EdgeInsets.all(16),
+                  child: TextField(
+                    controller: controller,
+                    onChanged: (String search) {
+                      if (search.trim().length < 2) {
+                        setState(() {
+                          filter = "";
+                          filteredNames = names;
+                        });
+                      } else {
+                        setState(() {
+                          filter = search.trim();
+                          filteredNames = names
+                              .where((n) => n.name
+                                  .toUpperCase()
+                                  .contains(filter.toUpperCase()))
+                              .toList();
+                        });
+                      }
+                    },
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Search',
+                      icon: Icon(FontAwesomeIcons.search),
+                    ),
+                  )),
+            ]);
       });
     });
   }
