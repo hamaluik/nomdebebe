@@ -131,13 +131,36 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
       await namesRepository.undecideName(event.name);
       yield await _updateAll();
     } else if (event is NamesLikedRank) {
+      // process the swap locally so we don't have to wait for the database to update the UI
+      if (event.sex == null) {
+        List<Name> likedNames = state.likedNames.toList();
+        Name name = likedNames.removeAt(event.oldRank);
+        likedNames.insert(
+            event.newRank > event.oldRank ? event.newRank - 1 : event.newRank,
+            name);
+        yield state.copyWith(likedNames: likedNames);
+      } else {
+        // separate out the sexes
+        List<Name> currentLiked =
+            state.likedNames.where((Name n) => n.sex == event.sex).toList();
+        List<Name> otherLiked =
+            state.likedNames.where((Name n) => n.sex != event.sex).toList();
+
+        Name name = currentLiked.removeAt(event.oldRank);
+        currentLiked.insert(
+            event.newRank > event.oldRank ? event.newRank - 1 : event.newRank,
+            name);
+
+        List<Name> liked = currentLiked + otherLiked;
+        yield state.copyWith(likedNames: liked);
+      }
+
+      // now update the database, this should be invisible to the user
+      // as we've already processed the swap from the UI for the UI above
       List<Filter> sexFilter = [];
       if (event.sex == Sex.male)
         sexFilter = [SexFilter.male];
       else if (event.sex == Sex.female) sexFilter = [SexFilter.female];
-
-      // TODO: process the swap locally while dealing with name sexes
-      // so that we don't lag the UI
       await namesRepository.swapLikedNamesRanks(event.oldRank, event.newRank,
           filters: settings.state.filters + sexFilter);
       List<Name> newLikedNames = await namesRepository.getRankedLikedNames(
