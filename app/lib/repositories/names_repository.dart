@@ -60,6 +60,10 @@ class NamesRepository {
         filters ?? List.empty(), 0, 1000000);
   }
 
+  Future<void> rankLikedNames(List<int> sortedIds) {
+    return _namesProvider.rankLikedNames(sortedIds);
+  }
+
   Future<void> swapLikedNamesRanks(int oldRank, int newRank,
       {List<Filter>? filters}) async {
     List<int> ids = await _namesProvider.getRankedLikedNameIds(

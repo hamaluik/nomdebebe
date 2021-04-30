@@ -6,7 +6,7 @@ Color sexToColour(BuildContext context, Sex sex, bool pinkAndBlue) {
   Brightness b = Theme.of(context).brightness;
   if (!pinkAndBlue)
     return b == Brightness.light
-        ? Colors.lightGreen.shade600
+        ? Colors.lightGreen.shade800
         : Colors.green.shade900;
   switch (sex) {
     case Sex.male:
