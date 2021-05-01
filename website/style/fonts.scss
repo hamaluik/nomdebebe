@@ -1,0 +1,24 @@
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/PublicSans-Regular.woff2) format("woff2"), url(/fonts/PublicSans-Regular.woff) format("woff"),
+    url(/fonts/PublicSans-Regular.ttf) format("ttf");
+}
+@font-face {
+  font-family: "Public Sans";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/PublicSans-Italic.woff2) format("woff2"), url(/fonts/PublicSans-Italic.woff) format("woff"),
+    url(/fonts/PublicSans-Italic.ttf) format("ttf");
+}
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/PublicSans-Bold.woff2) format("woff2"), url(/fonts/PublicSans-Bold.woff) format("woff"),
+    url(/fonts/PublicSans-Bold.ttf) format("ttf");
+}

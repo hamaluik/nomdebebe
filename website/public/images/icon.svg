@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg enable-background="new 0 0 1024 1024" version="1.1" viewBox="0 0 1024 1024" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+<rect style="fill:#039be5;" x="511" width="513" height="1024"/>
+<rect style="fill:#D81B60;" width="513" height="1024"/>
+<path style="fill:#FFCA28;" d="M706,1024.2c128.1-128.5,128.9-383.5,0.4-512S576.7,128.5,704,0L320,0c-127.3,128.5-127,383,1.5,511.5  s127.8,383.5-0.4,512L706,1024.2z"/>
+</svg>
