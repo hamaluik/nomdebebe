@@ -39,7 +39,7 @@ echo "Normalizing data"
 sqlite3 names.db <<EOF
 -- our master names table
 create table names(id integer not null primary key autoincrement, name text not null, sex text not null, unique(name, sex));
-insert into names(name, sex) select distinct name, sex from names_raw;
+insert into names(name, sex) select distinct name, sex from names_raw order by year_count desc;
 
 -- a table to hold how popular each name was in any given decade
 create table name_decades(name_id integer not null, count integer, decade integer, decade_rank integer, unique(name_id, decade), foreign key(name_id) references names(id));
