@@ -7,8 +7,9 @@ import 'package:nomdebebe/blocs/settings/settings.dart';
 import 'package:nomdebebe/blocs/sharing/sharing.dart';
 import 'package:nomdebebe/models/sex.dart';
 import 'package:nomdebebe/screens/sharing/setup.dart';
-import 'package:nomdebebe/widgets/name_tile.dart';
+import 'package:nomdebebe/widgets/name_tile_link.dart';
 import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/screens/name_details_screen.dart';
 
 class SharingScreen extends StatefulWidget {
   @override
@@ -114,10 +115,17 @@ class _SharingScreenState extends State<SharingScreen>
                                         .length,
                                     itemBuilder: (BuildContext context,
                                             int index) =>
-                                        NameTile(sharingState.partnerNames
-                                            .where(
-                                                (Name n) => n.sex == Sex.female)
-                                            .elementAt(index)),
+                                        NameTileLink(
+                                          sharingState.partnerNames
+                                              .where((Name n) =>
+                                                  n.sex == Sex.female)
+                                              .elementAt(index),
+                                          onTap: (Name name) => Navigator.of(
+                                                  context)
+                                              .push(MaterialPageRoute<void>(
+                                                  builder: (_) =>
+                                                      NameDetailsScreen(name))),
+                                        ),
                                     physics:
                                         const AlwaysScrollableScrollPhysics()),
                                 ListView.builder(
@@ -126,10 +134,17 @@ class _SharingScreenState extends State<SharingScreen>
                                         .length,
                                     itemBuilder: (BuildContext context,
                                             int index) =>
-                                        NameTile(sharingState.partnerNames
-                                            .where(
-                                                (Name n) => n.sex == Sex.male)
-                                            .elementAt(index)),
+                                        NameTileLink(
+                                          sharingState.partnerNames
+                                              .where(
+                                                  (Name n) => n.sex == Sex.male)
+                                              .elementAt(index),
+                                          onTap: (Name name) => Navigator.of(
+                                                  context)
+                                              .push(MaterialPageRoute<void>(
+                                                  builder: (_) =>
+                                                      NameDetailsScreen(name))),
+                                        ),
                                     physics:
                                         const AlwaysScrollableScrollPhysics()),
                               ],
@@ -142,7 +157,13 @@ class _SharingScreenState extends State<SharingScreen>
                         : ListView.builder(
                             itemCount: sharingState.partnerNames.length,
                             itemBuilder: (BuildContext context, int index) =>
-                                NameTile(sharingState.partnerNames[index]),
+                                NameTileLink(
+                                  sharingState.partnerNames[index],
+                                  onTap: (Name name) => Navigator.of(context)
+                                      .push(MaterialPageRoute<void>(
+                                          builder: (_) =>
+                                              NameDetailsScreen(name))),
+                                ),
                             physics: const AlwaysScrollableScrollPhysics())),
                 SetupScreen(),
               ],
@@ -182,8 +203,13 @@ class _SharingScreenState extends State<SharingScreen>
 
     matches.sort((MatchedName a, MatchedName b) => a.order.compareTo(b.order));
     return matches
-        .map((m) =>
-            NameTile(m.name, key: Key("__liked_names_" + m.name.id.toString())))
+        .map((m) => NameTileLink(
+              m.name,
+              key: Key("__liked_names_" + m.name.id.toString()),
+              onTap: (Name name) => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                      builder: (_) => NameDetailsScreen(name))),
+            ))
         .toList();
   }
 }
