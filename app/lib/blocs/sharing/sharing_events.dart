@@ -23,3 +23,10 @@ class SharingEventUpdateLikedNames extends SharingEvent {
   @override
   List<Object?> get props => [names];
 }
+
+class SharingEventGetNewCode extends SharingEvent {
+  final List<Name> names;
+  const SharingEventGetNewCode(this.names);
+  @override
+  List<Object?> get props => [names];
+}

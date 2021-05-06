@@ -1,19 +1,22 @@
 import 'package:nomdebebe/models/name.dart';
-import 'package:nomdebebe/models/sex.dart';
+import 'package:nomdebebe/models/filter.dart';
+import 'package:nomdebebe/repositories/names_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SharedRepository {
   static final String rootURI = "https://nomdebebe.hamaluik.dev";
+  final NamesRepository namesRepository;
   final SharedPreferences _prefs;
   final http.Client _client;
 
-  SharedRepository._(this._prefs) : _client = http.Client();
+  SharedRepository._(this.namesRepository, this._prefs)
+      : _client = http.Client();
 
-  static Future<SharedRepository> load() async {
+  static Future<SharedRepository> load(NamesRepository namesRepository) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return SharedRepository._(prefs);
+    return SharedRepository._(namesRepository, prefs);
   }
 
   Future<String?> get myID async {
@@ -51,6 +54,12 @@ class SharedRepository {
     return id;
   }
 
+  Future<String?> resetMyID() async {
+    await _prefs.remove("myID");
+    await _prefs.remove("mySecret");
+    return myID;
+  }
+
   String? get partnerID {
     if (!_prefs.containsKey("partnerID")) {
       //print("no partner id in storage");
@@ -75,14 +84,7 @@ class SharedRepository {
     if (id == null) throw "Failed to obtain my ID!";
     String secret = _prefs.getString("mySecret")!;
 
-    // encode the sex by prepending ! or @ based on sex, instead of building maps for each name.
-    // this is mostly because I'm being lazy right now, but I could also argue it simplifies the
-    // server AND saves bandwidth, for barely any work on the client side.
-    List<String> encodedNames = names
-        .map((Name n) => (n.sex == Sex.male ? "!" : "@") + n.name)
-        .toList();
-
-    String body = jsonEncode(encodedNames);
+    String body = jsonEncode(names.map((Name n) => n.id).toList());
     Uri uri = Uri.parse(rootURI +
         "/names/" +
         Uri.encodeComponent(id) +
@@ -92,7 +94,7 @@ class SharedRepository {
         .post(uri, body: body, headers: {"Content-Type": "application/json"});
 
     if (resp.statusCode != 200) {
-      //print("Failed to share liked names: ${resp.statusCode} => ${resp.body}");
+      print("Failed to share liked names: ${resp.statusCode} => ${resp.body}");
       throw "Failed to share liked names";
     }
   }
@@ -102,24 +104,19 @@ class SharedRepository {
     http.Response resp = await http.get(uri);
 
     if (resp.statusCode != 200) {
-      //print("Error getting partner names: ${resp.statusCode} => ${resp.body}");
+      print("Error getting partner names: ${resp.statusCode} => ${resp.body}");
       return null;
     }
 
     var body = jsonDecode(resp.body);
     if (!(body is List)) {
-      //print("Malformed response from sharing server: ${resp.body}");
+      print("Malformed response from sharing server: ${resp.body}");
       return null;
     }
 
-    List<String> names = body.cast<String>();
-    List<Name> decodedNames = names.map((String n) {
-      if (n.startsWith("!"))
-        return Name(0, n.substring(1), Sex.male, null);
-      else if (n.startsWith("@"))
-        return Name(0, n.substring(1), Sex.female, null);
-      return Name(0, n, Sex.female, null);
-    }).toList();
-    return decodedNames;
+    List<int> nameIDs = body.cast<int>();
+    List<Name> names = await namesRepository
+        .getNames(filters: [IDFilter(nameIDs)], count: 1000000);
+    return names;
   }
 }

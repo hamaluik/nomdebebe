@@ -13,6 +13,8 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
   @override
   Stream<SharingState> mapEventToState(SharingEvent event) async* {
     if (event is SharingEventRefresh) {
+      yield SharingState(null, null, List.empty(), null, true);
+
       String? id = await sharedRepository.myID;
       String? partnerID = sharedRepository.partnerID;
       List<Name>? partnerNames = partnerID == null
@@ -26,8 +28,10 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
       //print("partner id: $partnerID");
       //print("partner names: $partnerNames");
 
-      yield SharingState(id, partnerID, partnerNames ?? List.empty(), error);
+      yield SharingState(
+          id, partnerID, partnerNames ?? List.empty(), error, false);
     } else if (event is SharingEventSetPartnerID) {
+      yield state.copyWith(loading: true);
       sharedRepository.partnerID = event.partnerID;
       List<Name>? partnerNames = sharedRepository.partnerID == null
           ? List.empty()
@@ -38,8 +42,10 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
       yield state.copyWith(
           partnerID: Nullable(event.partnerID),
           partnerNames: partnerNames,
-          error: Nullable(error));
+          error: Nullable(error),
+          loading: false);
     } else if (event is SharingEventUpdateLikedNames) {
+      yield state.copyWith(loading: true);
       String? error;
       try {
         sharedRepository.setLikedNames(event.names);
@@ -48,7 +54,12 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
         error = "Failed to share liked names";
       }
       add(SharingEventRefresh());
-      yield state.copyWith(error: Nullable(error));
+      yield state.copyWith(error: Nullable(error), loading: false);
+    } else if (event is SharingEventGetNewCode) {
+      yield state.copyWith(loading: true);
+      String? id = await sharedRepository.resetMyID();
+      await sharedRepository.setLikedNames(event.names);
+      yield state.copyWith(myID: Nullable(id), loading: false);
     }
   }
 }

@@ -4,6 +4,17 @@ abstract class Filter {
   List<Object> get args => List.empty();
 }
 
+class IDFilter extends Filter {
+  final List<int> ids;
+  const IDFilter(this.ids);
+
+  @override
+  String get query => "id in (" + ids.map((_) => "?").join(",") + ")";
+
+  @override
+  List<Object> get args => ids;
+}
+
 class LikeFilter extends Filter {
   final int? _like;
   const LikeFilter._(this._like);

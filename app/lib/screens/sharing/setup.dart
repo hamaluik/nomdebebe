@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/blocs/sharing/sharing.dart';
 import 'package:share/share.dart';
-//import 'package:auto_size_text_field/auto_size_text_field.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SetupScreen extends StatefulWidget {
   @override
@@ -27,6 +29,8 @@ class _SetupScreenState extends State<SetupScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              Container(height: Theme.of(context).textTheme.caption?.fontSize),
+              Expanded(child: Container()),
               Text("Share this code with your partner:",
                   style: Theme.of(context).textTheme.headline6),
               Container(
@@ -63,6 +67,29 @@ class _SetupScreenState extends State<SetupScreen> {
                       "It looks like your partner hasn't shared any favourite names yet!",
                       textAlign: TextAlign.center)
                   : Container(),
+              Expanded(child: Container()),
+              TextButton.icon(
+                  icon: sharingState.loading
+                      ? SpinKitDualRing(
+                          color: Theme.of(context).textTheme.caption?.color ??
+                              Colors.black54,
+                          size:
+                              (Theme.of(context).iconTheme.size ?? 24.0) / 2.0,
+                          lineWidth:
+                              ((Theme.of(context).iconTheme.size ?? 24.0) / 7.0)
+                                  .ceil()
+                                  .toDouble(),
+                        )
+                      : Icon(FontAwesomeIcons.redoAlt,
+                          color: Theme.of(context).textTheme.caption?.color,
+                          size:
+                              (Theme.of(context).iconTheme.size ?? 24.0) / 2.0),
+                  label: Text("Get a new sharing code",
+                      style: Theme.of(context).textTheme.caption),
+                  onPressed: () => BlocProvider.of<SharingBloc>(context).add(
+                      SharingEventGetNewCode(BlocProvider.of<NamesBloc>(context)
+                          .state
+                          .likedNames))),
             ],
           ));
     });
