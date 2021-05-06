@@ -1,6 +1,6 @@
 [package]
 name = "nomdebebe-server"
-version = "1.0.0-dev.0"
+version = "1.0.0-dev.1"
 authors = ["Kenton Hamaluik <kenton@hamaluik.ca>"]
 edition = "2018"
 

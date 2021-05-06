@@ -8,11 +8,31 @@ pub type Pool = r2d2::Pool<r2d2_sqlite::SqliteConnectionManager>;
 pub fn initialize<P: AsRef<Path>>(path: P) -> Result<Pool> {
     let manager = r2d2_sqlite::SqliteConnectionManager::file(path);
     let pool = Pool::new(manager).map_err(|e| anyhow!("Failed to open database pool: {:?}", e))?;
+    let conn = pool
+        .get()
+        .map_err(|e| anyhow!("Failed to get pooled connection: {:?}", e))?;
 
-    pool.get()?.execute(
-        "create table if not exists user_names (id integer not null primary key autoincrement, names text not null, secret text not null)",
-        [],
-    )?;
+    const CURRENT_VERSION: u32 = 1;
+
+    loop {
+        let user_version: u32 = conn
+            .pragma_query_value(None, "user_version", |r| r.get(0))
+            .map_err(|e| anyhow!("Failed to query database version: {}", e))?;
+
+        if user_version >= CURRENT_VERSION {
+            break;
+        }
+
+        if user_version < 1 {
+            conn.execute(
+                "create table if not exists user_names (id integer not null primary key autoincrement, names text not null, secret text not null)",
+                [],
+            )?;
+
+            conn.pragma_update(None, "user_version", &1u32)
+                .map_err(|e| anyhow!("Failed to update database version: {}", e))?;
+        }
+    }
 
     Ok(pool)
 }
@@ -38,7 +58,7 @@ pub fn create_new_user(pool: &Pool) -> Result<(u32, String)> {
     Ok((id as u32, secret))
 }
 
-pub fn get_user_names(pool: &Pool, id: u32) -> Result<Vec<String>> {
+pub fn get_user_names(pool: &Pool, id: u32) -> Result<Vec<u32>> {
     let conn = pool
         .get()
         .map_err(|e| anyhow!("Failed to get pooled connection: {:?}", e))?;
@@ -51,13 +71,13 @@ pub fn get_user_names(pool: &Pool, id: u32) -> Result<Vec<String>> {
         )
         .map_err(|e| anyhow!("Failed to get names for id `{}`: {:?}", id, e))?;
 
-    let names: Vec<String> = serde_json::from_str(&names)
+    let names: Vec<u32> = serde_json::from_str(&names)
         .map_err(|e| anyhow!("Failed to parse JSON name list for id `{}`: {:?}", id, e))?;
 
     Ok(names)
 }
 
-pub fn set_user_names(pool: &Pool, id: u32, secret: &str, names: &Vec<String>) -> Result<()> {
+pub fn set_user_names(pool: &Pool, id: u32, secret: &str, names: &Vec<u32>) -> Result<()> {
     let mut conn = pool
         .get()
         .map_err(|e| anyhow!("Failed to get pooled connection: {:?}", e))?;

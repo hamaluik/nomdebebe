@@ -73,7 +73,7 @@ struct SecretQuery {
 async fn set_names_for_id(
     web::Path(id): web::Path<String>,
     query: web::Query<SecretQuery>,
-    names: web::Json<Vec<String>>,
+    names: web::Json<Vec<u32>>,
     harsh: web::Data<Harsh>,
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, HttpResponse> {
