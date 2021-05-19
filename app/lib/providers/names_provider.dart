@@ -141,7 +141,7 @@ class NamesProvider {
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
     // TODO: don't include decade filters here?
     List<Map<String, Object?>> results = await _db.rawQuery(
-        "select names.id as id from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id order by name_ranks.rank asc limit ? offset ?",
+        "select names.id as id from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id order by name_ranks.rank is null, name_ranks.rank asc limit ? offset ?",
         args);
     return results.map((Map<String, Object?> r) => r['id'] as int).toList();
   }
@@ -151,7 +151,7 @@ class NamesProvider {
     List<Object> args = filters.expand((f) => f.args).toList() + [count, skip];
     // TODO: don't include decade filters here?
     List<Map<String, Object?>> results = await _db.rawQuery(
-        "select names.id as id, names.name as name, names.sex as sex, names.like as like from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id order by name_ranks.rank asc limit ? offset ?",
+        "select names.id as id, names.name as name, names.sex as sex, names.like as like from names inner join name_ranks on name_ranks.id = names.id inner join name_decades on name_decades.name_id = names.id ${_formatFilterQuery(filters)} group by names.id order by name_ranks.rank is null, name_ranks.rank asc limit ? offset ?",
         args);
     return results.map((Map<String, Object?> r) {
       int id = r['id'] as int;
