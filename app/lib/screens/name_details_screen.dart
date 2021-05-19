@@ -179,7 +179,9 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
                                                                           color:
                                                                               Colors.white),
                                                               showTitles: true,
-                                                              reservedSize: 22,
+                                                              reservedSize: 44,
+                                                              rotateAngle:
+                                                                  -30.0,
                                                               getTitles:
                                                                   (value) {
                                                                 switch (value
