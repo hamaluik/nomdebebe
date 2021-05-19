@@ -48,3 +48,5 @@ class NamesLikedRank extends NamesEvent {
 }
 
 class NamesFactoryReset extends NamesEvent {}
+
+class NamesUndoDecision extends NamesEvent {}

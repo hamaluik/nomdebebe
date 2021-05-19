@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/widgets/name_card.dart';
 
@@ -24,9 +25,23 @@ class UndecidedScreen extends StatelessWidget {
       String decided =
           MaterialLocalizations.of(context).formatDecimal(decidedCount);
 
-      return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
+      return SafeArea(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+            Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              TextButton.icon(
+                  onPressed: () => BlocProvider.of<NamesBloc>(context)
+                      .add(NamesUndoDecision()),
+                  icon: Icon(FontAwesomeIcons.undoAlt,
+                      color: state.decisionHistory.isNotEmpty
+                          ? Theme.of(context).textTheme.caption?.color
+                          : null),
+                  label: Text("Undo",
+                      style: state.decisionHistory.isNotEmpty
+                          ? Theme.of(context).textTheme.caption
+                          : null))
+            ]),
             Expanded(
                 child: Center(
                     child: Padding(
@@ -41,7 +56,7 @@ class UndecidedScreen extends StatelessWidget {
                     : NameCard(state.undecidedNameBuffer.first,
                         key: Key("__undecided_card_" +
                             state.undecidedNameBuffer.first.id.toString())))
-          ]);
+          ]));
     });
   }
 }

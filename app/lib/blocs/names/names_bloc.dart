@@ -69,12 +69,21 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
           .toList();
       List<Name> liked = state.likedNames.toList() + [event.name];
 
+      // add it to our undo history
+      List<DecisionNode> decisionHistory = state.decisionHistory.toList();
+      decisionHistory.add(DecisionNode(event.name, DecisionType.Liked));
+      // cap the decision history at 200 names, arbitrarily
+      if (decisionHistory.length > 200) {
+        decisionHistory.removeAt(0);
+      }
+
       // return the new state immediately so we can update the UI
       yield state.copyWith(
         undecidedNameBuffer: undecided,
         undecidedNamesCount: state.undecidedNamesCount - 1,
         likedNames: liked,
         likedNamesCount: state.likedNamesCount + 1,
+        decisionHistory: decisionHistory,
       );
 
       // if we're running low on undecided names in our buffer, update the list
@@ -103,9 +112,17 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
           .where((Name n) => n.id != event.name.id)
           .toList();
 
+      // add it to our undo history
+      List<DecisionNode> decisionHistory = state.decisionHistory.toList();
+      decisionHistory.add(DecisionNode(event.name, DecisionType.Disliked));
+      // cap the decision history at 200 names, arbitrarily
+      if (decisionHistory.length > 200) {
+        decisionHistory.removeAt(0);
+      }
       yield state.copyWith(
         undecidedNameBuffer: undecided,
         undecidedNamesCount: state.undecidedNamesCount - 1,
+        decisionHistory: decisionHistory,
       );
 
       if (undecided.length < 5) {
@@ -172,6 +189,60 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
       // it's ok if this rare event takes a couple milliseconds of lag
       await namesRepository.factoryReset();
       yield await _updateAll();
+    } else if (event is NamesUndoDecision) {
+      if (state.decisionHistory.isNotEmpty) {
+        // pop the most recent name off the stack
+        List<DecisionNode> decisionHistory = state.decisionHistory.toList();
+        DecisionNode decision = decisionHistory.removeLast();
+
+        switch (decision.type) {
+          case DecisionType.Liked:
+            {
+              // undecide the name immediately
+              Name name = decision.name;
+              var undecide = namesRepository.undecideName(name);
+
+              // remove it from our liked names
+              List<Name> likedNames =
+                  state.likedNames.where((Name n) => n.id != name.id).toList();
+              int likedCount = state.likedNamesCount - 1;
+              int undecidedCount = state.undecidedNamesCount + 1;
+              List<Name> undecidedNames = state.undecidedNameBuffer.toList();
+              undecidedNames.insert(0, name);
+
+              // yield the updated state immediately so we don't interrupt the UI
+              yield state.copyWith(
+                  undecidedNameBuffer: undecidedNames,
+                  likedNames: likedNames,
+                  undecidedNamesCount: undecidedCount,
+                  likedNamesCount: likedCount,
+                  decisionHistory: decisionHistory);
+
+              // finally, make sure the database is updated
+              await undecide;
+            }
+            break;
+          case DecisionType.Disliked:
+            {
+              // undecide the name immediately
+              Name name = decision.name;
+              var undecide = namesRepository.undecideName(name);
+              int undecidedCount = state.undecidedNamesCount + 1;
+              List<Name> undecidedNames = state.undecidedNameBuffer.toList();
+              undecidedNames.insert(0, name);
+
+              // yield the updated state immediately so we don't interrupt the UI
+              yield state.copyWith(
+                  undecidedNameBuffer: undecidedNames,
+                  undecidedNamesCount: undecidedCount,
+                  decisionHistory: decisionHistory);
+
+              // finally, make sure the database is updated
+              await undecide;
+            }
+            break;
+        }
+      }
     }
   }
 }
