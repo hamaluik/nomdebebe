@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/widgets/name_card.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class UndecidedScreen extends StatelessWidget {
   @override
@@ -14,7 +15,7 @@ class UndecidedScreen extends StatelessWidget {
         return Center(
             child: Padding(
                 padding: EdgeInsets.all(16),
-                child: Text("I'm all out of names!",
+                child: AutoSizeText("I'm all out of names!",
                     style: Theme.of(context).textTheme.headline2,
                     textAlign: TextAlign.center)));
       }
@@ -46,7 +47,7 @@ class UndecidedScreen extends StatelessWidget {
                 child: Center(
                     child: Padding(
                         padding: EdgeInsets.all(32),
-                        child: Text("$decided done\n$undecided to go",
+                        child: AutoSizeText("$decided done\n$undecided to go",
                             style: Theme.of(context).textTheme.headline2,
                             textAlign: TextAlign.center)))),
             Padding(
