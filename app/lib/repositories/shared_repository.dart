@@ -19,6 +19,17 @@ class SharedRepository {
     return SharedRepository._(namesRepository, prefs);
   }
 
+  bool get enabled {
+    if (_prefs.containsKey("sharingEnabled")) {
+      return _prefs.getBool("sharingEnabled") ?? false;
+    }
+    return false;
+  }
+
+  Future<bool> setEnabled(bool enabled) {
+    return _prefs.setBool("sharingEnabled", enabled);
+  }
+
   Future<String?> get myID async {
     if (_prefs.containsKey("myID") && _prefs.containsKey("mySecret")) {
       //print("retrieved stored myID: ${_prefs.getString('myID')}");

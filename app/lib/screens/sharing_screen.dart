@@ -43,6 +43,23 @@ class _SharingScreenState extends State<SharingScreen>
           builder: (BuildContext context, NamesState namesState) {
         return BlocBuilder<SharingBloc, SharingState>(
             builder: (BuildContext context, SharingState sharingState) {
+          if (!sharingState.enableSharing) {
+            return Center(
+                child: ElevatedButton.icon(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (_) => Colors.pink.shade600),
+                    ),
+                    onPressed: () => BlocProvider.of<SharingBloc>(context)
+                        .add(SharingEventEnableDisable(true)),
+                    icon: Icon(FontAwesomeIcons.share, color: Colors.white),
+                    label: Text("Enable names sharing",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            ?.copyWith(color: Colors.white))));
+          }
+
           if (sharingState.myID == null) {
             return Center(
                 child: Text(

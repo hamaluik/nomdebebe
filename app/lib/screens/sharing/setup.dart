@@ -30,7 +30,7 @@ class _SetupScreenState extends State<SetupScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(height: Theme.of(context).textTheme.caption?.fontSize),
-              Expanded(child: Container()),
+              Expanded(flex: 3, child: Container()),
               Text("Share this code with your partner:",
                   style: Theme.of(context).textTheme.headline6),
               Container(
@@ -67,7 +67,14 @@ class _SetupScreenState extends State<SetupScreen> {
                       "It looks like your partner hasn't shared any favourite names yet!",
                       textAlign: TextAlign.center)
                   : Container(),
-              Expanded(child: Container()),
+              Expanded(flex: 1, child: Container()),
+              SwitchListTile.adaptive(
+                  title: const Text("Enable names sharing"),
+                  value: sharingState.enableSharing,
+                  onChanged: (bool enabled) =>
+                      BlocProvider.of<SharingBloc>(context)
+                          .add(SharingEventEnableDisable(enabled))),
+              Expanded(flex: 1, child: Container()),
               TextButton.icon(
                   icon: sharingState.loading
                       ? SpinKitDualRing(
