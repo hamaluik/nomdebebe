@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1024"
+   height="500"
+   viewBox="0 0 270.93333 132.29167"
+   version="1.1"
+   id="svg853"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
+   sodipodi:docname="feature_banner.svg">
+  <defs
+     id="defs847" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="574.82926"
+     inkscape:cy="197.39778"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     scale-x="1"
+     units="px"
+     inkscape:snap-text-baseline="false"
+     inkscape:window-width="1720"
+     inkscape:window-height="1419"
+     inkscape:window-x="1720"
+     inkscape:window-y="21"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata850">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffca28;stroke:#545454;stroke-width:0.0672034;stop-color:#000000"
+       id="rect1416"
+       width="270.86612"
+       height="132.22446"
+       x="0.033601746"
+       y="0.033601746" />
+    <g
+       id="g1461"
+       transform="translate(0.29224171,16.57996)">
+      <g
+         id="g1449"
+         transform="matrix(0.09071429,0,0,0.09069657,52.369348,60.017804)">
+        <rect
+           style="fill:#039be5;stroke-width:0.205078"
+           x="20.961588"
+           width="105.20508"
+           height="210"
+           id="rect833"
+           y="-220.68123" />
+        <rect
+           style="fill:#d81b60;stroke-width:0.205078"
+           width="105.20508"
+           height="210"
+           id="rect835"
+           x="-83.833336"
+           y="-220.68123" />
+        <path
+           style="fill:#ffca28;stroke-width:0.205078"
+           d="m 60.951824,-10.640209 c 26.270508,-26.35254 26.434571,-78.647463 0.08203,-105.000001 -26.35254,-26.35254 -26.598633,-78.68848 -0.492187,-105.04102 h -78.750002 c -26.106446,26.35254 -26.044923,78.54492 0.307617,104.89746 26.3525395,26.352543 26.2089848,78.647466 -0.08203,105.000006 z"
+           id="path837" />
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-size:25.4px;line-height:1.25;font-family:'Public Sans';-inkscape-font-specification:'Public Sans';fill:#000000;fill-opacity:0.87;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+         x="66.161537"
+         y="58.874973"
+         id="text1453"><tspan
+           sodipodi:role="line"
+           id="tspan1451"
+           x="66.161537"
+           y="58.874973"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25.4px;font-family:'Public Sans';-inkscape-font-specification:'Public Sans Bold';fill:#000000;fill-opacity:0.87;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Nom de Bébé</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:12.7px;line-height:1.25;font-family:'Public Sans';-inkscape-font-specification:'Public Sans';white-space:pre;inline-size:192.374;fill:#000000;fill-opacity:0.87;stroke-width:0.264583"
+       x="115.7728"
+       y="80.284256"
+       id="text1465"
+       transform="translate(-76.75682,18.921954)"><tspan
+         x="115.7728"
+         y="80.284256"><tspan
+           style="font-size:12.7px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:0.87;stroke-width:0.264583">A simple, private tool to help </tspan></tspan><tspan
+         x="115.7728"
+         y="96.159258"><tspan
+           style="font-size:12.7px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:0.87;stroke-width:0.264583">pick a baby name.</tspan></tspan></text>
+  </g>
+</svg>

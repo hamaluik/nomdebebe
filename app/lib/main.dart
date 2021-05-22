@@ -72,6 +72,7 @@ class NamesAppState extends State<NamesApp> with WidgetsBindingObserver {
     return BlocBuilder<SettingsBloc, SettingsState>(
         builder: (BuildContext context, SettingsState settings) {
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "Nom de Bébé",
         theme: themeForType(settings.theme) ??
             (brightness == Brightness.dark ? darkTheme : lightTheme),
