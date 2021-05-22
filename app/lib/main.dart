@@ -1,9 +1,10 @@
 import 'dart:ui';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nomdebebe/blocs/iap/iap_bloc.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
 import 'package:nomdebebe/blocs/sharing/sharing.dart';
@@ -18,10 +19,14 @@ import 'package:nomdebebe/screens/settings_screen.dart';
 import 'package:nomdebebe/screens/disliked_screen.dart';
 import 'package:nomdebebe/screens/explore_screen.dart';
 //import 'package:nomdebebe/blocs/debug_logger.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  }
 
   //Bloc.observer = DebugLogger();
   NamesRepository names = NamesRepository(await NamesProvider.load());
@@ -29,6 +34,10 @@ void main() async {
   SharedRepository shared = await SharedRepository.load(names);
 
   runApp(MultiBlocProvider(providers: [
+    BlocProvider<IAPBloc>(
+        create: (BuildContext _) => IAPBloc()
+          ..init()
+          ..add(IAPLoadProducts())),
     BlocProvider<SettingsBloc>(
         create: (BuildContext _) =>
             SettingsBloc(settings)..add(SettingsLoad())),
