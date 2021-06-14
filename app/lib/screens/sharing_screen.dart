@@ -28,6 +28,9 @@ class _SharingScreenState extends State<SharingScreen>
     super.initState();
     mainTabController = TabController(length: 3, vsync: this);
     sexTabController = TabController(length: 2, vsync: this);
+
+    // update the product list whenever we get here
+    BlocProvider.of<IAPBloc>(context).add(IAPLoadProducts());
   }
 
   @override
@@ -35,6 +38,17 @@ class _SharingScreenState extends State<SharingScreen>
     mainTabController.dispose();
     sexTabController.dispose();
     super.dispose();
+  }
+
+  static String purchaseText(IAPState state) {
+    try {
+      String price = state.productDetails
+          .firstWhere((p) => p.id == IAPBloc.SKU_SHARING)
+          .price;
+      return "Purchase: " + price;
+    } catch (_) {
+      return "Purchase";
+    }
   }
 
   @override
@@ -74,7 +88,7 @@ class _SharingScreenState extends State<SharingScreen>
                                             Navigator.of(context).pop(false),
                                       ),
                                       TextButton(
-                                        child: const Text("Purchase"),
+                                        child: Text(purchaseText(iapState)),
                                         onPressed: () =>
                                             Navigator.of(context).pop(true),
                                       ),

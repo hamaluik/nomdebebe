@@ -77,7 +77,9 @@ class IAPState extends Equatable {
 }
 
 class IAPBloc extends Bloc<IAPEvent, IAPState> {
-  static const Set<String> _kIds = <String>{'upgrade.sharing'};
+  static const String SKU_SHARING = "upgrade.sharing";
+
+  static const Set<String> _kIds = <String>{SKU_SHARING};
   late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   IAPBloc() : super(IAPState.initial());
@@ -86,8 +88,12 @@ class IAPBloc extends Bloc<IAPEvent, IAPState> {
     _subscription = InAppPurchase.instance.purchaseStream
         .listen((List<PurchaseDetails> purchaseDetailsList) {
       purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+        print('purchase update for `' +
+            purchaseDetails.productID +
+            '`: ' +
+            purchaseDetails.status.toString());
         switch (purchaseDetails.productID) {
-          case 'upgrade.sharing':
+          case SKU_SHARING:
             {
               switch (purchaseDetails.status) {
                 case PurchaseStatus.pending:
@@ -126,11 +132,15 @@ class IAPBloc extends Bloc<IAPEvent, IAPState> {
     if (event is IAPLoadProducts) {
       final ProductDetailsResponse response =
           await InAppPurchase.instance.queryProductDetails(_kIds);
-      if (response.error != null)
+      if (response.error != null) {
         print("Failed to query error: ${response.error}");
-      if (response.notFoundIDs.isNotEmpty)
+      }
+      if (response.notFoundIDs.isNotEmpty) {
         print("Failed to find details for products: " +
             response.notFoundIDs.join(", "));
+        print("Found products: " +
+            response.productDetails.map((d) => d.toString()).join(", "));
+      }
       yield state.copyWith(productDetails: response.productDetails);
     } else if (event is IAPRestorePurchases) {
       await InAppPurchase.instance.restorePurchases();
@@ -138,8 +148,8 @@ class IAPBloc extends Bloc<IAPEvent, IAPState> {
     } else if (event is IAPPurchaseUpgradeSharing) {
       ProductDetails? productDetails;
       try {
-        productDetails = state.productDetails.firstWhere(
-            (ProductDetails details) => details.id == 'upgrade.sharing');
+        productDetails = state.productDetails
+            .firstWhere((ProductDetails details) => details.id == SKU_SHARING);
       } catch (_) {}
       if (productDetails != null) {
         await InAppPurchase.instance.buyNonConsumable(
