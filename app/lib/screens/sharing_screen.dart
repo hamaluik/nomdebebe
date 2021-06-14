@@ -37,6 +37,17 @@ class _SharingScreenState extends State<SharingScreen>
     super.dispose();
   }
 
+  static String purchaseText(IAPState state) {
+    try {
+      String price = state.productDetails
+          .firstWhere((p) => p.id == IAPBloc.SKU_SHARING)
+          .price;
+      return "Purchase: " + price;
+    } catch (_) {
+      return "Purchase";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<IAPBloc, IAPState>(
@@ -74,7 +85,7 @@ class _SharingScreenState extends State<SharingScreen>
                                             Navigator.of(context).pop(false),
                                       ),
                                       TextButton(
-                                        child: const Text("Purchase"),
+                                        child: Text(purchaseText(iapState)),
                                         onPressed: () =>
                                             Navigator.of(context).pop(true),
                                       ),
