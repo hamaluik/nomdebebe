@@ -28,6 +28,9 @@ class _SharingScreenState extends State<SharingScreen>
     super.initState();
     mainTabController = TabController(length: 3, vsync: this);
     sexTabController = TabController(length: 2, vsync: this);
+
+    // update the product list whenever we get here
+    BlocProvider.of<IAPBloc>(context).add(IAPLoadProducts());
   }
 
   @override
