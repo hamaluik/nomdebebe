@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:nomdebebe/blocs/iap/iap_bloc.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
 import 'package:nomdebebe/blocs/sharing/sharing.dart';
@@ -28,9 +26,6 @@ class _SharingScreenState extends State<SharingScreen>
     super.initState();
     mainTabController = TabController(length: 3, vsync: this);
     sexTabController = TabController(length: 2, vsync: this);
-
-    // update the product list whenever we get here
-    BlocProvider.of<IAPBloc>(context).add(IAPLoadProducts());
   }
 
   @override
@@ -40,82 +35,8 @@ class _SharingScreenState extends State<SharingScreen>
     super.dispose();
   }
 
-  static String purchaseText(IAPState state) {
-    try {
-      String price = state.productDetails
-          .firstWhere((p) => p.id == IAPBloc.SKU_SHARING)
-          .price;
-      return "Purchase: " + price;
-    } catch (_) {
-      return "Purchase";
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<IAPBloc, IAPState>(
-        builder: (BuildContext context, IAPState iapState) {
-      if (iapState.upgradedSharingIsPending) {
-        return Center(child: SpinKitFadingCube(color: Colors.white));
-      }
-      if (!iapState.hasUpgradedSharing) {
-        return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget?>[
-              ElevatedButton.icon(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (_) => Colors.pink.shade600),
-                  ),
-                  onPressed: () async {
-                    final bool attemptPurchase = await showDialog<bool?>(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                                    title: const Text("Unlock Name Sharing"),
-                                    content: SingleChildScrollView(
-                                        child: ListBody(
-                                      children: const <Widget>[
-                                        Text(
-                                            "Unlocking sharing enables Nom de Bébé to sync your favourited names with a partner, showing you which names you and your partner match on (and in what order of preference)."),
-                                        Text(
-                                            "Purchasing this feature supports the development of Nom de Bébé and helps keep the lights for the syncing server on. Thanks for your support!"),
-                                      ],
-                                    )),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text("No Thanks"),
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(false),
-                                      ),
-                                      TextButton(
-                                        child: Text(purchaseText(iapState)),
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(true),
-                                      ),
-                                    ])) ??
-                        false;
-                    if (attemptPurchase) {
-                      BlocProvider.of<IAPBloc>(context)
-                          .add(IAPPurchaseUpgradeSharing());
-                    }
-                  },
-                  icon: Icon(FontAwesomeIcons.dollarSign, color: Colors.white),
-                  label: Text("Unlock Name Sharing",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2
-                          ?.copyWith(color: Colors.white))),
-              iapState.upgradedSharingError == null
-                  ? null
-                  : Text(
-                      "Error ${iapState.upgradedSharingError!.code}: ${iapState.upgradedSharingError!.message}",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2
-                          ?.copyWith(color: Theme.of(context).errorColor)),
-            ].where((w) => w != null).toList().cast<Widget>());
-      }
-
       return BlocBuilder<SettingsBloc, SettingsState>(
           builder: (BuildContext context, SettingsState settingsState) {
         return BlocBuilder<NamesBloc, NamesState>(
@@ -280,7 +201,6 @@ class _SharingScreenState extends State<SharingScreen>
           });
         });
       });
-    });
   }
 
   List<Widget> _matchedNames(NamesState namesState, SharingState sharingState,

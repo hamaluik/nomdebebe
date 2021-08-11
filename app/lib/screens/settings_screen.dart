@@ -10,7 +10,6 @@ import 'package:nomdebebe/screens/settings/data_export.dart';
 import 'package:nomdebebe/screens/settings/data_reset.dart';
 import 'package:nomdebebe/screens/settings/theme_options.dart';
 import 'package:nomdebebe/screens/settings/pink_and_blue.dart';
-import 'package:nomdebebe/screens/settings/restore_purchases.dart';
 import 'package:nomdebebe/screens/settings/about.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -46,7 +45,6 @@ class SettingsScreen extends StatelessWidget {
             child: Divider(height: 0, thickness: 1)),
         ThemeOptions(),
         PinkAndBlue(),
-        RestorePurchases(),
         About(),
       ]);
     });

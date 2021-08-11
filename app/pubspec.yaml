@@ -40,7 +40,6 @@ dependencies:
   url_launcher: ^6.0.3
   auto_size_text: ^3.0.0-nullsafety.0
   flutter_markdown: 
-  in_app_purchase: ^1.0.0
 dev_dependencies:
   flutter_native_splash: ^1.1.7+1
   #flutter_launcher_icons: "^0.8.0"
