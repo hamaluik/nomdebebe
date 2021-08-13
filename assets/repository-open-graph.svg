@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1280"
+   height="640"
+   viewBox="0 0 1280 640.00003"
+   version="1.1"
+   id="svg168"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs165" />
+  <g
+     id="layer1">
+    <rect
+       style="fill:#ffca28;stroke:#545454;stroke-width:0.321284;stop-color:#000000"
+       id="rect1416"
+       width="1279.6787"
+       height="639.67871"
+       x="0.16064177"
+       y="0.16064177" />
+    <g
+       id="g274"
+       transform="translate(97.085647,-21.966242)">
+      <g
+         id="g1461"
+         transform="matrix(3.7795275,0,0,3.7795275,-58.593424,79.114301)">
+        <g
+           id="g1449"
+           transform="matrix(0.11711204,0,0,0.11708916,49.390218,60.298627)">
+          <rect
+             style="fill:#039be5;stroke-width:0.205078"
+             x="20.961588"
+             width="105.20508"
+             height="210"
+             id="rect833"
+             y="-220.68123" />
+          <rect
+             style="fill:#d81b60;stroke-width:0.205078"
+             width="105.20508"
+             height="210"
+             id="rect835"
+             x="-83.833336"
+             y="-220.68123" />
+          <path
+             style="fill:#ffca28;stroke-width:0.205078"
+             d="m 60.951824,-10.640209 c 26.270508,-26.35254 26.434571,-78.647463 0.08203,-105.000001 -26.35254,-26.35254 -26.598633,-78.68848 -0.492187,-105.04102 h -78.750002 c -26.106446,26.35254 -26.044923,78.54492 0.307617,104.89746 26.3525395,26.352543 26.2089848,78.647466 -0.08203,105.000006 z"
+             id="path837" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:33.8667px;line-height:1.25;font-family:'Public Sans';-inkscape-font-specification:'Public Sans';fill:#000000;fill-opacity:0.87;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+           x="66.161537"
+           y="58.874973"
+           id="text1453"><tspan
+             id="tspan1451"
+             x="66.161537"
+             y="58.874973"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:33.8667px;font-family:'Public Sans';-inkscape-font-specification:'Public Sans Bold';fill:#000000;fill-opacity:0.87;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">Nom de Bébé</tspan></text>
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-size:16.9333px;line-height:1.25;font-family:'Public Sans';-inkscape-font-specification:'Public Sans';white-space:pre;inline-size:192.374;fill:#000000;fill-opacity:0.87;stroke-width:0.264583"
+         x="115.7728"
+         y="80.284256"
+         id="text1465"
+         transform="matrix(3.7795275,0,0,3.7795275,-259.19016,111.10287)"><tspan
+           x="115.7728"
+           y="80.284256"
+           id="tspan9514"><tspan
+             style="text-align:center;text-anchor:middle"
+             id="tspan9512">A simple, private tool to </tspan></tspan><tspan
+           x="115.7728"
+           y="101.45088"
+           id="tspan9518"><tspan
+             style="text-align:center;text-anchor:middle"
+             id="tspan9516">help pick a baby name.</tspan></tspan></text>
+    </g>
+  </g>
+</svg>

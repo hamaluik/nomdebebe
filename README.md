@@ -13,7 +13,7 @@
 
 ## Motivation
 
-I need to choose a name. There's lots of tools and apps out there to help with that, but I want a tool that **doesn't spy on me and sell my data** (or yours for that matter). Unfortunately, it seems the only way for that to exist anymore is to build it yourself, so here we are.
+I need to choose a name. There's lots of tools and apps out there to help with that, but I want a tool that **doesn't spy on me and / or sell my data** (or yours for that matter). Unfortunately, it seems the only way for that to exist anymore is to build it yourself, so here we are.
 
 ## Features
 
@@ -25,4 +25,15 @@ I need to choose a name. There's lots of tools and apps out there to help with t
 * Share your list with a partner and figure out your top names together
 * Light, dark, and OLED black themes for night-time browsing
 * Open source ([licensed under Apache-2.0](LICENSE))—fork away!
+
+## Screenshots
+
+<div align="center">
+    <img alt="Screenshot" src="./screenshots/ios/flutter_01.png" width="390" height="844">
+    <img alt="Screenshot" src="./screenshots/ios/flutter_02.png" width="390" height="844">
+    <img alt="Screenshot" src="./screenshots/ios/flutter_03.png" width="390" height="844">
+    <img alt="Screenshot" src="./screenshots/ios/flutter_04.png" width="390" height="844">
+    <img alt="Screenshot" src="./screenshots/ios/flutter_05.png" width="390" height="844">
+    <img alt="Screenshot" src="./screenshots/ios/flutter_06.png" width="390" height="844">
+</div>
 
