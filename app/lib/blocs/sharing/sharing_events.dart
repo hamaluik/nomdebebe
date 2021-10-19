@@ -30,11 +30,3 @@ class SharingEventGetNewCode extends SharingEvent {
   @override
   List<Object?> get props => [names];
 }
-
-class SharingEventEnableDisable extends SharingEvent {
-  final bool enableSharing;
-  const SharingEventEnableDisable(this.enableSharing);
-
-  @override
-  List<Object?> get props => [enableSharing];
-}

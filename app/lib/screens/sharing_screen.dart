@@ -37,170 +37,148 @@ class _SharingScreenState extends State<SharingScreen>
 
   @override
   Widget build(BuildContext context) {
-      return BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (BuildContext context, SettingsState settingsState) {
-        return BlocBuilder<NamesBloc, NamesState>(
-            builder: (BuildContext context, NamesState namesState) {
-          return BlocBuilder<SharingBloc, SharingState>(
-              builder: (BuildContext context, SharingState sharingState) {
-            if (!sharingState.enableSharing) {
-              return Center(
-                  child: ElevatedButton.icon(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                                (_) => Colors.pink.shade600),
-                      ),
-                      onPressed: () => BlocProvider.of<SharingBloc>(context)
-                          .add(SharingEventEnableDisable(true)),
-                      icon: Icon(FontAwesomeIcons.share, color: Colors.white),
-                      label: Text("Enable names sharing",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText2
-                              ?.copyWith(color: Colors.white))));
-            }
+    return BlocBuilder<SettingsBloc, SettingsState>(
+        builder: (BuildContext context, SettingsState settingsState) {
+      return BlocBuilder<NamesBloc, NamesState>(
+          builder: (BuildContext context, NamesState namesState) {
+        return BlocBuilder<SharingBloc, SharingState>(
+            builder: (BuildContext context, SharingState sharingState) {
+          if (sharingState.myID == null) {
+            return Center(
+                child: Text(
+                    "Something went wrong sharing your liked names list",
+                    style: Theme.of(context).textTheme.caption));
+          }
 
-            if (sharingState.myID == null) {
-              return Center(
-                  child: Text(
-                      "Something went wrong sharing your liked names list",
-                      style: Theme.of(context).textTheme.caption));
-            }
+          if (sharingState.partnerID == null ||
+              sharingState.partnerNames.isEmpty) {
+            return SetupScreen();
+          }
 
-            if (sharingState.partnerID == null ||
-                sharingState.partnerNames.isEmpty) {
-              return SetupScreen();
-            }
+          List<Widget> matched = _matchedNames(namesState, sharingState);
 
-            List<Widget> matched = _matchedNames(namesState, sharingState);
-
-            return Column(children: <Widget>[
-              Expanded(
-                  child: TabBarView(
-                controller: mainTabController,
-                children: [
-                  matched.isEmpty
-                      ? Center(
-                          child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Text(
-                                  "You don't have any matches with your partner yet!",
-                                  style: Theme.of(context).textTheme.headline4,
-                                  textAlign: TextAlign.center)))
-                      : RefreshIndicator(
-                          onRefresh: () async =>
-                              BlocProvider.of<SharingBloc>(context)
-                                  .add(SharingEventRefresh()),
-                          child: settingsState.pinkAndBlue
-                              ? Column(children: [
-                                  Expanded(
-                                      child: TabBarView(
-                                    controller: sexTabController,
-                                    children: [
-                                      ListView(
-                                          children: _matchedNames(
-                                              namesState, sharingState,
-                                              sex: Sex.female)),
-                                      ListView(
-                                          children: _matchedNames(
-                                              namesState, sharingState,
-                                              sex: Sex.male)),
-                                    ],
-                                  )),
-                                  TabBar(controller: sexTabController, tabs: [
-                                    Tab(icon: Icon(FontAwesomeIcons.venus)),
-                                    Tab(icon: Icon(FontAwesomeIcons.mars)),
-                                  ])
+          return Column(children: <Widget>[
+            Expanded(
+                child: TabBarView(
+              controller: mainTabController,
+              children: [
+                matched.isEmpty
+                    ? Center(
+                        child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Text(
+                                "You don't have any matches with your partner yet!",
+                                style: Theme.of(context).textTheme.headline4,
+                                textAlign: TextAlign.center)))
+                    : RefreshIndicator(
+                        onRefresh: () async =>
+                            BlocProvider.of<SharingBloc>(context)
+                                .add(SharingEventRefresh()),
+                        child: settingsState.pinkAndBlue
+                            ? Column(children: [
+                                Expanded(
+                                    child: TabBarView(
+                                  controller: sexTabController,
+                                  children: [
+                                    ListView(
+                                        children: _matchedNames(
+                                            namesState, sharingState,
+                                            sex: Sex.female)),
+                                    ListView(
+                                        children: _matchedNames(
+                                            namesState, sharingState,
+                                            sex: Sex.male)),
+                                  ],
+                                )),
+                                TabBar(controller: sexTabController, tabs: [
+                                  Tab(icon: Icon(FontAwesomeIcons.venus)),
+                                  Tab(icon: Icon(FontAwesomeIcons.mars)),
                                 ])
-                              : ListView(
-                                  children:
-                                      _matchedNames(namesState, sharingState),
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics())),
-                  RefreshIndicator(
-                      onRefresh: () async =>
-                          BlocProvider.of<SharingBloc>(context)
-                              .add(SharingEventRefresh()),
-                      child: settingsState.pinkAndBlue
-                          ? Column(children: [
-                              Expanded(
-                                  child: TabBarView(
-                                controller: sexTabController,
-                                children: [
-                                  ListView.builder(
-                                      itemCount: sharingState.partnerNames
-                                          .where(
-                                              (Name n) => n.sex == Sex.female)
-                                          .length,
-                                      itemBuilder: (BuildContext context,
-                                              int index) =>
-                                          NameTileLink(
-                                            sharingState.partnerNames
-                                                .where((Name n) =>
-                                                    n.sex == Sex.female)
-                                                .elementAt(index),
-                                            onTap: (Name name) =>
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute<void>(
-                                                        builder: (_) =>
-                                                            NameDetailsScreen(
-                                                                name))),
-                                          ),
-                                      physics:
-                                          const AlwaysScrollableScrollPhysics()),
-                                  ListView.builder(
-                                      itemCount: sharingState.partnerNames
-                                          .where((Name n) => n.sex == Sex.male)
-                                          .length,
-                                      itemBuilder: (BuildContext context,
-                                              int index) =>
-                                          NameTileLink(
-                                            sharingState.partnerNames
-                                                .where((Name n) =>
-                                                    n.sex == Sex.male)
-                                                .elementAt(index),
-                                            onTap: (Name name) =>
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute<void>(
-                                                        builder: (_) =>
-                                                            NameDetailsScreen(
-                                                                name))),
-                                          ),
-                                      physics:
-                                          const AlwaysScrollableScrollPhysics()),
-                                ],
-                              )),
-                              TabBar(controller: sexTabController, tabs: [
-                                Tab(icon: Icon(FontAwesomeIcons.venus)),
-                                Tab(icon: Icon(FontAwesomeIcons.mars)),
                               ])
+                            : ListView(
+                                children:
+                                    _matchedNames(namesState, sharingState),
+                                physics:
+                                    const AlwaysScrollableScrollPhysics())),
+                RefreshIndicator(
+                    onRefresh: () async => BlocProvider.of<SharingBloc>(context)
+                        .add(SharingEventRefresh()),
+                    child: settingsState.pinkAndBlue
+                        ? Column(children: [
+                            Expanded(
+                                child: TabBarView(
+                              controller: sexTabController,
+                              children: [
+                                ListView.builder(
+                                    itemCount: sharingState.partnerNames
+                                        .where((Name n) => n.sex == Sex.female)
+                                        .length,
+                                    itemBuilder: (BuildContext context,
+                                            int index) =>
+                                        NameTileLink(
+                                          sharingState.partnerNames
+                                              .where((Name n) =>
+                                                  n.sex == Sex.female)
+                                              .elementAt(index),
+                                          onTap: (Name name) => Navigator.of(
+                                                  context)
+                                              .push(MaterialPageRoute<void>(
+                                                  builder: (_) =>
+                                                      NameDetailsScreen(name))),
+                                        ),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics()),
+                                ListView.builder(
+                                    itemCount: sharingState.partnerNames
+                                        .where((Name n) => n.sex == Sex.male)
+                                        .length,
+                                    itemBuilder: (BuildContext context,
+                                            int index) =>
+                                        NameTileLink(
+                                          sharingState.partnerNames
+                                              .where(
+                                                  (Name n) => n.sex == Sex.male)
+                                              .elementAt(index),
+                                          onTap: (Name name) => Navigator.of(
+                                                  context)
+                                              .push(MaterialPageRoute<void>(
+                                                  builder: (_) =>
+                                                      NameDetailsScreen(name))),
+                                        ),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics()),
+                              ],
+                            )),
+                            TabBar(controller: sexTabController, tabs: [
+                              Tab(icon: Icon(FontAwesomeIcons.venus)),
+                              Tab(icon: Icon(FontAwesomeIcons.mars)),
                             ])
-                          : ListView.builder(
-                              itemCount: sharingState.partnerNames.length,
-                              itemBuilder: (BuildContext context, int index) =>
-                                  NameTileLink(
-                                    sharingState.partnerNames[index],
-                                    onTap: (Name name) => Navigator.of(context)
-                                        .push(MaterialPageRoute<void>(
-                                            builder: (_) =>
-                                                NameDetailsScreen(name))),
-                                  ),
-                              physics: const AlwaysScrollableScrollPhysics())),
-                  SetupScreen(),
-                ],
-              )),
-              TabBar(controller: mainTabController, tabs: [
-                Tab(icon: Icon(FontAwesomeIcons.equals), text: "Matches"),
-                Tab(
-                    icon: Icon(FontAwesomeIcons.userFriends),
-                    text: "Partner's List"),
-                Tab(icon: Icon(FontAwesomeIcons.qrcode), text: "Sharing Code"),
-              ])
-            ]);
-          });
+                          ])
+                        : ListView.builder(
+                            itemCount: sharingState.partnerNames.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                NameTileLink(
+                                  sharingState.partnerNames[index],
+                                  onTap: (Name name) => Navigator.of(context)
+                                      .push(MaterialPageRoute<void>(
+                                          builder: (_) =>
+                                              NameDetailsScreen(name))),
+                                ),
+                            physics: const AlwaysScrollableScrollPhysics())),
+                SetupScreen(),
+              ],
+            )),
+            TabBar(controller: mainTabController, tabs: [
+              Tab(icon: Icon(FontAwesomeIcons.equals), text: "Matches"),
+              Tab(
+                  icon: Icon(FontAwesomeIcons.userFriends),
+                  text: "Partner's List"),
+              Tab(icon: Icon(FontAwesomeIcons.qrcode), text: "Sharing Code"),
+            ])
+          ]);
         });
       });
+    });
   }
 
   List<Widget> _matchedNames(NamesState namesState, SharingState sharingState,

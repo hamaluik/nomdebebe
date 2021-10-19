@@ -13,8 +13,7 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
   @override
   Stream<SharingState> mapEventToState(SharingEvent event) async* {
     if (event is SharingEventRefresh) {
-      yield SharingState(
-          state.enableSharing, null, null, List.empty(), null, true);
+      yield SharingState(null, null, List.empty(), null, true);
 
       if (sharedRepository.enabled) {
         String? id = await sharedRepository.myID;
@@ -30,8 +29,8 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
         //print("partner id: $partnerID");
         //print("partner names: $partnerNames");
 
-        yield SharingState(state.enableSharing, id, partnerID,
-            partnerNames ?? List.empty(), error, false);
+        yield SharingState(
+            id, partnerID, partnerNames ?? List.empty(), error, false);
       }
     } else if (event is SharingEventSetPartnerID) {
       if (sharedRepository.enabled) {
@@ -69,12 +68,6 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
         String? id = await sharedRepository.resetMyID();
         await sharedRepository.setLikedNames(event.names);
         yield state.copyWith(myID: Nullable(id), loading: false);
-      }
-    } else if (event is SharingEventEnableDisable) {
-      await sharedRepository.setEnabled(event.enableSharing);
-      yield state.copyWith(enableSharing: event.enableSharing);
-      if (event.enableSharing) {
-        add(SharingEventRefresh());
       }
     }
   }
