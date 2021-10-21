@@ -1,8 +1,8 @@
 [package]
 name = "nomdebebe-server"
-version = "1.0.0-dev.1"
+version = "1.0.0-dev.2"
 authors = ["Kenton Hamaluik <kenton@hamaluik.ca>"]
-edition = "2021"
+edition = "2018"
 
 [dependencies]
 actix-web = "3.3.2"

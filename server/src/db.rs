@@ -3,6 +3,8 @@ use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rusqlite::params;
 use std::path::Path;
 
+use super::name::Name;
+
 pub type Pool = r2d2::Pool<r2d2_sqlite::SqliteConnectionManager>;
 
 pub fn initialize<P: AsRef<Path>>(path: P) -> Result<Pool> {
@@ -58,7 +60,7 @@ pub fn create_new_user(pool: &Pool) -> Result<(u32, String)> {
     Ok((id as u32, secret))
 }
 
-pub fn get_user_names(pool: &Pool, id: u32) -> Result<Vec<u32>> {
+pub fn get_user_names(pool: &Pool, id: u32) -> Result<Vec<Name>> {
     let conn = pool
         .get()
         .map_err(|e| anyhow!("Failed to get pooled connection: {:?}", e))?;
@@ -71,13 +73,13 @@ pub fn get_user_names(pool: &Pool, id: u32) -> Result<Vec<u32>> {
         )
         .map_err(|e| anyhow!("Failed to get names for id `{}`: {:?}", id, e))?;
 
-    let names: Vec<u32> = serde_json::from_str(&names)
+    let names: Vec<Name> = serde_json::from_str(&names)
         .map_err(|e| anyhow!("Failed to parse JSON name list for id `{}`: {:?}", id, e))?;
 
     Ok(names)
 }
 
-pub fn set_user_names(pool: &Pool, id: u32, secret: &str, names: &Vec<u32>) -> Result<()> {
+pub fn set_user_names(pool: &Pool, id: u32, secret: &str, names: &Vec<Name>) -> Result<()> {
     let mut conn = pool
         .get()
         .map_err(|e| anyhow!("Failed to get pooled connection: {:?}", e))?;

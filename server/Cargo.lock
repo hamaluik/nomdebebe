@@ -1073,7 +1073,7 @@ dependencies = [
 
 [[package]]
 name = "nomdebebe-server"
-version = "1.0.0-dev.1"
+version = "1.0.0-dev.2"
 dependencies = [
  "actix-web",
  "anyhow",
