@@ -63,53 +63,73 @@ class _SharingScreenState extends State<SharingScreen>
               controller: mainTabController,
               children: [
                 matched.isEmpty
-                    ? Center(
-                        child: Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Text(
-                                "You don't have any matches with your partner yet!",
-                                style: Theme.of(context).textTheme.headline4,
-                                textAlign: TextAlign.center)))
-                    : RefreshIndicator(
+                    ? RefreshIndicator(
                         onRefresh: () async =>
-                            BlocProvider.of<SharingBloc>(context)
-                                .add(SharingEventRefresh()),
-                        child: settingsState.pinkAndBlue
-                            ? Column(children: [
-                                Expanded(
-                                    child: TabBarView(
-                                  controller: sexTabController,
-                                  children: [
-                                    ListView(
-                                        children: _matchedNames(
-                                            namesState, sharingState,
-                                            sex: Sex.female)),
-                                    ListView(
-                                        children: _matchedNames(
-                                            namesState, sharingState,
-                                            sex: Sex.male)),
-                                  ],
-                                )),
-                                TabBar(controller: sexTabController, tabs: [
-                                  Tab(icon: Icon(FontAwesomeIcons.venus)),
-                                  Tab(icon: Icon(FontAwesomeIcons.mars)),
-                                ])
-                              ])
-                            : ListView(
-                                children:
-                                    _matchedNames(namesState, sharingState),
-                                physics:
-                                    const AlwaysScrollableScrollPhysics())),
-                RefreshIndicator(
-                    onRefresh: () async => BlocProvider.of<SharingBloc>(context)
-                        .add(SharingEventRefresh()),
-                    child: settingsState.pinkAndBlue
+                            await BlocProvider.of<SharingBloc>(context)
+                                .refreshSharing(),
+                        child: Center(
+                            child: Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Text(
+                                    "You don't have any matches with your partner yet!",
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
+                                    textAlign: TextAlign.center))))
+                    : settingsState.pinkAndBlue
                         ? Column(children: [
                             Expanded(
                                 child: TabBarView(
                               controller: sexTabController,
                               children: [
-                                ListView.builder(
+                                RefreshIndicator(
+                                    onRefresh: () async =>
+                                        await BlocProvider.of<SharingBloc>(
+                                                context)
+                                            .refreshSharing(),
+                                    child: ListView(
+                                        children: _matchedNames(
+                                            namesState, sharingState,
+                                            sex: Sex.female),
+                                        physics:
+                                            const AlwaysScrollableScrollPhysics())),
+                                RefreshIndicator(
+                                    onRefresh: () async =>
+                                        await BlocProvider.of<SharingBloc>(
+                                                context)
+                                            .refreshSharing(),
+                                    child: ListView(
+                                        children: _matchedNames(
+                                            namesState, sharingState,
+                                            sex: Sex.male),
+                                        physics:
+                                            const AlwaysScrollableScrollPhysics())),
+                              ],
+                            )),
+                            TabBar(controller: sexTabController, tabs: [
+                              Tab(icon: Icon(FontAwesomeIcons.venus)),
+                              Tab(icon: Icon(FontAwesomeIcons.mars)),
+                            ])
+                          ])
+                        : RefreshIndicator(
+                            onRefresh: () async =>
+                                await BlocProvider.of<SharingBloc>(context)
+                                    .refreshSharing(),
+                            child: ListView(
+                                children:
+                                    _matchedNames(namesState, sharingState),
+                                physics:
+                                    const AlwaysScrollableScrollPhysics())),
+                settingsState.pinkAndBlue
+                    ? Column(children: [
+                        Expanded(
+                            child: TabBarView(
+                          controller: sexTabController,
+                          children: [
+                            RefreshIndicator(
+                                onRefresh: () async =>
+                                    await BlocProvider.of<SharingBloc>(context)
+                                        .refreshSharing(),
+                                child: ListView.builder(
                                     itemCount: sharingState.partnerNames
                                         .where((Name n) => n.sex == Sex.female)
                                         .length,
@@ -127,8 +147,12 @@ class _SharingScreenState extends State<SharingScreen>
                                                       NameDetailsScreen(name))),
                                         ),
                                     physics:
-                                        const AlwaysScrollableScrollPhysics()),
-                                ListView.builder(
+                                        const AlwaysScrollableScrollPhysics())),
+                            RefreshIndicator(
+                                onRefresh: () async =>
+                                    await BlocProvider.of<SharingBloc>(context)
+                                        .refreshSharing(),
+                                child: ListView.builder(
                                     itemCount: sharingState.partnerNames
                                         .where((Name n) => n.sex == Sex.male)
                                         .length,
@@ -146,15 +170,19 @@ class _SharingScreenState extends State<SharingScreen>
                                                       NameDetailsScreen(name))),
                                         ),
                                     physics:
-                                        const AlwaysScrollableScrollPhysics()),
-                              ],
-                            )),
-                            TabBar(controller: sexTabController, tabs: [
-                              Tab(icon: Icon(FontAwesomeIcons.venus)),
-                              Tab(icon: Icon(FontAwesomeIcons.mars)),
-                            ])
-                          ])
-                        : ListView.builder(
+                                        const AlwaysScrollableScrollPhysics())),
+                          ],
+                        )),
+                        TabBar(controller: sexTabController, tabs: [
+                          Tab(icon: Icon(FontAwesomeIcons.venus)),
+                          Tab(icon: Icon(FontAwesomeIcons.mars)),
+                        ])
+                      ])
+                    : RefreshIndicator(
+                        onRefresh: () async =>
+                            await BlocProvider.of<SharingBloc>(context)
+                                .refreshSharing(),
+                        child: ListView.builder(
                             itemCount: sharingState.partnerNames.length,
                             itemBuilder: (BuildContext context, int index) =>
                                 NameTileLink(

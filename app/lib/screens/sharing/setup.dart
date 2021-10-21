@@ -18,9 +18,7 @@ class _SetupScreenState extends State<SetupScreen> {
     return BlocBuilder<SharingBloc, SharingState>(
         builder: (BuildContext context, SharingState sharingState) {
       if (sharingState.myID == null) {
-        return Center(
-            child: Text("Something went wrong sharing your liked names list",
-                style: Theme.of(context).textTheme.caption));
+        return Center(child: SpinKitPumpingHeart(color: Colors.white));
       }
 
       return Padding(
@@ -68,29 +66,10 @@ class _SetupScreenState extends State<SetupScreen> {
                       textAlign: TextAlign.center)
                   : Container(),
               Expanded(flex: 1, child: Container()),
-              SwitchListTile.adaptive(
-                  title: const Text("Enable names sharing"),
-                  value: sharingState.enableSharing,
-                  onChanged: (bool enabled) =>
-                      BlocProvider.of<SharingBloc>(context)
-                          .add(SharingEventEnableDisable(enabled))),
-              Expanded(flex: 1, child: Container()),
               TextButton.icon(
-                  icon: sharingState.loading
-                      ? SpinKitDualRing(
-                          color: Theme.of(context).textTheme.caption?.color ??
-                              Colors.black54,
-                          size:
-                              (Theme.of(context).iconTheme.size ?? 24.0) / 2.0,
-                          lineWidth:
-                              ((Theme.of(context).iconTheme.size ?? 24.0) / 7.0)
-                                  .ceil()
-                                  .toDouble(),
-                        )
-                      : Icon(FontAwesomeIcons.redoAlt,
-                          color: Theme.of(context).textTheme.caption?.color,
-                          size:
-                              (Theme.of(context).iconTheme.size ?? 24.0) / 2.0),
+                  icon: Icon(FontAwesomeIcons.redoAlt,
+                      color: Theme.of(context).textTheme.caption?.color,
+                      size: (Theme.of(context).iconTheme.size ?? 24.0) / 2.0),
                   label: Text("Get a new sharing code",
                       style: Theme.of(context).textTheme.caption),
                   onPressed: () => BlocProvider.of<SharingBloc>(context).add(
@@ -147,7 +126,10 @@ class _CodeTextFieldState extends State<_CodeTextField> {
               counterText: "",
               contentPadding: EdgeInsets.zero,
             ),
-            onSubmitted: (String code) => BlocProvider.of<SharingBloc>(context)
-                .add(SharingEventSetPartnerID(code))));
+            onSubmitted: (String code) async {
+              SharingBloc sharingBloc = BlocProvider.of<SharingBloc>(context);
+              sharingBloc.add(SharingEventSetPartnerID(code));
+              sharingBloc.refreshSharing();
+            }));
   }
 }

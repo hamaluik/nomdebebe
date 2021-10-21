@@ -39,8 +39,7 @@ void main() async {
         // the available names
         ),
     BlocProvider<SharingBloc>(
-        create: (BuildContext c) =>
-            SharingBloc(shared)..add(SharingEventRefresh())),
+        create: (BuildContext c) => SharingBloc(shared)..refreshSharing()),
   ], child: NamesApp()));
 }
 

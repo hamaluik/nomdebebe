@@ -8,7 +8,18 @@ abstract class SharingEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class SharingEventRefresh extends SharingEvent {}
+class SharingEventSet extends SharingEvent {
+  final String? myID;
+  final String? partnerID;
+  final List<Name>? partnerNames;
+  final String? error;
+
+  const SharingEventSet(
+      this.myID, this.partnerID, this.partnerNames, this.error);
+
+  @override
+  List<Object?> get props => [myID, partnerID, partnerNames, error];
+}
 
 class SharingEventSetPartnerID extends SharingEvent {
   final String? partnerID;
