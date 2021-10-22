@@ -67,7 +67,7 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
       List<Name> undecided = state.undecidedNameBuffer
           .where((Name n) => n.id != event.name.id)
           .toList();
-      List<Name> liked = state.likedNames.toList() + [event.name];
+      List<Name> liked = state.likedNames.toList() + [event.name.makeLiked()];
 
       // add it to our undo history
       List<DecisionNode> decisionHistory = state.decisionHistory.toList();
@@ -119,10 +119,17 @@ class NamesBloc extends Bloc<NamesEvent, NamesState> {
       if (decisionHistory.length > 200) {
         decisionHistory.removeAt(0);
       }
+
+      // remove it from the liked list if its there
+      List<Name> liked =
+          state.likedNames.where((Name n) => n.id != event.name.id).toList();
+
       yield state.copyWith(
         undecidedNameBuffer: undecided,
         undecidedNamesCount: state.undecidedNamesCount - 1,
         decisionHistory: decisionHistory,
+        likedNames: liked,
+        likedNamesCount: liked.length,
       );
 
       if (undecided.length < 5) {

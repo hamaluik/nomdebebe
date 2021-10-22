@@ -21,6 +21,7 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
   LinkedHashMap<int, int> popularityData = LinkedHashMap();
   LinkedHashMap<int, int> decadeCounts = LinkedHashMap();
   LineChartBarData? data;
+  double maxPopularity = 1.0;
 
   @override
   void initState() {
@@ -33,17 +34,17 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
       setState(() {
         popularityData = args[0];
         decadeCounts = args[1];
+        maxPopularity = popularityData.entries
+            .fold(0, (int s, MapEntry<int, int> x) => x.value > s ? x.value : s)
+            .toDouble();
+
         data = LineChartBarData(
             isCurved: true,
             colors: [Colors.white],
             dotData: FlDotData(show: false),
             isStrokeCapRound: true,
             spots: popularityData.entries
-                .map((e) => FlSpot(
-                    (e.key * 10).toDouble(),
-                    100.0 *
-                        e.value.toDouble() /
-                        (decadeCounts[e.key]?.toDouble() ?? 1.0)))
+                .map((e) => FlSpot((e.key * 10).toDouble(), e.value.toDouble()))
                 .toList());
 
         print(data);
@@ -135,7 +136,7 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
                                                               show: false),
                                                           borderData:
                                                               FlBorderData(
-                                                                  show: false,
+                                                                  show: true,
                                                                   border:
                                                                       Border(
                                                                     bottom: BorderSide(
@@ -143,9 +144,11 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
                                                                             .white,
                                                                         width:
                                                                             2.0),
-                                                                    //left: BorderSide(
-                                                                    //color: Colors.white,
-                                                                    //width: 2.0),
+                                                                    left: BorderSide(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        width:
+                                                                            2.0),
                                                                   )),
                                                           axisTitleData:
                                                               FlAxisTitleData(
@@ -179,7 +182,7 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
                                                                           color:
                                                                               Colors.white),
                                                               showTitles: true,
-                                                              reservedSize: 44,
+                                                              margin: 10,
                                                               rotateAngle:
                                                                   -30.0,
                                                               getTitles:
@@ -209,8 +212,21 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
                                                             ),
                                                             leftTitles:
                                                                 SideTitles(
-                                                                    showTitles:
-                                                                        false),
+                                                              getTextStyles:
+                                                                  (_) => Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .caption!
+                                                                      .copyWith(
+                                                                          color:
+                                                                              Colors.white),
+                                                              showTitles: true,
+                                                              reservedSize: 44,
+                                                              margin: 8,
+                                                              interval:
+                                                                  maxPopularity /
+                                                                      5.0,
+                                                            ),
                                                           ),
                                                           lineTouchData:
                                                               LineTouchData(
