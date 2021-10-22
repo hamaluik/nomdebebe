@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:nomdebebe/models/filter.dart';
 import 'package:nomdebebe/models/name.dart';
+import 'package:nomdebebe/models/sex.dart';
 import 'package:nomdebebe/providers/names_provider.dart';
 
 class NamesRepository {
@@ -83,5 +84,12 @@ class NamesRepository {
 
   Future<LinkedHashMap<int, int>> getNameDecadeCounts(int id) {
     return _namesProvider.getNameDecadeCounts(id);
+  }
+
+  Future<Name?> findName(String name, Sex sex) async {
+    List<Name> names = await _namesProvider
+        .getNames([ExactNameFilter(name), SexFilter.fromSex(sex)], 0, 1);
+    if (names.isEmpty) return null;
+    return names.first;
   }
 }

@@ -22,8 +22,8 @@ class SharingBloc extends Bloc<SharingEvent, SharingState> {
         ? "Failed to contact sharing server"
         : null;
 
-    print("my id: $id");
-    print("partner id: $partnerID");
+    //print("my id: $id");
+    //print("partner id: $partnerID");
     //print("partner names: $partnerNames");
     //print("error: $error");
 

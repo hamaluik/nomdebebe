@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
+import 'package:nomdebebe/repositories/names_repository.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
 import 'package:nomdebebe/blocs/sharing/sharing.dart';
 import 'package:nomdebebe/models/sex.dart';
@@ -33,6 +34,20 @@ class _SharingScreenState extends State<SharingScreen>
     mainTabController.dispose();
     sexTabController.dispose();
     super.dispose();
+  }
+
+  void showNameDetails(BuildContext context, Name name) async {
+    Name? n;
+    if (name.id < 0) {
+      n = await RepositoryProvider.of<NamesRepository>(context)
+          .findName(name.name, name.sex);
+    } else {
+      n = name;
+    }
+    if (n != null) {
+      Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => NameDetailsScreen(n!)));
+    }
   }
 
   @override
@@ -187,10 +202,8 @@ class _SharingScreenState extends State<SharingScreen>
                             itemBuilder: (BuildContext context, int index) =>
                                 NameTileLink(
                                   sharingState.partnerNames[index],
-                                  onTap: (Name name) => Navigator.of(context)
-                                      .push(MaterialPageRoute<void>(
-                                          builder: (_) =>
-                                              NameDetailsScreen(name))),
+                                  onTap: (Name name) =>
+                                      showNameDetails(context, name),
                                 ),
                             physics: const AlwaysScrollableScrollPhysics())),
                 SetupScreen(),
@@ -234,9 +247,7 @@ class _SharingScreenState extends State<SharingScreen>
         .map((m) => NameTileLink(
               m.name,
               key: Key("__liked_names_" + m.name.id.toString()),
-              onTap: (Name name) => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                      builder: (_) => NameDetailsScreen(name))),
+              onTap: (Name name) => showNameDetails(context, name),
             ))
         .toList();
   }

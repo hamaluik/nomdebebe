@@ -1,5 +1,5 @@
 import 'package:nomdebebe/models/name.dart';
-import 'package:nomdebebe/models/filter.dart';
+import 'package:nomdebebe/models/sex.dart';
 import 'package:nomdebebe/repositories/names_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -84,7 +84,9 @@ class SharedRepository {
     if (id == null) throw "Failed to obtain my ID!";
     String secret = _prefs.getString("mySecret")!;
 
-    String body = jsonEncode(names.map((Name n) => n.id).toList());
+    String body = jsonEncode(names
+        .map((Name n) => {'name': n.name, 'sex': sexToString(n.sex)})
+        .toList());
     Uri uri = Uri.parse(rootURI +
         "/names/" +
         Uri.encodeComponent(id) +
@@ -114,9 +116,11 @@ class SharedRepository {
       return null;
     }
 
-    List<int> nameIDs = body.cast<int>();
-    List<Name> names = await namesRepository
-        .getNames(filters: [IDFilter(nameIDs)], count: 1000000);
+    List<Map<String, dynamic>> nameRaws = body.cast<Map<String, dynamic>>();
+    List<Name> names = nameRaws
+        .map((n) => Name(-1, n['name'] ?? "?",
+            n['sex'] == 'F' ? Sex.female : Sex.male, false))
+        .toList();
     return names;
   }
 }

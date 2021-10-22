@@ -1,3 +1,5 @@
+import 'sex.dart';
+
 abstract class Filter {
   const Filter();
   String get query => "";
@@ -42,6 +44,21 @@ class SexFilter extends Filter {
 
   static SexFilter male = SexFilter._('M');
   static SexFilter female = SexFilter._('F');
+
+  static SexFilter fromSex(Sex sex) {
+    return sex == Sex.male ? SexFilter.male : SexFilter.female;
+  }
+}
+
+class ExactNameFilter extends Filter {
+  final String _name;
+  const ExactNameFilter(this._name);
+
+  @override
+  String get query => "name = ?";
+
+  @override
+  List<Object> get args => [this._name];
 }
 
 class SearchFilter extends Filter {
