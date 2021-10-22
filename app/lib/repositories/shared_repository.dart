@@ -1,22 +1,24 @@
 import 'package:nomdebebe/models/name.dart';
 import 'package:nomdebebe/models/sex.dart';
 import 'package:nomdebebe/repositories/names_repository.dart';
+import 'package:nomdebebe/repositories/settings_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SharedRepository {
-  static final String rootURI = "https://nomdebebe.hamaluik.dev";
+  final SettingsRepository settingsRepository;
   final NamesRepository namesRepository;
   final SharedPreferences _prefs;
   final http.Client _client;
 
-  SharedRepository._(this.namesRepository, this._prefs)
+  SharedRepository._(this.settingsRepository, this.namesRepository, this._prefs)
       : _client = http.Client();
 
-  static Future<SharedRepository> load(NamesRepository namesRepository) async {
+  static Future<SharedRepository> load(SettingsRepository settingsRepository,
+      NamesRepository namesRepository) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return SharedRepository._(namesRepository, prefs);
+    return SharedRepository._(settingsRepository, namesRepository, prefs);
   }
 
   Future<String?> get myID async {
@@ -26,7 +28,7 @@ class SharedRepository {
     }
 
     print("Getting new id...");
-    Uri uri = Uri.parse(rootURI + "/id/new");
+    Uri uri = Uri.parse(settingsRepository.server + "/id/new");
     http.Response resp = await http.get(uri);
 
     if (resp.statusCode != 200) {
@@ -87,7 +89,7 @@ class SharedRepository {
     String body = jsonEncode(names
         .map((Name n) => {'name': n.name, 'sex': sexToString(n.sex)})
         .toList());
-    Uri uri = Uri.parse(rootURI +
+    Uri uri = Uri.parse(settingsRepository.server +
         "/names/" +
         Uri.encodeComponent(id) +
         "?secret=" +
@@ -102,7 +104,8 @@ class SharedRepository {
   }
 
   Future<List<Name>?> getParterNames(String partnerID) async {
-    Uri uri = Uri.parse(rootURI + "/names/" + Uri.encodeComponent(partnerID));
+    Uri uri = Uri.parse(
+        settingsRepository.server + "/names/" + Uri.encodeComponent(partnerID));
     http.Response resp = await http.get(uri);
 
     if (resp.statusCode != 200) {

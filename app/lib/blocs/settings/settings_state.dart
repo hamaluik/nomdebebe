@@ -12,6 +12,7 @@ class SettingsState extends Equatable {
   final List<Filter> filters;
   final ThemeType? theme;
   final bool pinkAndBlue;
+  final String server;
 
   static List<Filter> _buildFilters(
       Sex? sex, HashSet<String> letters, HashSet<int> decades, int? maxRank) {
@@ -33,7 +34,7 @@ class SettingsState extends Equatable {
   }
 
   SettingsState(this.sexPreference, this.firstLetters, this.theme,
-      this.pinkAndBlue, this.decades, this.maxRank)
+      this.pinkAndBlue, this.decades, this.maxRank, this.server)
       : filters = _buildFilters(sexPreference, firstLetters, decades, maxRank);
 
   SettingsState.initial()
@@ -43,9 +44,17 @@ class SettingsState extends Equatable {
         theme = null,
         pinkAndBlue = true,
         decades = HashSet(),
-        maxRank = 1000;
+        maxRank = 1000,
+        server = "https://nomdebebe.hamaluik.dev";
 
   @override
-  List<Object?> get props =>
-      [sexPreference, firstLetters, theme, pinkAndBlue, decades, maxRank];
+  List<Object?> get props => [
+        sexPreference,
+        firstLetters,
+        theme,
+        pinkAndBlue,
+        decades,
+        maxRank,
+        server
+      ];
 }

@@ -25,7 +25,7 @@ void main() async {
   //Bloc.observer = DebugLogger();
   NamesRepository names = NamesRepository(await NamesProvider.load());
   SettingsRepository settings = await SettingsRepository.load();
-  SharedRepository shared = await SharedRepository.load(names);
+  SharedRepository shared = await SharedRepository.load(settings, names);
 
   runApp(MultiBlocProvider(providers: [
     BlocProvider<SettingsBloc>(

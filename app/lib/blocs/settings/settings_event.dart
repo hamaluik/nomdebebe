@@ -50,3 +50,10 @@ class SettingsSetDecades extends SettingsEvent {
   @override
   List<Object?> get props => [decades, maxRank];
 }
+
+class SettingsSetServer extends SettingsEvent {
+  final String server;
+  const SettingsSetServer(this.server);
+  @override
+  List<Object?> get props => [server];
+}

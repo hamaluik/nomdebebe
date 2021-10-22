@@ -12,6 +12,7 @@ class Keys {
   static final Key settingsDecades = const Key("__settings_decades");
   static final Key settingsDisliked = const Key("__settings_disliked");
   static final Key settingsExport = const Key("__settings_export");
+  static final Key settingsServer = const Key("__settings_server");
   static final Key settingsReset = const Key("__settings_reset");
   static final Key settingsTheme = const Key("__settings_theme");
   static final Key settingsThemeAuto = const Key("__settings_theme_auto");

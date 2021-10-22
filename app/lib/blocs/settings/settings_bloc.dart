@@ -21,26 +21,21 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       bool pinkAndBlue = settingsRepository.pinkAndBlue;
       List<int> decades = settingsRepository.decades;
       int? maxRank = settingsRepository.maxRank;
+      String server = settingsRepository.server;
       yield SettingsState(sex, HashSet.of(firstLetters), theme, pinkAndBlue,
-          HashSet.of(decades), maxRank);
+          HashSet.of(decades), maxRank, server);
     } else if (event is SettingsSetSex) {
       settingsRepository.sex = event.sex;
       yield SettingsState(event.sex, state.firstLetters, state.theme,
-          state.pinkAndBlue, state.decades, state.maxRank);
+          state.pinkAndBlue, state.decades, state.maxRank, state.server);
     } else if (event is SettingsSetFirstLetters) {
       settingsRepository.firstLetters = event.firstLetters.toList();
-      yield SettingsState(
-        state.sexPreference,
-        event.firstLetters,
-        state.theme,
-        state.pinkAndBlue,
-        state.decades,
-        state.maxRank,
-      );
+      yield SettingsState(state.sexPreference, event.firstLetters, state.theme,
+          state.pinkAndBlue, state.decades, state.maxRank, state.server);
     } else if (event is SettingsSetTheme) {
       settingsRepository.theme = event.theme;
       yield SettingsState(state.sexPreference, state.firstLetters, event.theme,
-          state.pinkAndBlue, state.decades, state.maxRank);
+          state.pinkAndBlue, state.decades, state.maxRank, state.server);
     } else if (event is SettingsFactoryReset) {
       settingsRepository.factoryReset();
       yield state;
@@ -48,12 +43,23 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     } else if (event is SettingsSetPinkAndBlue) {
       settingsRepository.pinkAndBlue = event.pinkAndBlue;
       yield SettingsState(state.sexPreference, state.firstLetters, state.theme,
-          event.pinkAndBlue, state.decades, state.maxRank);
+          event.pinkAndBlue, state.decades, state.maxRank, state.server);
     } else if (event is SettingsSetDecades) {
       settingsRepository.decades = event.decades.toList();
       settingsRepository.maxRank = event.maxRank;
       yield SettingsState(state.sexPreference, state.firstLetters, state.theme,
-          state.pinkAndBlue, event.decades, event.maxRank);
+          state.pinkAndBlue, event.decades, event.maxRank, state.server);
+    } else if (event is SettingsSetServer) {
+      String server = event.server.trim();
+      settingsRepository.server = server;
+      yield SettingsState(
+          state.sexPreference,
+          state.firstLetters,
+          state.theme,
+          state.pinkAndBlue,
+          state.decades,
+          state.maxRank,
+          server.isEmpty ? "https://nomdebebe.hamaluik.dev" : server);
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nomdebebe/blocs/settings/settings.dart';
+import 'package:nomdebebe/screens/settings/server_setting.dart';
 import 'package:nomdebebe/screens/settings/sex_options.dart';
 import 'package:nomdebebe/screens/settings/first_letters.dart';
 import 'package:nomdebebe/screens/settings/decades.dart';
@@ -36,6 +37,7 @@ class SettingsScreen extends StatelessWidget {
             child: Divider(height: 0, thickness: 1)),
         DislikedNames(),
         DataExport(),
+        ServerSettings(),
         DataReset(),
         Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 4),

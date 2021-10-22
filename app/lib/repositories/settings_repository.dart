@@ -18,6 +18,7 @@ class SettingsRepository {
     _prefs.remove("theme");
     _prefs.remove("decades");
     _prefs.remove("maxRank");
+    _prefs.remove("server");
   }
 
   Sex? get sex {
@@ -113,5 +114,18 @@ class SettingsRepository {
 
   set pinkAndBlue(bool pinkAndBlue) {
     _prefs.setBool("pinkAndBlue", pinkAndBlue);
+  }
+
+  String get server {
+    if (!_prefs.containsKey("server")) return "https://nomdebebe.hamaluik.dev";
+    return _prefs.getString("server") ?? "https://nomdebebe.hamaluik.dev";
+  }
+
+  set server(String server) {
+    if (server.trim().isEmpty) {
+      _prefs.remove("server");
+    } else {
+      _prefs.setString("server", server);
+    }
   }
 }
