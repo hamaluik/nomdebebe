@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nomdebebe/blocs/names/names.dart';
@@ -18,13 +17,16 @@ class NamePair extends Equatable {
 }
 
 class TournamentState extends Equatable {
-  final HashMap<int, int> nameScores;
-  final List<NamePair> pendingPairs;
+  final List<Name> names;
+  final Name key;
+  final int i;
+  final int j;
+  final NamePair? pendingPair;
 
-  const TournamentState(this.nameScores, this.pendingPairs);
+  const TournamentState(this.names, this.key, this.i, this.j, this.pendingPair);
 
   @override
-  List<Object> get props => [nameScores, pendingPairs];
+  List<Object?> get props => [names, key, i, j, pendingPair];
 }
 
 class TournamentEvent extends Equatable {
@@ -48,11 +50,11 @@ class TournamentCommit extends TournamentEvent {}
 class TournamentBloc extends Bloc<TournamentEvent, TournamentState> {
   final NamesBloc namesBloc;
 
-  TournamentBloc(this.namesBloc, List<NamePair> pendingPairs)
-      : super(TournamentState(HashMap(), pendingPairs));
+  TournamentBloc(this.namesBloc, List<Name> names)
+      : super(TournamentState(
+            names, names[1], 1, 0, NamePair(names[0], names[1])));
 
   static TournamentBloc load(NamesBloc namesBloc, Sex? sex) {
-    List<NamePair> pairs = [];
     List<Name> names;
     if (sex != null)
       names =
@@ -60,34 +62,68 @@ class TournamentBloc extends Bloc<TournamentEvent, TournamentState> {
     else
       names = namesBloc.state.likedNames.toList();
 
-    for (int i = 0; i < names.length; i++) {
-      for (int j = (i + 1); j < names.length; j++) {
-        pairs.add(NamePair(names[i], names[j]));
-      }
-    }
-    print("${names.length} names; ${pairs.length} pairs");
-    pairs.shuffle();
-
-    return TournamentBloc(namesBloc, pairs);
+    return TournamentBloc(namesBloc, names);
   }
 
   @override
   Stream<TournamentState> mapEventToState(TournamentEvent event) async* {
     if (event is TournamentRank) {
-      HashMap<int, int> nameScores = HashMap.from(state.nameScores);
-      if (event.likedA)
-        nameScores[event.names.a.id] = (nameScores[event.names.a.id] ?? 0) + 1;
-      else
-        nameScores[event.names.b.id] = (nameScores[event.names.b.id] ?? 0) + 1;
+      // clone things for the next state
+      List<Name> names = state.names.toList();
+      Name key = state.key;
+      int i = state.i;
+      int j = state.j;
+      NamePair? pendingPair = null;
 
-      List<NamePair> pendingPairs =
-          state.pendingPairs.where((NamePair p) => p != event.names).toList();
+      // insertion sort, but using user interaction
+      // for comparisons instead of the CPU, yielding
+      // each time we need a comparison. Hence the muck
 
-      yield TournamentState(nameScores, pendingPairs);
+      // figure out arr[j] > key
+      // keep it verbose so we can easily follow the logic
+      bool aIsKey = event.names.a.id == state.key.id;
+      bool keyIsLessThanArrJ = false;
+      if (aIsKey) {
+        // b is arr[j]
+        keyIsLessThanArrJ = event.likedA;
+      } else {
+        // a is arr[j]
+        // b is key
+        keyIsLessThanArrJ = !event.likedA;
+      }
+
+      bool doneInnerLoop = false;
+      if (keyIsLessThanArrJ) {
+        names[j + 1] = names[j];
+        j = j - 1;
+
+        if (j < 0) {
+          doneInnerLoop = true;
+        }
+      } else {
+        doneInnerLoop = true;
+      }
+
+      if (doneInnerLoop) {
+        names[j + 1] = key;
+        i = i + 1;
+
+        if (i <= (names.length - 1)) {
+          // still have more to go
+          key = names[i];
+          j = i - 1;
+          pendingPair = NamePair(names[j], key);
+          yield TournamentState(names, key, i, j, pendingPair);
+        } else {
+          // all done!
+          yield TournamentState(names, key, i, j, null);
+        }
+      } else {
+        pendingPair = NamePair(names[j], key);
+        yield TournamentState(names, key, i, j, pendingPair);
+      }
     } else if (event is TournamentCommit) {
-      List<int> ids = state.nameScores.keys.toList();
-      ids.sort((a, b) => state.nameScores[b]!.compareTo(state.nameScores[a]!));
-
+      List<int> ids = state.names.map((Name n) => n.id).toList();
       await namesBloc.namesRepository.rankLikedNames(ids);
       namesBloc.add(NamesLoad());
     }

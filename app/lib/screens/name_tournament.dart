@@ -41,11 +41,7 @@ class _NameTournamentState extends State<NameTournament> {
     return BlocBuilder<TournamentBloc, TournamentState>(
         bloc: bloc,
         builder: (BuildContext context, TournamentState state) {
-          if (state.pendingPairs.isEmpty) {
-            List<int> rankedIDs = state.nameScores.keys.toList();
-            rankedIDs.sort(
-                (a, b) => state.nameScores[b]!.compareTo(state.nameScores[a]!));
-
+          if (state.pendingPair == null) {
             return BlocBuilder<NamesBloc, NamesState>(
                 builder: (BuildContext context, NamesState namesState) {
               return SafeArea(
@@ -54,26 +50,15 @@ class _NameTournamentState extends State<NameTournament> {
                     style: Theme.of(context).textTheme.bodyText2),
                 Expanded(
                     child: ListView.builder(
-                        itemCount: rankedIDs.length,
+                        itemCount: state.names.length,
                         itemBuilder: (BuildContext context, int index) {
-                          Name? name;
-                          try {
-                            name = namesState.likedNames.firstWhere(
-                                (Name n) => n.id == rankedIDs[index]);
-                          } catch (_) {}
-
-                          if (name == null)
-                            return Container(
-                                key: Key("__name_explorer_" +
-                                    rankedIDs[index].toString()));
-
+                          Name name = state.names[index];
                           return NameTileLink(name,
                               onTap: (Name name) => Navigator.of(context).push(
                                   MaterialPageRoute<void>(
                                       builder: (BuildContext context) =>
                                           NameDetailsScreen(name))),
-                              key: Key("__name_explorer_" +
-                                  rankedIDs[index].toString()));
+                              key: Key("__name_explorer_" + name.toString()));
                         })),
                 Container(height: 8),
                 Text("Do you want to save this ranking?",
@@ -110,7 +95,7 @@ class _NameTournamentState extends State<NameTournament> {
           }
 
           bool aFirst = random.nextBool();
-          NamePair pair = state.pendingPairs.first;
+          NamePair pair = state.pendingPair!;
           return SafeArea(
               child: Padding(
                   padding: EdgeInsets.all(16),
@@ -133,7 +118,18 @@ class _NameTournamentState extends State<NameTournament> {
                                     child: _NameChoice(
                                         pair, !aFirst, settings, bloc)),
                                 Text(
-                                    "(${state.pendingPairs.length} choices left)",
+                                    "At least " +
+                                        ((((state.i - 1) * (state.i - 1) +
+                                                            (state.i -
+                                                                1 -
+                                                                state.j))
+                                                        .toDouble() /
+                                                    (state.names.length *
+                                                            state.names.length)
+                                                        .toDouble()) *
+                                                100.0)
+                                            .toStringAsFixed(0) +
+                                        "% done",
                                     style:
                                         Theme.of(context).textTheme.bodyText1,
                                     textAlign: TextAlign.center),
