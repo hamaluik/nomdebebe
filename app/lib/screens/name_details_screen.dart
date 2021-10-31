@@ -27,6 +27,8 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
   void initState() {
     super.initState();
 
+    print("Name details card for name: " + widget.name.toString());
+
     NamesRepository repo = BlocProvider.of<NamesBloc>(context).namesRepository;
     Future.wait(
             [repo.getNameDecadeCounts(widget.name.id), repo.getDecadeCounts()])
@@ -107,141 +109,148 @@ class _NameDetailsScreenState extends State<NameDetailsScreen> {
                     Hero(
                         tag: "nameDetailsHero_" + widget.name.id.toString(),
                         child: Stack(children: [
-                          Card(
-                              color: sexToColour(context, widget.name.sex,
-                                  settingsState.pinkAndBlue),
-                              elevation: 2,
-                              child: Padding(
-                                  padding: EdgeInsets.all(8),
-                                  child: Column(children: <Widget>[
-                                    Text(widget.name.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline2!
-                                            .copyWith(color: Colors.white),
-                                        textAlign: TextAlign.center),
-                                    Expanded(
-                                        child: Center(
-                                            child: data == null
-                                                ? SpinKitPumpingHeart(
-                                                    color: Colors.white)
-                                                : AspectRatio(
-                                                    aspectRatio: 1.0,
-                                                    child: Padding(
-                                                        padding:
-                                                            EdgeInsets.all(16),
-                                                        child: LineChart(
-                                                            LineChartData(
-                                                          gridData: FlGridData(
-                                                              show: false),
-                                                          borderData:
-                                                              FlBorderData(
-                                                                  show: true,
-                                                                  border:
-                                                                      Border(
-                                                                    bottom: BorderSide(
+                          maxPopularity < 1.0
+                              ? Container()
+                              : Card(
+                                  color: sexToColour(context, widget.name.sex,
+                                      settingsState.pinkAndBlue),
+                                  elevation: 2,
+                                  child: Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Column(children: <Widget>[
+                                        Text(widget.name.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline2!
+                                                .copyWith(color: Colors.white),
+                                            textAlign: TextAlign.center),
+                                        Expanded(
+                                            child: Center(
+                                                child: data == null
+                                                    ? SpinKitPumpingHeart(
+                                                        color: Colors.white)
+                                                    : AspectRatio(
+                                                        aspectRatio: 1.0,
+                                                        child: Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    16),
+                                                            child: LineChart(
+                                                                LineChartData(
+                                                              gridData:
+                                                                  FlGridData(
+                                                                      show:
+                                                                          false),
+                                                              borderData:
+                                                                  FlBorderData(
+                                                                      show:
+                                                                          true,
+                                                                      border:
+                                                                          Border(
+                                                                        bottom: BorderSide(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            width: 2.0),
+                                                                        left: BorderSide(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            width: 2.0),
+                                                                      )),
+                                                              axisTitleData:
+                                                                  FlAxisTitleData(
+                                                                show: true,
+                                                                bottomTitle: AxisTitle(
+                                                                    showTitle:
+                                                                        true,
+                                                                    titleText:
+                                                                        "Decade",
+                                                                    textStyle: TextStyle(
                                                                         color: Colors
-                                                                            .white,
-                                                                        width:
-                                                                            2.0),
-                                                                    left: BorderSide(
+                                                                            .white)),
+                                                                leftTitle: AxisTitle(
+                                                                    showTitle:
+                                                                        true,
+                                                                    titleText:
+                                                                        "Popularity",
+                                                                    textStyle: TextStyle(
                                                                         color: Colors
-                                                                            .white,
-                                                                        width:
-                                                                            2.0),
-                                                                  )),
-                                                          axisTitleData:
-                                                              FlAxisTitleData(
-                                                            show: true,
-                                                            bottomTitle: AxisTitle(
-                                                                showTitle: true,
-                                                                titleText:
-                                                                    "Decade",
-                                                                textStyle: TextStyle(
-                                                                    color: Colors
-                                                                        .white)),
-                                                            leftTitle: AxisTitle(
-                                                                showTitle: true,
-                                                                titleText:
-                                                                    "Popularity",
-                                                                textStyle: TextStyle(
-                                                                    color: Colors
-                                                                        .white)),
-                                                          ),
-                                                          titlesData:
-                                                              FlTitlesData(
-                                                            show: true,
-                                                            bottomTitles:
-                                                                SideTitles(
-                                                              getTextStyles:
-                                                                  (_) => Theme.of(
+                                                                            .white)),
+                                                              ),
+                                                              titlesData:
+                                                                  FlTitlesData(
+                                                                show: true,
+                                                                bottomTitles:
+                                                                    SideTitles(
+                                                                  getTextStyles: (_) => Theme.of(
                                                                           context)
                                                                       .textTheme
                                                                       .caption!
                                                                       .copyWith(
                                                                           color:
                                                                               Colors.white),
-                                                              showTitles: true,
-                                                              margin: 10,
-                                                              rotateAngle:
-                                                                  -30.0,
-                                                              getTitles:
-                                                                  (value) {
-                                                                switch (value
-                                                                    .toInt()) {
-                                                                  case 1880:
-                                                                    return "1880's";
-                                                                  case 1900:
-                                                                    return "1900's";
-                                                                  case 1920:
-                                                                    return "1920's";
-                                                                  case 1940:
-                                                                    return "1940's";
-                                                                  case 1960:
-                                                                    return "1960's";
-                                                                  case 1980:
-                                                                    return "1980's";
-                                                                  case 2000:
-                                                                    return "2000's";
-                                                                  case 2020:
-                                                                    return "2020's";
-                                                                  default:
-                                                                    return "";
-                                                                }
-                                                              },
-                                                            ),
-                                                            leftTitles:
-                                                                SideTitles(
-                                                              getTextStyles:
-                                                                  (_) => Theme.of(
+                                                                  showTitles:
+                                                                      true,
+                                                                  margin: 10,
+                                                                  rotateAngle:
+                                                                      -30.0,
+                                                                  getTitles:
+                                                                      (value) {
+                                                                    switch (value
+                                                                        .toInt()) {
+                                                                      case 1880:
+                                                                        return "1880's";
+                                                                      case 1900:
+                                                                        return "1900's";
+                                                                      case 1920:
+                                                                        return "1920's";
+                                                                      case 1940:
+                                                                        return "1940's";
+                                                                      case 1960:
+                                                                        return "1960's";
+                                                                      case 1980:
+                                                                        return "1980's";
+                                                                      case 2000:
+                                                                        return "2000's";
+                                                                      case 2020:
+                                                                        return "2020's";
+                                                                      default:
+                                                                        return "";
+                                                                    }
+                                                                  },
+                                                                ),
+                                                                leftTitles:
+                                                                    SideTitles(
+                                                                  getTextStyles: (_) => Theme.of(
                                                                           context)
                                                                       .textTheme
                                                                       .caption!
                                                                       .copyWith(
                                                                           color:
                                                                               Colors.white),
-                                                              showTitles: true,
-                                                              reservedSize: 44,
-                                                              margin: 8,
-                                                              interval:
-                                                                  maxPopularity /
-                                                                      5.0,
-                                                            ),
-                                                          ),
-                                                          lineTouchData:
-                                                              LineTouchData(
-                                                                  enabled:
-                                                                      false),
-                                                          lineBarsData:
-                                                              data == null
-                                                                  ? []
-                                                                  : [data!],
-                                                        )))))),
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: buttons)
-                                  ]))),
+                                                                  showTitles:
+                                                                      true,
+                                                                  reservedSize:
+                                                                      44,
+                                                                  margin: 8,
+                                                                  interval:
+                                                                      maxPopularity /
+                                                                          5.0,
+                                                                ),
+                                                              ),
+                                                              lineTouchData:
+                                                                  LineTouchData(
+                                                                      enabled:
+                                                                          false),
+                                                              lineBarsData:
+                                                                  data == null
+                                                                      ? []
+                                                                      : [data!],
+                                                            )))))),
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: buttons)
+                                      ]))),
                           Positioned(
                               top: 2,
                               right: 2,

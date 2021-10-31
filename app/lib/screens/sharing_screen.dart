@@ -36,11 +36,11 @@ class _SharingScreenState extends State<SharingScreen>
     super.dispose();
   }
 
-  void showNameDetails(BuildContext context, Name name) async {
+  void showNameDetails(
+      NamesRepository namesRepository, BuildContext context, Name name) async {
     Name? n;
     if (name.id < 0) {
-      n = await RepositoryProvider.of<NamesRepository>(context)
-          .findName(name.name, name.sex);
+      n = await namesRepository.findName(name.name, name.sex);
     } else {
       n = name;
     }
@@ -70,7 +70,9 @@ class _SharingScreenState extends State<SharingScreen>
             return SetupScreen();
           }
 
-          List<Widget> matched = _matchedNames(namesState, sharingState);
+          NamesRepository namesRepository = BlocProvider.of<NamesBloc>(context).namesRepository;
+          List<Widget> matched =
+              _matchedNames(namesRepository, namesState, sharingState);
 
           return Column(children: <Widget>[
             Expanded(
@@ -102,7 +104,7 @@ class _SharingScreenState extends State<SharingScreen>
                                                 context)
                                             .refreshSharing(),
                                     child: ListView(
-                                        children: _matchedNames(
+                                        children: _matchedNames(namesRepository,
                                             namesState, sharingState,
                                             sex: Sex.female),
                                         physics:
@@ -113,7 +115,7 @@ class _SharingScreenState extends State<SharingScreen>
                                                 context)
                                             .refreshSharing(),
                                     child: ListView(
-                                        children: _matchedNames(
+                                        children: _matchedNames(namesRepository,
                                             namesState, sharingState,
                                             sex: Sex.male),
                                         physics:
@@ -130,8 +132,8 @@ class _SharingScreenState extends State<SharingScreen>
                                 await BlocProvider.of<SharingBloc>(context)
                                     .refreshSharing(),
                             child: ListView(
-                                children:
-                                    _matchedNames(namesState, sharingState),
+                                children: _matchedNames(
+                                    namesRepository, namesState, sharingState),
                                 physics:
                                     const AlwaysScrollableScrollPhysics())),
                 settingsState.pinkAndBlue
@@ -155,11 +157,8 @@ class _SharingScreenState extends State<SharingScreen>
                                               .where((Name n) =>
                                                   n.sex == Sex.female)
                                               .elementAt(index),
-                                          onTap: (Name name) => Navigator.of(
-                                                  context)
-                                              .push(MaterialPageRoute<void>(
-                                                  builder: (_) =>
-                                                      NameDetailsScreen(name))),
+                                          onTap: (Name name) => showNameDetails(
+                                              namesRepository, context, name),
                                         ),
                                     physics:
                                         const AlwaysScrollableScrollPhysics())),
@@ -178,11 +177,8 @@ class _SharingScreenState extends State<SharingScreen>
                                               .where(
                                                   (Name n) => n.sex == Sex.male)
                                               .elementAt(index),
-                                          onTap: (Name name) => Navigator.of(
-                                                  context)
-                                              .push(MaterialPageRoute<void>(
-                                                  builder: (_) =>
-                                                      NameDetailsScreen(name))),
+                                          onTap: (Name name) => showNameDetails(
+                                              namesRepository, context, name),
                                         ),
                                     physics:
                                         const AlwaysScrollableScrollPhysics())),
@@ -202,8 +198,8 @@ class _SharingScreenState extends State<SharingScreen>
                             itemBuilder: (BuildContext context, int index) =>
                                 NameTileLink(
                                   sharingState.partnerNames[index],
-                                  onTap: (Name name) =>
-                                      showNameDetails(context, name),
+                                  onTap: (Name name) => showNameDetails(
+                                      namesRepository, context, name),
                                 ),
                             physics: const AlwaysScrollableScrollPhysics())),
                 SetupScreen(),
@@ -222,7 +218,8 @@ class _SharingScreenState extends State<SharingScreen>
     });
   }
 
-  List<Widget> _matchedNames(NamesState namesState, SharingState sharingState,
+  List<Widget> _matchedNames(NamesRepository namesRepository,
+      NamesState namesState, SharingState sharingState,
       {Sex? sex}) {
     // do this the verbose way so we can collect the ranks of the two names
     List<MatchedName> matches = [];
@@ -247,7 +244,8 @@ class _SharingScreenState extends State<SharingScreen>
         .map((m) => NameTileLink(
               m.name,
               key: Key("__liked_names_" + m.name.id.toString()),
-              onTap: (Name name) => showNameDetails(context, name),
+              onTap: (Name name) =>
+                  showNameDetails(namesRepository, context, name),
             ))
         .toList();
   }
