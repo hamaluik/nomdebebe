@@ -1,0 +1,20 @@
+{
+    "name": "Nom de Bébé",
+    "short_name": "Nom de Bébé",
+    "description": "A simple, private tool to help pick a baby name",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#d81b60",
+    "background_color": "#fafafa",
+    "display": "standalone"
+}
